@@ -90,3 +90,18 @@ export function goalProgress(g: Goal): number {
   if (g.target_amount <= 0) return 0
   return Math.min(100, (g.current_amount / g.target_amount) * 100)
 }
+
+const RENCANA_GOALS: GoalInput[] = [
+  { name: 'Dana Pernikahan', target_amount: 100_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
+  { name: 'DP + Akad Kredit Xpander', target_amount: 118_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
+  { name: 'Non-Budget Nikah', target_amount: 10_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
+  { name: 'Dana Darurat', target_amount: 24_000_000, current_amount: 0, target_date: '2026-12-01', status: 'active' },
+  { name: 'Buffer Cadangan', target_amount: 5_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
+]
+
+export async function seedRencanaGoals(): Promise<void> {
+  const existing = await listGoals()
+  const existingNames = new Set(existing.map((g) => g.name))
+  const toInsert = RENCANA_GOALS.filter((g) => !existingNames.has(g.name))
+  for (const g of toInsert) await createGoal(g)
+}

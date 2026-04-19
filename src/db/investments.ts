@@ -155,3 +155,16 @@ export function gainLossPercent(inv: Investment): number {
   if (cb === 0) return 0
   return (gainLoss(inv) / cb) * 100
 }
+
+const RENCANA_INVESTMENTS: InvestmentInput[] = [
+  { asset_type: 'Reksadana', asset_name: 'Reksadana Sukuk Sucorinvest Sharia', quantity: 1, buy_price: 100_000_000, current_price: 100_000_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Emas', asset_name: 'Emas Tabungan Pegadaian', quantity: 5.5278, buy_price: 2_683_000, current_price: 2_683_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Saham', asset_name: 'Saham BMRI', quantity: 1, buy_price: 6_129_180, current_price: 6_129_180, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+]
+
+export async function seedRencanaInvestments(): Promise<void> {
+  const existing = await listInvestments()
+  const existingNames = new Set(existing.map((i) => i.asset_name))
+  const toInsert = RENCANA_INVESTMENTS.filter((i) => !existingNames.has(i.asset_name))
+  for (const inv of toInsert) await createInvestment(inv)
+}

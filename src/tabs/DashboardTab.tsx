@@ -7,6 +7,8 @@ import { formatRupiah, todayISO, formatDateID } from '@/lib/format'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown } from 'lucide-react'
+import RencanaBar from '@/components/RencanaBar'
+import { useRencanaInit } from '@/lib/useRencanaInit'
 
 function firstDayOfMonth(): string {
   const d = new Date()
@@ -21,6 +23,7 @@ export default function DashboardTab() {
   const { data: invRows = [] } = useInvestments()
   const { data: goals = [] } = useGoals()
   const { data: recentTx = [] } = useTransactions({ limit: 5 })
+  useRencanaInit()
 
   const monthly = useMemo(() => {
     let income = 0; let expense = 0
@@ -72,6 +75,8 @@ export default function DashboardTab() {
           tone={inv.gl >= 0 ? 'income' : 'expense'}
         />
       </div>
+
+      {inv.totalNilai > 0 && <RencanaBar totalNilai={inv.totalNilai} />}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Recent transactions */}
