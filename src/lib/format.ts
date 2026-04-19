@@ -1,0 +1,33 @@
+const rupiahFmt = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+})
+
+export function formatRupiah(n: number): string {
+  return rupiahFmt.format(n)
+}
+
+export function parseRupiah(s: string): number {
+  const cleaned = s.replace(/[^\d-]/g, '')
+  return cleaned === '' ? 0 : Number(cleaned)
+}
+
+export function todayISO(): string {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+export function formatDateID(iso: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return d.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}

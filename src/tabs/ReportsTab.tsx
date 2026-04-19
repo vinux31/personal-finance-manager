@@ -1,0 +1,319 @@
+import { useEffect, useMemo, useState } from 'react'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+} from 'recharts'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import {
+  aggregateByPeriod,
+  aggregateByCategory,
+  type PeriodGranularity,
+} from '@/db/reports'
+import {
+  listInvestments,
+  currentValue,
+  costBasis,
+} from '@/db/investments'
+import { formatRupiah, todayISO } from '@/lib/format'
+
+type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
+
+const PIE_COLORS = [
+  '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+  '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+]
+
+export default function ReportsTab() {
+  const [preset, setPreset] = useState<PeriodPreset>('month')
+  const [gran, setGran] = useState<PeriodGranularity>('day')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
+
+  const range = useMemo(() => resolvePreset(preset, from, to), [preset, from, to])
+
+  const periodData = useMemo(
+    () => aggregateByPeriod(gran, range.from, range.to),
+    [gran, range],
+  )
+  const expenseByCat = useMemo(
+    () => aggregateByCategory('expense', range.from, range.to),
+    [range],
+  )
+  const incomeByCat = useMemo(
+    () => aggregateByCategory('income', range.from, range.to),
+    [range],
+  )
+
+  const [investments, setInvestments] = useState<
+    Array<{ name: string; modal: number; nilai: number }>
+  >([])
+  useEffect(() => {
+    const invs = listInvestments()
+    setInvestments(
+      invs.map((i) => ({
+        name: i.asset_name,
+        modal: costBasis(i),
+        nilai: currentValue(i),
+      })),
+    )
+  }, [range])
+
+  const totals = useMemo(() => {
+    let income = 0
+    let expense = 0
+    for (const p of periodData) {
+      income += p.income
+      expense += p.expense
+    }
+    return { income, expense, net: income - expense }
+  }, [periodData])
+
+  return (
+    <div className="space-y-6">
+      {/* Filter bar */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="grid gap-1">
+          <Label className="text-xs">Periode</Label>
+          <Select
+            value={preset}
+            onValueChange={(v) => setPreset(v as PeriodPreset)}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">Hari ini</SelectItem>
+              <SelectItem value="month">Bulan ini</SelectItem>
+              <SelectItem value="year">Tahun ini</SelectItem>
+              <SelectItem value="all">Semua</SelectItem>
+              <SelectItem value="custom">Kustom</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {preset === 'custom' && (
+          <>
+            <div className="grid gap-1">
+              <Label className="text-xs">Dari</Label>
+              <Input
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                className="w-40"
+              />
+            </div>
+            <div className="grid gap-1">
+              <Label className="text-xs">Sampai</Label>
+              <Input
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                className="w-40"
+              />
+            </div>
+          </>
+        )}
+
+        <div className="grid gap-1">
+          <Label className="text-xs">Kelompokkan per</Label>
+          <Select
+            value={gran}
+            onValueChange={(v) => setGran(v as PeriodGranularity)}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Hari</SelectItem>
+              <SelectItem value="week">Minggu</SelectItem>
+              <SelectItem value="month">Bulan</SelectItem>
+              <SelectItem value="year">Tahun</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Summary */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <SummaryCard label="Pemasukan" value={formatRupiah(totals.income)} tone="up" />
+        <SummaryCard label="Pengeluaran" value={formatRupiah(totals.expense)} tone="down" />
+        <SummaryCard
+          label="Net"
+          value={formatRupiah(totals.net)}
+          tone={totals.net >= 0 ? 'up' : 'down'}
+        />
+      </div>
+
+      {/* Income vs Expense */}
+      <Panel title="Pemasukan vs Pengeluaran">
+        {periodData.length === 0 ? (
+          <EmptyChart />
+        ) : (
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={periodData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="period" />
+              <YAxis tickFormatter={shortRupiah} />
+              <Tooltip formatter={(v) => formatRupiah(Number(v))} />
+              <Legend />
+              <Bar dataKey="income" name="Pemasukan" fill="#10b981" />
+              <Bar dataKey="expense" name="Pengeluaran" fill="#ef4444" />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </Panel>
+
+      {/* Category pies */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Panel title="Pengeluaran per Kategori">
+          {expenseByCat.length === 0 ? (
+            <EmptyChart />
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={expenseByCat}
+                  dataKey="total"
+                  nameKey="category"
+                  outerRadius={100}
+                  label={(e) => String((e as { name?: string }).name ?? '')}
+                >
+                  {expenseByCat.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(v) => formatRupiah(Number(v))} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </Panel>
+
+        <Panel title="Pemasukan per Kategori">
+          {incomeByCat.length === 0 ? (
+            <EmptyChart />
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={incomeByCat}
+                  dataKey="total"
+                  nameKey="category"
+                  outerRadius={100}
+                  label={(e) => String((e as { name?: string }).name ?? '')}
+                >
+                  {incomeByCat.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(v) => formatRupiah(Number(v))} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </Panel>
+      </div>
+
+      {/* Investment performance */}
+      <Panel title="Kinerja Investasi">
+        {investments.length === 0 ? (
+          <EmptyChart text="Belum ada investasi untuk ditampilkan." />
+        ) : (
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={investments}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis tickFormatter={shortRupiah} />
+              <Tooltip formatter={(v) => formatRupiah(Number(v))} />
+              <Legend />
+              <Line type="monotone" dataKey="modal" name="Modal" stroke="#64748b" />
+              <Line type="monotone" dataKey="nilai" name="Nilai Kini" stroke="#0ea5e9" />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </Panel>
+    </div>
+  )
+}
+
+function resolvePreset(
+  preset: PeriodPreset,
+  from: string,
+  to: string,
+): { from?: string; to?: string } {
+  if (preset === 'all') return {}
+  if (preset === 'custom') return { from: from || undefined, to: to || undefined }
+  const today = todayISO()
+  if (preset === 'today') return { from: today, to: today }
+  const d = new Date()
+  if (preset === 'month') {
+    const first = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
+    return { from: first, to: today }
+  }
+  // year
+  return { from: `${d.getFullYear()}-01-01`, to: today }
+}
+
+function shortRupiah(n: number): string {
+  if (Math.abs(n) >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}M`
+  if (Math.abs(n) >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)}jt`
+  if (Math.abs(n) >= 1_000) return `Rp ${(n / 1_000).toFixed(0)}rb`
+  return `Rp ${n}`
+}
+
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border bg-card p-5">
+      <h3 className="mb-4 text-sm font-semibold">{title}</h3>
+      {children}
+    </div>
+  )
+}
+
+function EmptyChart({ text }: { text?: string }) {
+  return (
+    <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
+      {text ?? 'Belum ada data pada periode ini.'}
+    </div>
+  )
+}
+
+function SummaryCard({
+  label,
+  value,
+  tone,
+}: {
+  label: string
+  value: string
+  tone: 'up' | 'down'
+}) {
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div
+        className={`mt-1 text-2xl font-semibold ${
+          tone === 'up' ? 'text-emerald-600' : 'text-red-600'
+        }`}
+      >
+        {value}
+      </div>
+    </div>
+  )
+}
