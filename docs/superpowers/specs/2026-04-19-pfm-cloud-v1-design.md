@@ -223,10 +223,30 @@ Penyesuaian tipe Postgres: `INTEGER PRIMARY KEY AUTOINCREMENT` → `BIGSERIAL PR
 ### Auth flow
 
 - Cold start: `AuthProvider` panggil `supabase.auth.getSession()`. Jika ada → render app; jika tidak → render `<LoginScreen>`.
-- Login: klik "Masuk dengan Google" → `supabase.auth.signInWithOAuth({ provider: 'google' })` → redirect Google → callback → token disimpan otomatis di localStorage oleh supabase-js → `onAuthStateChange` fire → app render.
-- Email allowlist enforcement di sisi Postgres (Auth Hook trigger). Email lain ditolak saat sign-up.
+- Login: klik "Masuk dengan Google" → `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/auth/callback` } })` → redirect Google → callback → token disimpan otomatis di localStorage oleh supabase-js → `onAuthStateChange` fire → app render.
+- **`redirectTo` strategy:** pakai `window.location.origin` dinamis. Localhost dev → `http://localhost:5173/auth/callback`; production → `https://pfm-web.vercel.app/auth/callback`. Tidak butuh env var berbeda; cukup register kedua URL di whitelist.
+- Email allowlist enforcement di sisi Postgres (trigger pada `auth.users`). Email lain ditolak saat sign-up. Pesan exception muncul sebagai error generik di OAuth callback — UI handle dengan toast "Email tidak diizinkan" jika callback URL bawa `?error=...`.
 - Token refresh: built-in oleh supabase-js, tidak perlu code tambahan.
 - Logout: `supabase.auth.signOut()` → render `<LoginScreen>`.
+
+### External setup prerequisites (di luar repo, sekali-saja)
+
+Setup ini WAJIB dilakukan sebelum auth bisa jalan. Detail langkah masuk ke implementation plan M1.
+
+**Google Cloud Console** (`console.cloud.google.com`):
+1. Buat project baru "pfm-web" (atau reuse).
+2. APIs & Services → OAuth consent screen → External, isi app name, support email.
+3. Credentials → Create OAuth 2.0 Client ID → Web application.
+4. **Authorized JavaScript origins:** `http://localhost:5173`, `https://pfm-web.vercel.app`.
+5. **Authorized redirect URIs:** `https://<project-ref>.supabase.co/auth/v1/callback` (dapat dari Supabase dashboard).
+6. Catat `Client ID` + `Client Secret` → masukkan ke Supabase.
+
+**Supabase Dashboard** (`app.supabase.com`):
+1. Project Settings → Auth → Providers → Google: enable, paste Client ID & Secret.
+2. Project Settings → Auth → URL Configuration:
+   - **Site URL:** `https://pfm-web.vercel.app`
+   - **Redirect URLs (allowlist):** `http://localhost:5173/**`, `https://pfm-web.vercel.app/**`
+3. Project Settings → API → catat `Project URL` & `anon public key` → masukkan ke `.env.local` & Vercel env vars.
 
 ### Read flow (contoh: transactions)
 
@@ -348,13 +368,13 @@ Automated tests ditambahkan di sub-project terpisah jika diperlukan kemudian.
 
 | # | Milestone | Output | Estimasi |
 |---|---|---|---|
-| M1 | Supabase project + schema migration + RLS + email allowlist | Project live, tabel siap, allowlist aktif | 2–3 jam |
+| M1 | External setup (Google Cloud OAuth client + Supabase project + Auth provider config + URL allowlist) + schema migration + RLS + email allowlist trigger | Project live, OAuth provider connected, tabel siap, allowlist aktif | 3–4 jam |
 | M2 | Auth integration (Provider, LoginScreen, AccountMenu) | Login Google jalan di local dev, conditional render | 3–4 jam |
 | M3 | Swap db layer ke Supabase client | Reads/writes jalan via Supabase, signature lama tetap | 4–6 jam |
 | M4 | Tambah TanStack Query + queries layer + adopt di tabs | Tabs pakai useQuery/useMutation | 4–6 jam |
 | M5 | Reports RPC functions + integrasi | Charts laporan jalan via RPC | 2–3 jam |
 | M6 | CSV import/export adaptasi | CSV bolak-balik jalan | 2 jam |
-| M7 | Cleanup (hapus sql.js, fileHandle, dll) + SettingsTab refactor | Repo bersih | 1–2 jam |
+| M7 | Cleanup: `git rm public/sql-wasm.wasm`, hapus file sql.js/fileHandle/store/repo/schema/FirstRunDialog, uninstall `sql.js` + `@types/sql.js`, refactor SettingsTab (hapus seksi File Data, tambah seksi Akun) | Repo bersih dari kode lokal-only | 1–2 jam |
 | M8 | Deploy ke Vercel + smoke test + bugfix | Live, smoke test passed | 2–3 jam |
 
 **Total kasar:** 20–30 jam (3–5 hari kerja efektif solo).
@@ -363,7 +383,7 @@ Automated tests ditambahkan di sub-project terpisah jika diperlukan kemudian.
 
 - ✅ URL Vercel publik dapat diakses.
 - ✅ Google OAuth login berfungsi; email selain `asistensme@gmail.com` ditolak.
-- ✅ 6 tab CRUD jalan setara versi lokal sekarang.
+- ✅ 5 tab CRUD (Transaksi, Investasi, Goals, Catatan, Laporan) + 1 tab Pengaturan jalan setara versi lokal sekarang.
 - ✅ CSV import/export jalan.
 - ✅ Theme dark/light/system jalan.
 - ✅ `docs/SMOKE_TEST.md` checklist semua centang.
@@ -376,7 +396,7 @@ Automated tests ditambahkan di sub-project terpisah jika diperlukan kemudian.
 | Risiko | Mitigasi |
 |---|---|
 | Free tier limit | Sangat tidak mungkin untuk single-user. Monitor dashboard. |
-| OAuth callback URL salah | Test di M2, dokumentasi callback URL di README. |
+| OAuth callback URL salah / belum di-allowlist | Mitigasi terstruktur di "External setup prerequisites" (langkah eksplisit Google Cloud + Supabase URL config). Test end-to-end di M2. |
 | RLS policy salah → leak | Smoke test wajib coba akses tanpa login → harus 401. |
 | Migration salah → data hilang | Fresh start, risiko data loss = 0. Test di Supabase dashboard sebelum push. |
 | TanStack Query learning curve | Mulai 1 hook, copy pola. Dokumentasi resmi sangat baik. |
