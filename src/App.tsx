@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Toaster } from '@/components/ui/sonner'
 import {
+  LayoutDashboard,
   Wallet,
   TrendingUp,
   Target,
@@ -8,6 +9,7 @@ import {
   BarChart3,
   Settings as SettingsIcon,
 } from 'lucide-react'
+import DashboardTab from '@/tabs/DashboardTab'
 import TransactionsTab from '@/tabs/TransactionsTab'
 import InvestmentsTab from '@/tabs/InvestmentsTab'
 import GoalsTab from '@/tabs/GoalsTab'
@@ -20,6 +22,7 @@ import AccountMenu from '@/components/AccountMenu'
 import { useAuth } from '@/auth/useAuth'
 
 const TABS = [
+  { value: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, Comp: DashboardTab },
   { value: 'transactions', label: 'Transaksi', icon: Wallet, Comp: TransactionsTab },
   { value: 'investments', label: 'Investasi', icon: TrendingUp, Comp: InvestmentsTab },
   { value: 'goals', label: 'Goals', icon: Target, Comp: GoalsTab },
@@ -64,7 +67,7 @@ function App() {
       </header>
 
       <main className="p-6">
-        <Tabs defaultValue="transactions" className="w-full">
+        <Tabs defaultValue="dashboard" className="w-full">
           <TabsList className="mb-6">
             {TABS.map(({ value, label, icon: Icon }) => (
               <TabsTrigger key={value} value={value} className="gap-2">
