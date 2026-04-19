@@ -29,3 +29,5 @@ dist-ssr
 # Supabase CLI
 supabase/.branches
 supabase/.temp
+
+.vercel

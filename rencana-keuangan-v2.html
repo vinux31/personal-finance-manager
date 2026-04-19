@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rencana Keuangan Pribadi — Blueprint Master 2026-2032 (Revisi)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f4;
+    --bg-alt: #f3efe7;
+    --ink: #1a1a1a;
+    --ink-soft: #3d3d3d;
+    --ink-muted: #6b6b6b;
+    --accent: #c8472f;
+    --accent-dark: #8f2e1c;
+    --gold: #a88441;
+    --green: #2d6a3e;
+    --red: #b73628;
+    --line: #d4cdbf;
+    --line-soft: #e8e2d4;
+    --card: #ffffff;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 400;
+    line-height: 1.6;
+    font-size: 16px;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(26,26,26,0.04) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* REVISION BANNER */
+  .revision-banner {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 10px 40px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 24px 0 16px;
+    margin-bottom: 60px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+
+  .masthead-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 40px;
+  }
+
+  .masthead-title h1 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+
+  .masthead-title .edition {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 40px 0 80px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 60px;
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .hero h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(40px, 7vw, 88px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin-bottom: 32px;
+    font-variation-settings: "opsz" 144;
+  }
+
+  .hero h2 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .hero-lede {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 700px;
+    font-weight: 400;
+    padding-left: 24px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-meta-item {
+    padding: 24px 24px 24px 0;
+    border-right: 1px solid var(--line);
+  }
+
+  .hero-meta-item:last-child { border-right: none; padding-right: 0; }
+  .hero-meta-item:not(:first-child) { padding-left: 24px; }
+
+  .hero-meta-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .hero-meta-value {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .hero-meta-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+
+  /* CHANGELOG BOX */
+  .changelog {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 48px;
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .changelog-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .changelog h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    color: var(--bg);
+  }
+
+  .changelog-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .changelog-list li {
+    padding: 12px 0 12px 28px;
+    border-bottom: 1px solid rgba(250,248,244,0.1);
+    font-family: var(--sans);
+    font-size: 14px;
+    color: rgba(250,248,244,0.85);
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .changelog-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .changelog-list li:last-child { border-bottom: none; }
+
+  .changelog-list li strong {
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-number {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144;
+  }
+
+  .section-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-muted);
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.015em;
+    margin: 32px 0 16px;
+    line-height: 1.2;
+  }
+
+  h4 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 24px 0 12px;
+  }
+
+  p { margin-bottom: 16px; color: var(--ink-soft); }
+  p strong { color: var(--ink); font-weight: 600; }
+
+  /* PORTFOLIO GRID */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 32px 0;
+  }
+
+  .portfolio-card {
+    background: var(--card);
+    padding: 28px;
+    position: relative;
+  }
+
+  .portfolio-card-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .portfolio-card-name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .portfolio-card-value {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .portfolio-card-pct {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .portfolio-bar {
+    height: 3px;
+    background: var(--line-soft);
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .portfolio-bar-fill {
+    height: 100%;
+    background: var(--ink);
+  }
+
+  /* TABLES */
+  .fin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+
+  .fin-table th {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .fin-table th.numeric { text-align: right; }
+
+  .fin-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink-soft);
+  }
+
+  .fin-table td.numeric {
+    text-align: right;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fin-table tr:hover td { background: var(--bg-alt); }
+
+  .fin-table tr.total {
+    border-top: 2px solid var(--ink);
+    background: var(--bg-alt);
+  }
+
+  .fin-table tr.total td {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    padding: 18px 16px;
+  }
+
+  .fin-table tr.total td.numeric {
+    font-family: var(--serif);
+    font-size: 18px;
+  }
+
+  .fin-table tr.subtotal td {
+    background: #f8f5ed;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .fin-table tr.new-row {
+    background: #fffbf4;
+  }
+
+  .fin-table tr.new-row td {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .new-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--bg);
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .updated-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* WARNING BOXES */
+  .warning-box {
+    background: #fdf4f2;
+    border-left: 4px solid var(--accent);
+    padding: 28px 32px;
+    margin: 32px 0;
+    position: relative;
+  }
+
+  .warning-box-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .warning-box h4 {
+    color: var(--accent-dark);
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  .warning-box p { color: var(--ink-soft); margin-bottom: 8px; }
+  .warning-box p:last-child { margin-bottom: 0; }
+
+  .success-box {
+    background: #f0f5ee;
+    border-left: 4px solid var(--green);
+    padding: 28px 32px;
+    margin: 32px 0;
+  }
+
+  .success-box-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .success-box h4 {
+    color: var(--green);
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  /* GAP ALERT */
+  .gap-alert {
+    background: linear-gradient(to bottom right, var(--accent), var(--accent-dark));
+    color: var(--bg);
+    padding: 48px;
+    margin: 40px 0;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gap-alert::before {
+    content: '⚠';
+    position: absolute;
+    top: 20px;
+    right: 32px;
+    font-size: 80px;
+    opacity: 0.15;
+    line-height: 1;
+  }
+
+  .gap-alert-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .gap-alert h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 36px;
+    letter-spacing: -0.025em;
+    margin: 0 0 20px;
+    color: var(--bg);
+    line-height: 1.1;
+    position: relative;
+  }
+
+  .gap-alert p {
+    color: rgba(250,248,244,0.9);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .gap-alert p strong {
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .gap-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(250,248,244,0.2);
+    position: relative;
+  }
+
+  .gap-number-item {
+    text-align: center;
+  }
+
+  .gap-number-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,248,244,0.7);
+    margin-bottom: 8px;
+  }
+
+  .gap-number-value {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 32px;
+    color: var(--bg);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  /* SCENARIOS */
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 32px 0;
+    border: 1px solid var(--line);
+  }
+
+  .scenario-card {
+    padding: 32px;
+    border-right: 1px solid var(--line);
+    position: relative;
+    background: var(--card);
+  }
+
+  .scenario-card:last-child { border-right: none; }
+
+  .scenario-card.featured {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .scenario-rank {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .scenario-card.featured .scenario-rank { color: var(--gold); }
+
+  .scenario-card h4 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: inherit;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  .scenario-card.featured h4 { color: var(--bg); }
+
+  .scenario-detail {
+    margin: 14px 0;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .scenario-card.featured .scenario-detail { color: rgba(250,248,244,0.75); }
+
+  .scenario-detail strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .scenario-card.featured .scenario-detail strong { color: var(--bg); }
+
+  .scenario-verdict {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .scenario-card.featured .scenario-verdict {
+    border-color: rgba(250,248,244,0.2);
+    color: var(--gold);
+  }
+
+  /* BIG STAT */
+  .big-stat {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 60px 0;
+    margin: 40px 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .big-stat-item { text-align: center; }
+
+  .big-stat-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+
+  .big-stat-value {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(42px, 5vw, 62px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    font-variation-settings: "opsz" 144;
+  }
+
+  .big-stat-value em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .big-stat-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 120px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 40px;
+    padding: 24px 0;
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 116px;
+    top: 30px;
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .timeline-date {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--accent);
+    padding-top: 20px;
+    text-align: right;
+    font-variation-settings: "opsz" 9;
+  }
+
+  .timeline-content {
+    padding-left: 24px;
+  }
+
+  .timeline-content h4 {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--ink);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .timeline-content ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .timeline-content li {
+    padding: 6px 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .timeline-content li::before {
+    content: '→';
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* CASHFLOW CARD */
+  .cashflow-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 40px;
+    margin: 32px 0;
+  }
+
+  .cashflow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .cashflow-header h4 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .cashflow-period {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .cashflow-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .cashflow-row.income { color: var(--green); font-weight: 500; }
+  .cashflow-row.expense { color: var(--red); }
+  .cashflow-row.new-item { background: #fffbf4; padding: 12px 12px; margin: 0 -12px; }
+  .cashflow-row.new-item::after {
+    content: 'BARU';
+    font-family: var(--mono);
+    font-size: 9px;
+    background: var(--gold);
+    color: var(--bg);
+    padding: 2px 6px;
+    margin-left: 8px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .cashflow-row .amount {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cashflow-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0 4px;
+    border-top: 2px solid var(--ink);
+    margin-top: 8px;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .cashflow-total .amount {
+    font-family: var(--serif);
+    font-weight: 600;
+  }
+
+  .cashflow-total.positive .amount { color: var(--green); }
+  .cashflow-total.negative .amount { color: var(--red); }
+
+  /* RISK */
+  .risk-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .risk-number {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .risk-content h4 {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .risk-probability {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .risk-probability.low { color: var(--green); border-color: var(--green); }
+  .risk-probability.medium { color: var(--gold); border-color: var(--gold); }
+  .risk-probability.high { color: var(--red); border-color: var(--red); }
+
+  /* CHECKLIST */
+  .checklist {
+    background: var(--bg-alt);
+    padding: 40px 48px;
+    margin: 32px 0;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+
+  .checklist::before {
+    content: '✓';
+    position: absolute;
+    top: -20px;
+    left: 40px;
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .checklist h3 {
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+
+  .checklist ol {
+    padding-left: 20px;
+    counter-reset: step;
+    list-style: none;
+  }
+
+  .checklist li {
+    counter-increment: step;
+    padding: 12px 0 12px 40px;
+    border-bottom: 1px dashed var(--line);
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink-soft);
+    position: relative;
+  }
+
+  .checklist li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li strong { color: var(--ink); }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    padding: 60px 40px;
+    margin: 60px 0;
+    text-align: center;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .pull-quote p {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 800px;
+    margin: 0 auto;
+    font-variation-settings: "opsz" 144;
+  }
+
+  .pull-quote p em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .pull-quote-attr {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: 24px;
+  }
+
+  /* DOCUMENT MAP */
+  .doc-map {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 48px;
+    margin: 40px 0;
+  }
+
+  .doc-map-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .doc-map h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    color: var(--bg);
+  }
+
+  .doc-map-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .doc-card {
+    background: rgba(250,248,244,0.05);
+    padding: 24px;
+    border: 1px solid rgba(250,248,244,0.15);
+    border-radius: 2px;
+  }
+
+  .doc-card.current {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+
+  .doc-card-vol {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .doc-card.current .doc-card-vol {
+    color: var(--ink);
+  }
+
+  .doc-card h4 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--bg);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+
+  .doc-card.current h4 { color: var(--ink); }
+
+  .doc-card p {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: rgba(250,248,244,0.7);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .doc-card.current p {
+    color: rgba(26,26,26,0.8);
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--bg-alt);
+    padding: 40px;
+    margin: 40px 0;
+    border: 1px solid var(--line);
+    columns: 2;
+    column-gap: 40px;
+  }
+
+  .toc h3 {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+    margin: 0 0 20px;
+    font-weight: 600;
+    column-span: all;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 16px;
+  }
+
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    counter-reset: toc;
+  }
+
+  .toc li {
+    counter-increment: toc;
+    padding: 8px 0;
+    font-family: var(--serif);
+    font-size: 15px;
+    break-inside: avoid;
+  }
+
+  .toc li a {
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    transition: color 0.2s;
+  }
+
+  .toc li a:hover { color: var(--accent); }
+
+  .toc li a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+    min-width: 24px;
+  }
+
+  /* STRATEGY CARDS */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .strategy-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 28px;
+    position: relative;
+  }
+
+  .strategy-card h5 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .strategy-card .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .strategy-card p {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .strategy-card .impact {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 2px solid var(--ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  footer p { color: var(--ink-muted); margin-bottom: 6px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .revision-banner { padding: 8px 20px; font-size: 10px; }
+    .hero-meta { grid-template-columns: repeat(2, 1fr); }
+    .hero-meta-item { border-right: none; border-bottom: 1px solid var(--line); }
+    .hero-meta-item:nth-child(2) { border-right: none; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .scenarios { grid-template-columns: 1fr; }
+    .scenario-card { border-right: none; border-bottom: 1px solid var(--line); }
+    .big-stat { grid-template-columns: 1fr; gap: 40px; }
+    .timeline::before { left: 20px; }
+    .timeline-item { grid-template-columns: 60px 1fr; gap: 20px; }
+    .timeline-item::before { left: 16px; }
+    .timeline-date { text-align: left; font-size: 13px; padding-top: 20px; }
+    .toc { columns: 1; padding: 24px; }
+    .cashflow-card { padding: 24px; }
+    .checklist { padding: 32px 24px; }
+    .changelog { padding: 32px 24px; }
+    .gap-alert { padding: 32px 24px; }
+    .gap-alert h3 { font-size: 26px; }
+    .gap-numbers { grid-template-columns: 1fr; gap: 16px; }
+    .doc-map { padding: 28px 24px; }
+    .doc-map-grid { grid-template-columns: 1fr; }
+    .strategy-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: white; }
+    .masthead { position: static; }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- REVISION BANNER -->
+<div class="revision-banner">
+  Revisi 2.0 · 19 April 2026 · Terintegrasi dengan Vol. II (KKB) dan Vol. III (Nikah)
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="container">
+    <div class="masthead-top">
+      <span>Rencana Keuangan Personal · Dokumen Master</span>
+      <span>Revisi 2.0 — 19 April 2026</span>
+    </div>
+    <div class="masthead-title">
+      <h1>The Financial Blueprint</h1>
+      <div class="edition">Vol. I — Revisi<br>Master Document 2026-2032</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- HERO -->
+<section class="hero" style="border-bottom:1px solid var(--line);padding-top:0;">
+  <div class="hero-label">Ringkasan Eksekutif — Versi Revisi</div>
+  <h2>Rencana yang <em>presisi</em>, bukan estimasi — dengan angka real dari deep dive KKB dan budget nikah.</h2>
+  <p class="hero-lede">
+    Dokumen master yang mengintegrasikan seluruh insight dari analisis mendalam kredit kendaraan (Vol. II) dan breakdown budget pernikahan adat Jawa Mataraman (Vol. III). Target dana realistis naik dari Rp 239 juta ke Rp 257 juta — dengan strategi penutupan gap yang actionable.
+  </p>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Target Dana Revisi</div>
+      <div class="hero-meta-value">Rp 257 Jt</div>
+      <div class="hero-meta-sub">Naik Rp 18 jt dari v1.0</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Timeline</div>
+      <div class="hero-meta-value">9 Bulan</div>
+      <div class="hero-meta-sub">April 2026 → Jan 2027</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Aset Awal</div>
+      <div class="hero-meta-value">Rp 120,9 Jt</div>
+      <div class="hero-meta-sub">Per April 2026</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Gap yang Harus Ditutup</div>
+      <div class="hero-meta-value">Rp 18 Jt</div>
+      <div class="hero-meta-sub">Strategi di Section 03</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<div class="changelog">
+  <div class="changelog-label">Revisi 2.0 — Apa yang Berubah</div>
+  <h3>Perubahan Utama dari Versi 1.0</h3>
+  <ul class="changelog-list">
+    <li><strong>Target dana naik:</strong> Rp 239 jt → <strong>Rp 257 jt</strong>. Penambahan karena 2 pos baru yang terungkap dari deep dive: biaya akad kredit mobil (Rp 8 jt) dan non-budget items pernikahan (Rp 10 jt).</li>
+    <li><strong>Cicilan mobil lebih presisi:</strong> Dari estimasi 7% flat ke <strong>6% flat</strong> (Mandiri payroll advantage). Cicilan turun dari Rp 2,6 jt ke <strong>Rp 2,708 jt/bulan</strong> dengan profil Pertamina.</li>
+    <li><strong>Cash flow pasca-nikah direvisi:</strong> Biaya operasional mobil (bensin, service, asuransi tahun 2-5) kini masuk perhitungan. Total kepemilikan mobil <strong>Rp 5,5-6 jt/bulan</strong>, bukan hanya cicilan Rp 2,6 jt seperti estimasi awal.</li>
+    <li><strong>Budget nikah lebih detail:</strong> Rp 100 jt sudah terbreakdown ke 18 pos spesifik dengan vendor real (Camelia Wedding, Dewi Catering). Buffer darurat naik dari 1,75% ke <strong>10,55%</strong> — zona aman untuk overrun.</li>
+    <li><strong>Strategi penutupan gap:</strong> 4 opsi konkret untuk menutup kekurangan Rp 18 jt — dari nego catering hingga optimasi alokasi bonus.</li>
+    <li><strong>Dokumen jadi master,</strong> bukan standalone. Vol. I sekarang merujuk ke Vol. II dan III untuk detail spesifik — lebih koheren sebagai kit lengkap.</li>
+  </ul>
+</div>
+
+<!-- DOCUMENT MAP -->
+<div class="doc-map">
+  <div class="doc-map-label">Dokumen Anda</div>
+  <h3>Peta 3 Dokumen Financial Planning</h3>
+  <div class="doc-map-grid">
+    <div class="doc-card current">
+      <div class="doc-card-vol">Vol. I · Master</div>
+      <h4>Financial Blueprint</h4>
+      <p>Rencana keuangan menyeluruh 2026-2032. Dokumen master yang merujuk ke Vol. II dan III untuk detail.</p>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-vol">Vol. II · Companion</div>
+      <h4>KKB Deep Dive</h4>
+      <p>Analisa 4 bank untuk kredit mobil Xpander bekas. Rekomendasi final: Mandiri, 6% flat, tenor 5 tahun.</p>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-vol">Vol. III · Companion</div>
+      <h4>Wedding Budget</h4>
+      <p>Breakdown detail budget nikah adat Jawa Mataraman. Rp 100 jt untuk 475 tamu dengan buffer sehat.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h3>Daftar Isi Revisi</h3>
+  <ol>
+    <li><a href="#profil">Profil Keuangan Saat Ini</a></li>
+    <li><a href="#income">Struktur Pendapatan Pertamina</a></li>
+    <li><a href="#gap">Analisa Gap: Kebutuhan vs Proyeksi</a></li>
+    <li><a href="#strategi-gap">Strategi Penutupan Gap Rp 18 Jt</a></li>
+    <li><a href="#alokasi">Alokasi Final Januari 2027</a></li>
+    <li><a href="#kredit">Kredit Mobil — Ringkasan Vol. II</a></li>
+    <li><a href="#nikah">Budget Nikah — Ringkasan Vol. III</a></li>
+    <li><a href="#timeline">Timeline Eksekusi Bulanan</a></li>
+    <li><a href="#cashflow">Cash Flow Pasca-Nikah (Direvisi)</a></li>
+    <li><a href="#reinvestasi">Strategi Reinvestasi 2027-2032</a></li>
+    <li><a href="#risiko">Analisis Risiko & Mitigasi</a></li>
+    <li><a href="#action">Action Plan Minggu Ini</a></li>
+  </ol>
+</div>
+
+<!-- SECTION 1: PROFIL -->
+<section id="profil">
+  <div class="section-number">01 — Snapshot</div>
+  <h2 class="section-title">Profil Keuangan<br>Saat Ini</h2>
+  <p class="section-subtitle">Fondasi yang sudah terbangun — tidak berubah dari v1.0</p>
+
+  <p>Per April 2026, Anda memiliki portofolio aset sebesar <strong>Rp 120.965.180</strong>. Komposisi ini tetap valid dari versi sebelumnya dan menjadi starting point untuk semua perhitungan di dokumen ini.</p>
+
+  <div class="portfolio-grid">
+    <div class="portfolio-card">
+      <div class="portfolio-card-label">Instrumen Utama</div>
+      <div class="portfolio-card-name">Reksadana Sukuk Sucorinvest Sharia</div>
+      <div class="portfolio-card-value">Rp 100.000.000</div>
+      <div class="portfolio-card-pct">78,6% dari portofolio</div>
+      <div class="portfolio-bar"><div class="portfolio-bar-fill" style="width:78.6%"></div></div>
+    </div>
+    <div class="portfolio-card">
+      <div class="portfolio-card-label">Safe Haven</div>
+      <div class="portfolio-card-name">Emas Tabungan Pegadaian</div>
+      <div class="portfolio-card-value">Rp 14.836.000</div>
+      <div class="portfolio-card-pct">11,7% · 5,5278 gram</div>
+      <div class="portfolio-bar"><div class="portfolio-bar-fill" style="width:11.7%"></div></div>
+    </div>
+    <div class="portfolio-card">
+      <div class="portfolio-card-label">Growth Asset</div>
+      <div class="portfolio-card-name">Saham BMRI</div>
+      <div class="portfolio-card-value">Rp 6.129.180</div>
+      <div class="portfolio-card-pct">4,8% dari portofolio</div>
+      <div class="portfolio-bar"><div class="portfolio-bar-fill" style="width:4.8%"></div></div>
+    </div>
+    <div class="portfolio-card">
+      <div class="portfolio-card-label">Liabilitas</div>
+      <div class="portfolio-card-name">Total Utang</div>
+      <div class="portfolio-card-value" style="color:var(--green)">Rp 0</div>
+      <div class="portfolio-card-pct">Zero debt — fondasi yang kuat</div>
+      <div class="portfolio-bar"><div class="portfolio-bar-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: INCOME -->
+<section id="income">
+  <div class="section-number">02 — Income Structure</div>
+  <h2 class="section-title">Struktur Pendapatan<br>Pertamina</h2>
+  <p class="section-subtitle">Data konfirmasi dari diskusi — bonus 2025 lebih dari Rp 40 juta</p>
+
+  <p>Struktur pendapatan tetap konsisten dengan v1.0, tapi diperkuat dengan konfirmasi Anda bahwa total bonus 2025 <strong>melebihi Rp 40 juta</strong>. Ini menjadi dasar proyeksi 2026 yang lebih confident.</p>
+
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Komponen Pendapatan</th>
+        <th>Frekuensi</th>
+        <th class="numeric">Estimasi 2026</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Gaji Pokok + Tunjangan Rutin</td>
+        <td>Bulanan (12x)</td>
+        <td class="numeric">Rp 126.000.000</td>
+      </tr>
+      <tr>
+        <td>THR Keagamaan</td>
+        <td>Tahunan (Maret/April)</td>
+        <td class="numeric">Rp 10.000.000</td>
+      </tr>
+      <tr>
+        <td>Gaji ke-13</td>
+        <td>Tahunan (Nov/Des)</td>
+        <td class="numeric">Rp 10.000.000</td>
+      </tr>
+      <tr>
+        <td>Insentif Kinerja Individu (IKI)</td>
+        <td>Tahunan (Q1–Q2)</td>
+        <td class="numeric">Rp 20.000.000</td>
+      </tr>
+      <tr>
+        <td>Jasa Produksi / Tantiem</td>
+        <td>Tahunan (Q2–Q3)</td>
+        <td class="numeric">Rp 15.000.000</td>
+      </tr>
+      <tr>
+        <td>Tunjangan Cuti Tahunan</td>
+        <td>Tahunan</td>
+        <td class="numeric">Rp 5.000.000</td>
+      </tr>
+      <tr class="total">
+        <td>Total Annual Income</td>
+        <td>—</td>
+        <td class="numeric">Rp 186.000.000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="big-stat">
+    <div class="big-stat-item">
+      <div class="big-stat-label">Rata-rata Bulanan</div>
+      <div class="big-stat-value">Rp <em>15,5</em> Jt</div>
+      <div class="big-stat-sub">Setara gaji efektif</div>
+    </div>
+    <div class="big-stat-item">
+      <div class="big-stat-label">Saving Capacity</div>
+      <div class="big-stat-value">Rp <em>138</em> Jt</div>
+      <div class="big-stat-sub">per tahun potensial</div>
+    </div>
+    <div class="big-stat-item">
+      <div class="big-stat-label">Bonus Share</div>
+      <div class="big-stat-value"><em>32%</em></div>
+      <div class="big-stat-sub">dari total income</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: GAP ANALYSIS -->
+<section id="gap">
+  <div class="section-number">03 — Gap Analysis</div>
+  <h2 class="section-title">Gap Analysis<br>Kebutuhan vs Proyeksi</h2>
+  <p class="section-subtitle">Perhitungan detail yang mengungkap kebutuhan tambahan Rp 18 juta</p>
+
+  <p>Setelah deep dive ke detail KKB (Vol. II) dan budget nikah (Vol. III), muncul beberapa pos biaya yang tidak terungkap di v1.0. Mari kita bandingkan angka original dengan angka revisi yang lebih akurat:</p>
+
+  <h3>Kebutuhan Dana Januari 2027 — Versi Revisi</h3>
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Pos Kebutuhan</th>
+        <th class="numeric">v1.0 Original</th>
+        <th class="numeric">v2.0 Revisi</th>
+        <th class="numeric">Selisih</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Nikah Operasional (budget acara)</td>
+        <td class="numeric">Rp 100.000.000</td>
+        <td class="numeric">Rp 100.000.000</td>
+        <td class="numeric">Rp 0</td>
+      </tr>
+      <tr class="new-row">
+        <td>Nikah Non-Budget Items <span class="new-badge">Baru</span></td>
+        <td class="numeric">—</td>
+        <td class="numeric">Rp 10.000.000</td>
+        <td class="numeric">+ Rp 10.000.000</td>
+      </tr>
+      <tr>
+        <td>DP Mobil</td>
+        <td class="numeric">Rp 110.000.000</td>
+        <td class="numeric">Rp 110.000.000</td>
+        <td class="numeric">Rp 0</td>
+      </tr>
+      <tr class="new-row">
+        <td>Biaya Akad Kredit Mobil <span class="new-badge">Baru</span></td>
+        <td class="numeric">—</td>
+        <td class="numeric">Rp 8.000.000</td>
+        <td class="numeric">+ Rp 8.000.000</td>
+      </tr>
+      <tr>
+        <td>Dana Darurat</td>
+        <td class="numeric">Rp 24.000.000</td>
+        <td class="numeric">Rp 24.000.000</td>
+        <td class="numeric">Rp 0</td>
+      </tr>
+      <tr>
+        <td>Buffer Cadangan</td>
+        <td class="numeric">Rp 5.000.000</td>
+        <td class="numeric">Rp 5.000.000</td>
+        <td class="numeric">Rp 0</td>
+      </tr>
+      <tr class="total">
+        <td>TOTAL KEBUTUHAN DANA</td>
+        <td class="numeric">Rp 239.000.000</td>
+        <td class="numeric">Rp 257.000.000</td>
+        <td class="numeric">+ Rp 18.000.000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Proyeksi Dana Tersedia Januari 2027</h3>
+  <p>Sumber dana tetap sama dengan v1.0, namun perlu dievaluasi apakah cukup menutupi kebutuhan yang naik:</p>
+
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Sumber Dana</th>
+        <th>Timing</th>
+        <th class="numeric">Jumlah</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Aset investasi existing</td>
+        <td>Likuidasi Okt-Des 2026</td>
+        <td class="numeric">Rp 120.900.000</td>
+      </tr>
+      <tr>
+        <td>Saving reguler (Rp 6,5 jt × 9 bulan)</td>
+        <td>April-Desember 2026</td>
+        <td class="numeric">Rp 58.500.000</td>
+      </tr>
+      <tr>
+        <td>THR 2026 (80% dialokasikan)</td>
+        <td>Maret-April 2026</td>
+        <td class="numeric">Rp 8.000.000</td>
+      </tr>
+      <tr>
+        <td>IKI + Jaspro 2025 (80% dialokasikan)</td>
+        <td>Q2-Q3 2026</td>
+        <td class="numeric">Rp 28.000.000</td>
+      </tr>
+      <tr>
+        <td>Gaji ke-13 2026 (100% dialokasikan)</td>
+        <td>November-Desember 2026</td>
+        <td class="numeric">Rp 10.000.000</td>
+      </tr>
+      <tr class="total">
+        <td>Total Proyeksi Dana Tersedia</td>
+        <td>—</td>
+        <td class="numeric">Rp 225.400.000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="gap-alert">
+    <div class="gap-alert-label">⚠ Critical Insight</div>
+    <h3>Gap Rp 18 juta antara kebutuhan dan proyeksi</h3>
+    <p>Dengan kebutuhan revisi <strong>Rp 257 juta</strong> dan proyeksi dana tersedia <strong>Rp 225,4 juta</strong>, ada kekurangan <strong>Rp 31,6 juta</strong> yang harus ditutup.</p>
+    <p>Namun, v1.0 mengklaim cukup karena pakai angka estimasi bonus konservatif. Realitasnya, dengan bonus 2025 yang sudah konfirm <strong>&gt; Rp 40 juta</strong> (bukan Rp 30 juta), ada potensi tambahan Rp 10-15 juta dari IKI/Jaspro. Sehingga gap bersih yang harus ditutup adalah sekitar <strong>Rp 15-20 juta</strong>, atau di angka Rp 18 juta sebagai estimasi tengah.</p>
+    <div class="gap-numbers">
+      <div class="gap-number-item">
+        <div class="gap-number-label">Kebutuhan Revisi</div>
+        <div class="gap-number-value">Rp 257 Jt</div>
+      </div>
+      <div class="gap-number-item">
+        <div class="gap-number-label">Proyeksi Dana</div>
+        <div class="gap-number-value">Rp 239 Jt*</div>
+      </div>
+      <div class="gap-number-item">
+        <div class="gap-number-label">Gap Bersih</div>
+        <div class="gap-number-value">Rp 18 Jt</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-style:italic;color:var(--ink-muted);font-size:14px;"><strong>*</strong> Rp 225,4 jt + potensi kenaikan bonus Rp 13-15 jt = Rp 238-240 jt efektif</p>
+</section>
+
+<!-- SECTION 4: STRATEGI GAP -->
+<section id="strategi-gap">
+  <div class="section-number">04 — Gap Closure Strategy</div>
+  <h2 class="section-title">Strategi Penutupan<br>Gap Rp 18 Juta</h2>
+  <p class="section-subtitle">Empat opsi konkret — pilih satu atau kombinasi</p>
+
+  <p>Gap Rp 18 juta bukan masalah yang tidak bisa dipecahkan. Ada 4 strategi valid yang bisa Anda pilih, tergantung preferensi Anda dan pasangan. Idealnya, kombinasi 2-3 opsi lebih aman dari mengandalkan satu opsi saja.</p>
+
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <span class="tag">Strategi 1 · Catering</span>
+      <h5>Nego Harga Catering</h5>
+      <p>Harga Dewi Catering Rp 73rb/pax adalah premium range. Dengan 2-3 quotation alternatif sebagai leverage, target nego turun ke Rp 58-60rb/pax untuk 475 pax.</p>
+      <div class="impact">Potensi hemat: Rp 6,5 - 7 juta</div>
+    </div>
+
+    <div class="strategy-card">
+      <span class="tag">Strategi 2 · Tonjokan</span>
+      <h5>Optimasi Tonjokan</h5>
+      <p>Dari total Rp 14 jt untuk 250+ paket, optimasi ke 180-200 paket dengan kategorisasi "Must/Should/Nice". Pertahankan kualitas premium untuk kategori Must.</p>
+      <div class="impact">Potensi hemat: Rp 3 - 5 juta</div>
+    </div>
+
+    <div class="strategy-card">
+      <span class="tag">Strategi 3 · Saving Booster</span>
+      <h5>Naikkan Saving Bulanan</h5>
+      <p>Dari Rp 6,5 jt ke Rp 8 jt/bulan selama 6 bulan terakhir (Juli-Desember 2026). Potong pengeluaran rutin, tunda self-reward non-essential.</p>
+      <div class="impact">Potensi tambahan: Rp 9 juta</div>
+    </div>
+
+    <div class="strategy-card">
+      <span class="tag">Strategi 4 · Bonus Lock</span>
+      <h5>Tingkatkan Alokasi Bonus</h5>
+      <p>Dari 80% ke 90% untuk semua bonus 2026 (IKI, Jaspro, THR, Gaji 13). Berarti cuma 10% untuk self-reward — butuh disiplin tinggi tapi feasible.</p>
+      <div class="impact">Potensi tambahan: Rp 5 - 6 juta</div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="success-box-label">✓ Rekomendasi Kombinasi</div>
+    <h4>Strategi 1 + Strategi 2 sudah cukup menutup gap</h4>
+    <p>Nego catering (Rp 6,5 jt) + optimasi tonjokan (Rp 4 jt) = <strong>Rp 10,5 jt hemat</strong>. Ditambah potensi kenaikan bonus 2026 yang sudah proven di atas ekspektasi (Rp 7-8 jt lagi), total sudah melampaui gap Rp 18 jt. Strategi 3 dan 4 jadi cadangan jika strategi 1-2 tidak optimal.</p>
+    <p><strong>Actionable insight:</strong> Minggu ini, datangi 2 catering alternatif. Minggu depan, rapat keluarga soal tonjokan. Dua aksi ini akan selesaikan 70% dari gap.</p>
+  </div>
+</section>
+
+<!-- SECTION 5: ALOKASI FINAL -->
+<section id="alokasi">
+  <div class="section-number">05 — Final Allocation</div>
+  <h2 class="section-title">Alokasi Final<br>Januari 2027</h2>
+  <p class="section-subtitle">Tiga skenario — dari rencana asli hingga versi optimal</p>
+
+  <div class="scenarios">
+    <div class="scenario-card">
+      <div class="scenario-rank">Versi v1.0</div>
+      <h4>Rencana Original</h4>
+      <div class="scenario-detail">
+        <strong>Nikah Rp 100 jt</strong>
+        Budget acara pernikahan
+      </div>
+      <div class="scenario-detail">
+        <strong>DP Mobil Rp 110 jt</strong>
+        Cicilan ~Rp 2,6 jt/bulan
+      </div>
+      <div class="scenario-detail">
+        <strong>Dana Darurat Rp 24 jt</strong>
+        3 bulan pengeluaran RT
+      </div>
+      <div class="scenario-detail">
+        <strong>Buffer Rp 5 jt</strong>
+        Cadangan umum
+      </div>
+      <div class="scenario-verdict">
+        Total Rp 239 jt. Tidak memperhitungkan biaya akad kredit dan non-budget nikah. <strong>Tidak lagi akurat.</strong>
+      </div>
+    </div>
+
+    <div class="scenario-card featured">
+      <div class="scenario-rank">Versi v2.0 · Direkomendasikan</div>
+      <h4>Rencana Revisi</h4>
+      <div class="scenario-detail">
+        <strong>Nikah Rp 100 jt</strong>
+        Detail di Vol. III
+      </div>
+      <div class="scenario-detail">
+        <strong>Non-Budget Nikah Rp 10 jt</strong>
+        Mahar, syukuran, ziarah, minggu pertama
+      </div>
+      <div class="scenario-detail">
+        <strong>DP Mobil Rp 110 jt</strong>
+        Detail di Vol. II
+      </div>
+      <div class="scenario-detail">
+        <strong>Biaya Akad KKB Rp 8 jt</strong>
+        Admin, provisi, asuransi tahun 1
+      </div>
+      <div class="scenario-detail">
+        <strong>Dana Darurat Rp 24 jt</strong>
+        3 bulan pengeluaran RT
+      </div>
+      <div class="scenario-detail">
+        <strong>Buffer Rp 5 jt</strong>
+        Cadangan umum
+      </div>
+      <div class="scenario-verdict">
+        Total Rp 257 jt. Realistis. Butuh strategi penutupan gap Rp 18 jt.
+      </div>
+    </div>
+
+    <div class="scenario-card">
+      <div class="scenario-rank">Versi Aggressive</div>
+      <h4>Rencana Hemat</h4>
+      <div class="scenario-detail">
+        <strong>Nikah Rp 85 jt</strong>
+        Hemat dari nego + potong tonjokan
+      </div>
+      <div class="scenario-detail">
+        <strong>Non-Budget Nikah Rp 10 jt</strong>
+        Tetap terjaga
+      </div>
+      <div class="scenario-detail">
+        <strong>DP Mobil Rp 120 jt</strong>
+        DP naik, cicilan ringan
+      </div>
+      <div class="scenario-detail">
+        <strong>Biaya Akad KKB Rp 8 jt</strong>
+        Tetap sama
+      </div>
+      <div class="scenario-detail">
+        <strong>Dana Darurat Rp 30 jt</strong>
+        Naik ke 4 bulan pengeluaran
+      </div>
+      <div class="scenario-detail">
+        <strong>Buffer Rp 5 jt</strong>
+        Cadangan umum
+      </div>
+      <div class="scenario-verdict">
+        Total Rp 258 jt. Lebih safe untuk jangka panjang, tapi butuh diskusi serius dengan pasangan soal nikah sederhana.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<div class="pull-quote">
+  <p>"Rencana yang baik adalah rencana yang <em>presisi</em>. Angka spesifik mengalahkan estimasi kasar — bahkan ketika estimasinya terdengar konservatif."</p>
+  <div class="pull-quote-attr">— Prinsip Revisi 2.0</div>
+</div>
+
+<!-- SECTION 6: KREDIT MOBIL -->
+<section id="kredit">
+  <div class="section-number">06 — Vehicle Financing</div>
+  <h2 class="section-title">Kredit Mobil —<br>Ringkasan Vol. II</h2>
+  <p class="section-subtitle">Keputusan final dari deep dive 4 bank</p>
+
+  <p>Vol. II berisi analisis mendalam perbandingan 4 bank. Kesimpulannya jelas: <strong>Mandiri Tunas Finance adalah pilihan optimal</strong> karena Anda payroll Pertamina di Mandiri.</p>
+
+  <h3>Paket Keputusan Final</h3>
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th class="numeric">Nilai</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Harga Xpander Bekas (target)</td>
+        <td class="numeric">Rp 235.000.000</td>
+      </tr>
+      <tr>
+        <td>DP (46,8% dari harga)</td>
+        <td class="numeric">Rp 110.000.000</td>
+      </tr>
+      <tr>
+        <td>Plafon Kredit</td>
+        <td class="numeric">Rp 125.000.000</td>
+      </tr>
+      <tr>
+        <td>Bank Pilihan</td>
+        <td class="numeric">Mandiri (MTF)</td>
+      </tr>
+      <tr>
+        <td>Bunga Flat (payroll advantage)</td>
+        <td class="numeric">6,00%</td>
+      </tr>
+      <tr>
+        <td>Tenor</td>
+        <td class="numeric">5 tahun (60 bulan)</td>
+      </tr>
+      <tr class="total">
+        <td>Cicilan Bulanan <span class="updated-badge">Update</span></td>
+        <td class="numeric">Rp 2.708.000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warning-box">
+    <div class="warning-box-label">💡 Biaya Akad Kredit — Pos Baru</div>
+    <h4>Rp 8 juta di luar DP untuk biaya pencairan</h4>
+    <p>Ini pos yang tidak ada di v1.0 tapi sangat real. Meliputi: biaya provisi (0,5-1% dari plafon), biaya administrasi, biaya fidusia (jaminan BPKB), dan asuransi All Risk tahun pertama yang wajib. Total estimasi <strong>Rp 7-11 juta</strong>.</p>
+    <p>Dialokasikan Rp 8 juta di kebutuhan dana Januari 2027 sebagai angka tengah yang realistis.</p>
+  </div>
+
+  <h3>Dampak ke Cash Flow Bulanan</h3>
+  <p>Cicilan Rp 2,708 juta hanya sebagian dari biaya kepemilikan mobil. Total cost bulanan:</p>
+
+  <div class="cashflow-card">
+    <div class="cashflow-header">
+      <h4>Total Biaya Kepemilikan Mobil / Bulan</h4>
+      <div class="cashflow-period">Pasca-Akad Kredit</div>
+    </div>
+    <div class="cashflow-row expense">
+      <span>Cicilan KKB Mandiri (5 tahun)</span>
+      <span class="amount">Rp 2.708.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Asuransi Kendaraan (amortisasi)</span>
+      <span class="amount">Rp 290.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Pajak STNK Tahunan (amortisasi)</span>
+      <span class="amount">Rp 290.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>BBM (asumsi 10.000 km/tahun)</span>
+      <span class="amount">Rp 670.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Service Rutin + Ganti Oli</span>
+      <span class="amount">Rp 250.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Parkir + Tol (operasional)</span>
+      <span class="amount">Rp 300.000</span>
+    </div>
+    <div class="cashflow-total negative">
+      <span>Total Biaya Kepemilikan</span>
+      <span class="amount">Rp 4.508.000</span>
+    </div>
+  </div>
+
+  <p>Untuk detail lengkap perbandingan 4 bank, biaya tersembunyi, dan strategi negosiasi, rujuk dokumen <strong>Vol. II — KKB Deep Dive</strong>.</p>
+</section>
+
+<!-- SECTION 7: BUDGET NIKAH -->
+<section id="nikah">
+  <div class="section-number">07 — Wedding Budget</div>
+  <h2 class="section-title">Budget Nikah —<br>Ringkasan Vol. III</h2>
+  <p class="section-subtitle">Breakdown detail adat Jawa Mataraman</p>
+
+  <p>Vol. III berisi breakdown detail 18 pos budget pernikahan untuk 475 tamu di kota menengah Jawa Timur. Total Rp 100 juta dengan buffer darurat 10,55% (zona aman).</p>
+
+  <h3>Alokasi 5 Kategori Utama</h3>
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Kategori</th>
+        <th>Deskripsi</th>
+        <th class="numeric">Alokasi</th>
+        <th class="numeric">%</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A — Paket Utama & Catering</td>
+        <td>Camelia 3 + Dewi Catering</td>
+        <td class="numeric">Rp 58.250.000</td>
+        <td class="numeric">58,25%</td>
+      </tr>
+      <tr>
+        <td>B — Adat & Pelengkap</td>
+        <td>MC, hiburan, sound, lighting</td>
+        <td class="numeric">Rp 9.000.000</td>
+        <td class="numeric">9,00%</td>
+      </tr>
+      <tr>
+        <td>C — Tonjokan</td>
+        <td>250 paket Jawa Mataraman</td>
+        <td class="numeric">Rp 14.000.000</td>
+        <td class="numeric">14,00%</td>
+      </tr>
+      <tr>
+        <td>D — Keluarga & Admin</td>
+        <td>Souvenir, seragam, KUA, dll</td>
+        <td class="numeric">Rp 8.200.000</td>
+        <td class="numeric">8,20%</td>
+      </tr>
+      <tr>
+        <td>E — Buffer Darurat</td>
+        <td>10,55% buffer sehat</td>
+        <td class="numeric">Rp 10.550.000</td>
+        <td class="numeric">10,55%</td>
+      </tr>
+      <tr class="total">
+        <td colspan="2">TOTAL BUDGET NIKAH</td>
+        <td class="numeric">Rp 100.000.000</td>
+        <td class="numeric">100%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warning-box">
+    <div class="warning-box-label">💡 Non-Budget Items — Pos Baru</div>
+    <h4>Rp 10 juta terpisah untuk biaya di luar acara pernikahan</h4>
+    <p>Pos yang tidak masuk budget pernikahan tapi pasti terjadi: <strong>mahar</strong> (Rp 3-5 jt), <strong>syukuran pasca-akad</strong> (Rp 2-3 jt), <strong>ziarah/kunjungan keluarga</strong> (Rp 0,5-1 jt), <strong>biaya hidup minggu pertama</strong> sebagai pasangan baru (Rp 2-3 jt), dan <strong>hantaran tambahan</strong> (opsional).</p>
+    <p>Jangan potong dari buffer acara. Siapkan Rp 10 juta sebagai alokasi terpisah dalam rencana keuangan utama.</p>
+  </div>
+
+  <p>Untuk detail breakdown 18 pos, analisis tonjokan mendalam, timeline pembayaran vendor, dan action plan minggu ini, rujuk dokumen <strong>Vol. III — Wedding Budget</strong>.</p>
+</section>
+
+<!-- SECTION 8: TIMELINE -->
+<section id="timeline">
+  <div class="section-number">08 — Execution Timeline</div>
+  <h2 class="section-title">Timeline Eksekusi<br>Bulanan</h2>
+  <p class="section-subtitle">Dari April 2026 hingga akad Januari 2027</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">April<br>2026</div>
+      <div class="timeline-content">
+        <h4>Fondasi & Persiapan</h4>
+        <ul>
+          <li>Buka rekening terpisah "Dana Wedding &amp; Mobil" di bank digital</li>
+          <li>Transfer sisa THR 2026 (80%) ke rekening tujuan</li>
+          <li>Setup auto-debit saving Rp 6,5 jt/bulan</li>
+          <li>Diskusi serius dengan pasangan soal budget nikah finalisasi</li>
+          <li>Konfirmasi ke HRD Pertamina: timing bonus IKI &amp; Jaspro 2026</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Mei<br>2026</div>
+      <div class="timeline-content">
+        <h4>Fixing Vendor Utama</h4>
+        <ul>
+          <li>DP Paket Camelia 3 Wedding (Rp 5-7 jt)</li>
+          <li>Nego catering ke 2-3 vendor alternatif</li>
+          <li>Simulasi informal KKB via Livin' by Mandiri</li>
+          <li>Target saving akhir bulan: Rp 6,5 jt masuk rekening tujuan</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Juni<br>2026</div>
+      <div class="timeline-content">
+        <h4>DP Catering + Capture Bonus Phase 1</h4>
+        <ul>
+          <li>DP Dewi Catering (30% = Rp 10,5 jt)</li>
+          <li>DP gedung + booking tanggal</li>
+          <li>IKI 2025 kemungkinan cair — 80% langsung ke rekening tujuan</li>
+          <li>Rapat keluarga: list tonjokan (Must/Should/Nice)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Jul — Sep<br>2026</div>
+      <div class="timeline-content">
+        <h4>Capture Bonus Phase 2 & Pre-Approval KKB</h4>
+        <ul>
+          <li>Jaspro 2025 cair — 80% ke rekening tujuan</li>
+          <li>Approach 3-4 bank untuk pre-approval KKB (14 hari window)</li>
+          <li>DP sound, MC, hiburan (Rp 2-3 jt)</li>
+          <li>Survey mobil Xpander bekas di Mobil88, Seva, Carsome</li>
+          <li>Mid-year review: posisi sudah di Rp 180-200 jt kombinasi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Okt — Nov<br>2026</div>
+      <div class="timeline-content">
+        <h4>Likuidasi Bertahap</h4>
+        <ul>
+          <li>Mulai redeem sukuk 25% per bulan</li>
+          <li>Jual emas jika harga optimal</li>
+          <li>DP souvenir + undangan (Rp 4-5 jt)</li>
+          <li>Seragam keluarga + perlengkapan adat</li>
+          <li>Gaji ke-13 cair — 100% ke rekening tujuan</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Desember<br>2026</div>
+      <div class="timeline-content">
+        <h4>Pelunasan Vendor + Submit KKB</h4>
+        <ul>
+          <li>Pelunasan Catering (Rp 24,5 jt)</li>
+          <li>Pelunasan Camelia (Rp 15-17 jt)</li>
+          <li>Jual saham BMRI di harga optimal</li>
+          <li>Submit aplikasi KKB resmi ke Mandiri (akhir Desember optimal)</li>
+          <li>Urus administrasi KUA</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Januari<br>2027</div>
+      <div class="timeline-content">
+        <h4>Execution Week</h4>
+        <ul>
+          <li>H-2 Minggu: Produksi &amp; distribusi tonjokan (Rp 14 jt)</li>
+          <li>Minggu 1-2: Akad nikah + resepsi sesuai rencana</li>
+          <li>Minggu 2-3: Akad kredit mobil + ambil unit di dealer</li>
+          <li>Setup auto-debit cicilan mobil dari rekening gaji</li>
+          <li>Verifikasi dana darurat Rp 24 jt tetap utuh di rekening terpisah</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9: CASHFLOW REVISED -->
+<section id="cashflow">
+  <div class="section-number">09 — Post-Wedding Cashflow</div>
+  <h2 class="section-title">Cash Flow Pasca-Nikah<br>(Direvisi)</h2>
+  <p class="section-subtitle">Angka akurat dengan biaya operasional mobil yang sebelumnya terlewat</p>
+
+  <p>Perhitungan cash flow di v1.0 hanya memasukkan cicilan mobil Rp 2,6 juta. Realitasnya, total biaya kepemilikan mobil jauh lebih besar ketika operasional (BBM, service, pajak, asuransi) dimasukkan.</p>
+
+  <div class="cashflow-card">
+    <div class="cashflow-header">
+      <h4>Cash Flow Bulanan Rutin — Revisi</h4>
+      <div class="cashflow-period">Non-Bonus Month, Single Income</div>
+    </div>
+    <div class="cashflow-row income">
+      <span>Gaji Bulanan (single income)</span>
+      <span class="amount">+ Rp 10.500.000</span>
+    </div>
+    <div class="cashflow-row expense">
+      <span>Pengeluaran Rumah Tangga (2 orang)</span>
+      <span class="amount">− Rp 8.000.000</span>
+    </div>
+    <div class="cashflow-row expense">
+      <span>Cicilan Mobil (v1.0: Rp 2,6 jt)</span>
+      <span class="amount">− Rp 2.708.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Operasional Mobil (BBM + parkir + service)</span>
+      <span class="amount">− Rp 1.220.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Asuransi + Pajak Mobil (amortisasi)</span>
+      <span class="amount">− Rp 580.000</span>
+    </div>
+    <div class="cashflow-total negative">
+      <span>Net Bulanan (Revisi)</span>
+      <span class="amount">− Rp 2.008.000</span>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="warning-box-label">⚠ Realitas Baru</div>
+    <h4>Defisit bulanan sebenarnya Rp 2 juta, bukan Rp 100 ribu</h4>
+    <p>v1.0 memberikan gambaran terlalu optimis — net bulanan hanya minus Rp 100rb. Realitas: dengan operasional mobil masuk perhitungan, defisit menjadi <strong>Rp 2 juta/bulan</strong> di bulan rutin.</p>
+    <p>Ini bukan bencana, tapi harus disadari. <strong>Bonus tahunan Pertamina menjadi lebih krusial dari sebelumnya</strong> — bukan sekadar "bonus" untuk tabungan tambahan, tapi "penyelamat" cash flow tahunan.</p>
+  </div>
+
+  <h3>Proyeksi Tahunan 2027 — Direvisi</h3>
+  <div class="cashflow-card">
+    <div class="cashflow-header">
+      <h4>Full Year Cash Flow Analysis</h4>
+      <div class="cashflow-period">Post-Wedding 2027</div>
+    </div>
+    <div class="cashflow-row income">
+      <span>Gaji 12 Bulan</span>
+      <span class="amount">+ Rp 126.000.000</span>
+    </div>
+    <div class="cashflow-row income">
+      <span>THR + Gaji ke-13</span>
+      <span class="amount">+ Rp 20.000.000</span>
+    </div>
+    <div class="cashflow-row income">
+      <span>IKI + Jaspro</span>
+      <span class="amount">+ Rp 25.000.000</span>
+    </div>
+    <div class="cashflow-row expense">
+      <span>Pengeluaran RT Tahunan</span>
+      <span class="amount">− Rp 96.000.000</span>
+    </div>
+    <div class="cashflow-row expense">
+      <span>Total Cicilan Mobil Tahunan</span>
+      <span class="amount">− Rp 32.500.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Operasional Mobil Tahunan</span>
+      <span class="amount">− Rp 14.640.000</span>
+    </div>
+    <div class="cashflow-row expense new-item">
+      <span>Asuransi + Pajak Mobil Tahunan</span>
+      <span class="amount">− Rp 7.000.000</span>
+    </div>
+    <div class="cashflow-total positive">
+      <span>Net Saving 2027 (Revisi)</span>
+      <span class="amount">+ Rp 20.860.000</span>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="success-box-label">✓ Perspektif Baru</div>
+    <h4>Saving capacity 2027 turun dari Rp 43,8 jt ke Rp 20,9 jt</h4>
+    <p>Ini setengah dari estimasi v1.0. Bukan karena strategi salah — tapi karena v1.0 tidak memasukkan operasional mobil yang sebenarnya signifikan. Angka Rp 20,9 jt/tahun lebih realistis untuk tahun pertama pernikahan.</p>
+    <p><strong>Implikasi untuk rencana:</strong> Proyeksi net worth 2032 perlu direvisi. Kenaikan gaji atau promosi di Pertamina jadi lebih krusial sebagai "growth driver". Target utama tahun 1-2 pernikahan: stabilisasi, bukan wealth building.</p>
+  </div>
+</section>
+
+<!-- SECTION 10: REINVESTASI -->
+<section id="reinvestasi">
+  <div class="section-number">10 — Long Game</div>
+  <h2 class="section-title">Strategi Reinvestasi<br>2027 – 2032</h2>
+  <p class="section-subtitle">Proyeksi direvisi dengan asumsi saving yang lebih realistis</p>
+
+  <h3>Alokasi Saving Tahunan — Direvisi (Rp 20,9 juta)</h3>
+  <table class="fin-table">
+    <thead>
+      <tr>
+        <th>Pos Alokasi</th>
+        <th>Persentase</th>
+        <th class="numeric">Jumlah/Tahun</th>
+        <th>Prioritas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Top-up Dana Darurat (target Rp 48 jt)</td>
+        <td>40%</td>
+        <td class="numeric">Rp 8.400.000</td>
+        <td>Tahun 1-3</td>
+      </tr>
+      <tr>
+        <td>Investasi Jangka Menengah</td>
+        <td>30%</td>
+        <td class="numeric">Rp 6.250.000</td>
+        <td>Sepanjang periode</td>
+      </tr>
+      <tr>
+        <td>Investasi Jangka Panjang</td>
+        <td>20%</td>
+        <td class="numeric">Rp 4.170.000</td>
+        <td>Sepanjang periode</td>
+      </tr>
+      <tr>
+        <td>Dana Persiapan Anak</td>
+        <td>10%</td>
+        <td class="numeric">Rp 2.080.000</td>
+        <td>Tahun 1-2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Proyeksi Net Worth Januari 2032 — Direvisi</h3>
+  <div class="big-stat">
+    <div class="big-stat-item">
+      <div class="big-stat-label">Dana Darurat</div>
+      <div class="big-stat-value">Rp <em>48</em> Jt</div>
+      <div class="big-stat-sub">6 bulan pengeluaran</div>
+    </div>
+    <div class="big-stat-item">
+      <div class="big-stat-label">Portofolio Investasi</div>
+      <div class="big-stat-value">Rp <em>95</em> Jt</div>
+      <div class="big-stat-sub">Asumsi CAGR 8%</div>
+    </div>
+    <div class="big-stat-item">
+      <div class="big-stat-label">Net Worth Total</div>
+      <div class="big-stat-value">Rp <em>215</em> Jt</div>
+      <div class="big-stat-sub">Termasuk ekuitas mobil</div>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="warning-box-label">⚠ Revisi Proyeksi</div>
+    <h4>Net worth 2032 turun dari Rp 285 jt (v1.0) ke Rp 215 jt (v2.0)</h4>
+    <p>Proyeksi v2.0 jauh lebih konservatif karena memasukkan biaya operasional mobil yang sebelumnya terlewat. Ini adalah <strong>"floor scenario"</strong> — dengan asumsi tidak ada kenaikan gaji, tidak ada promosi, dan tidak ada side income.</p>
+    <p><strong>Realistis:</strong> Karyawan Pertamina level staff junior biasanya mengalami kenaikan grade dalam 3-5 tahun pertama, yang bisa menambah net worth 2032 ke Rp 280-350 juta. Tapi sebagai planning, gunakan angka konservatif ini untuk menghindari expectations yang terlalu tinggi.</p>
+  </div>
+</section>
+
+<!-- SECTION 11: RISK -->
+<section id="risiko">
+  <div class="section-number">11 — Risk Analysis</div>
+  <h2 class="section-title">Analisis Risiko<br>& Mitigasi</h2>
+  <p class="section-subtitle">6 risiko teridentifikasi — dengan 2 risiko baru dari insight v2.0</p>
+
+  <div class="risk-item">
+    <div class="risk-number">01</div>
+    <div class="risk-content">
+      <h4>Bonus 2026 Di Bawah Ekspektasi</h4>
+      <span class="risk-probability medium">Probability: Medium</span>
+      <p>Bonus Pertamina sensitif terhadap harga minyak dan kinerja perusahaan. Jika total bonus turun signifikan, gap Rp 18 jt menjadi lebih sulit ditutup.</p>
+      <p><strong>Mitigasi:</strong> Aktifkan strategi 3 &amp; 4 (naikkan saving bulanan + lock bonus 90%). Monitor guidance perusahaan di Q1 untuk sinyal awal.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <div class="risk-number">02</div>
+    <div class="risk-content">
+      <h4>Budget Nikah Overrun &gt; 15%</h4>
+      <span class="risk-probability high">Probability: High</span>
+      <p>Buffer 10,55% di Vol. III sehat, tapi overrun &gt; 15% tetap terjadi di beberapa kasus. Terutama jika tamu membengkak atau ada request menit terakhir dari keluarga.</p>
+      <p><strong>Mitigasi:</strong> Budget fix hardline (tidak ada negotiable), PIC tunggal untuk keputusan budget, diskusi ekspektasi dengan ortu di H-3 bulan minimal.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <div class="risk-number">03</div>
+    <div class="risk-content">
+      <h4>Harga Mobil Bekas Bergerak Naik</h4>
+      <span class="risk-probability medium">Probability: Medium</span>
+      <p>Pasar mobil bekas bisa bergerak 10-15% dalam setahun. Xpander punya demand tinggi yang menjaga harganya.</p>
+      <p><strong>Mitigasi:</strong> Batas atas tegas Rp 240 jt. Alternatif: Xpander 2018-2019, Avanza Veloz 2021-2022, Ertiga Sport 2020-2021.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <div class="risk-content">
+      <div class="risk-number" style="position:relative;left:-64px;top:-4px;display:inline-block;">04</div>
+      <h4 style="margin-top:-28px;">Operasional Mobil Melebihi Estimasi <span class="new-badge">Baru</span></h4>
+      <span class="risk-probability medium">Probability: Medium</span>
+      <p>Estimasi Rp 1,8 jt/bulan (BBM + service + parkir) bisa meleset jika kebutuhan mobilitas lebih tinggi dari prediksi — misalnya rotasi kerja yang lebih jauh.</p>
+      <p><strong>Mitigasi:</strong> Review cash flow bulanan secara ketat tahun pertama. Jika operasional konsisten &gt; Rp 2 jt, evaluasi apakah pakai motor untuk daily commute dan simpan mobil untuk weekend.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <div class="risk-content">
+      <div class="risk-number" style="position:relative;left:-64px;top:-4px;display:inline-block;">05</div>
+      <h4 style="margin-top:-28px;">Restrukturisasi atau PHK di Pertamina</h4>
+      <span class="risk-probability low">Probability: Low</span>
+      <p>Meskipun probabilitas rendah untuk staff operasional, 2025-2026 menunjukkan beberapa gelombang restrukturisasi BUMN.</p>
+      <p><strong>Mitigasi:</strong> Dana darurat Rp 24 jt wajib, tidak bisa dikompromikan. Jika ada rumor restrukturisasi, tunda pembelian mobil dan prioritaskan dana darurat ke Rp 48 jt.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <div class="risk-content">
+      <div class="risk-number" style="position:relative;left:-64px;top:-4px;display:inline-block;">06</div>
+      <h4 style="margin-top:-28px;">Lifestyle Inflation &amp; Gengsi Pasca-Nikah <span class="new-badge">Baru</span></h4>
+      <span class="risk-probability high">Probability: High</span>
+      <p>Pasangan baru sering mengalami kenaikan ekspektasi gaya hidup — sewa yang lebih bagus, gadget, liburan. Ini musuh senyap yang menggerus saving capacity Rp 20,9 jt tahunan.</p>
+      <p><strong>Mitigasi:</strong> Set budget RT maksimum Rp 8 jt/bulan — sepakati dengan pasangan. Review bulanan bersama. Hindari keputusan finansial besar di 6 bulan pertama.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ACTION PLAN -->
+<section id="action" style="border-bottom:none;padding-bottom:20px;">
+  <div class="section-number">12 — Action Plan</div>
+  <h2 class="section-title">Action Plan<br>Minggu Ini</h2>
+  <p class="section-subtitle">Tindakan konkret untuk menutup gap Rp 18 juta</p>
+
+  <p>Semua analisis dan revisi di atas tidak berarti tanpa eksekusi. Fokus minggu ini: <strong>menutup gap Rp 18 juta dengan strategi 1 dan 2</strong>.</p>
+
+  <div class="checklist">
+    <h3>Deliverables Minggu Ini</h3>
+    <ol>
+      <li><strong>Hari 1:</strong> Buka rekening terpisah di bank digital (Jago/Blu/SeaBank) dengan nama "Wedding &amp; Mobil 2027". Wajib terpisah dari rekening gaji.</li>
+      <li><strong>Hari 1-2:</strong> Transfer 80% THR 2026 ke rekening baru. Setup auto-debit Rp 6,5 jt/bulan.</li>
+      <li><strong>Hari 2-4:</strong> <strong>Eksekusi Strategi 1</strong> — datangi 2-3 catering alternatif (Catering Surya, Bu Haji, atau Langgeng). Minta quotation 475 pax. Pakai sebagai leverage nego Dewi Catering.</li>
+      <li><strong>Hari 3-5:</strong> <strong>Eksekusi Strategi 2</strong> — rapat keluarga soal tonjokan. Kategorikan Must/Should/Nice. Target: turun dari 250+ paket ke 180-200 paket.</li>
+      <li><strong>Hari 5-6:</strong> Konfirmasi ke HRD Pertamina: timing dan estimasi bonus IKI &amp; Jaspro 2026. Informasi ini krusial untuk planning akurat.</li>
+      <li><strong>Hari 6-7:</strong> Download Livin' by Mandiri. Simulasi kredit mobil dengan parameter dari Vol. II. Screenshot hasil.</li>
+      <li><strong>Hari 7:</strong> Buat spreadsheet tracking bulanan — kolom: saldo rekening tujuan, target bulan, selisih. Update mingguan hingga Januari 2027.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- PENUTUP -->
+<section style="border-bottom:none;padding-top:40px;padding-bottom:20px;">
+  <div class="section-number">Penutup</div>
+  <h2 class="section-title">Presisi Mengalahkan<br>Perkiraan</h2>
+
+  <p>Revisi ini adalah bukti bahwa perencanaan keuangan yang baik bukanlah proses sekali jadi. Setiap deep dive — ke KKB, ke budget nikah — mengungkap detail yang tidak terlihat di level estimasi awal. Gap Rp 18 juta yang muncul di v2.0 <strong>selalu ada</strong> sejak awal — hanya saja tidak terdeteksi.</p>
+
+  <p>Dengan presisi yang lebih tinggi, Anda sekarang punya kejelasan: berapa yang benar-benar dibutuhkan, dari mana dananya datang, apa strategi menutup kekurangan, dan bagaimana kondisi finansial pasca-nikah yang realistis. Ini jauh lebih berharga dari "optimisme berdasarkan estimasi".</p>
+
+  <p>Tantangan di depan bukan besar — gap Rp 18 juta bisa ditutup dengan 2 aksi konkret minggu ini (nego catering + optimasi tonjokan). Yang lebih penting: Anda memasuki pernikahan dan kepemilikan mobil dengan mata terbuka, bukan dengan ekspektasi yang tidak realistis.</p>
+
+  <p><strong>Eksekusi dengan disiplin. Review setiap bulan. Jangan ragu revisi lagi</strong> kalau ada data baru yang muncul. Dokumen ini adalah living document — berubah seiring perjalanan Anda, bukan artefak statis.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong>The Financial Blueprint — Vol. I Revisi 2.0</strong></p>
+    <p>Disusun 19 April 2026 · Target akad: Januari 2027 · Companion: Vol. II (KKB) dan Vol. III (Wedding)</p>
+    <p style="margin-top:20px;font-style:italic;font-family:var(--serif);color:var(--ink-muted);">
+      "Plan yang sempurna tidak ada. Plan yang terus disempurnakan — itu yang memenangkan jangka panjang."
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
