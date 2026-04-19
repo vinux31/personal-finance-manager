@@ -76,7 +76,7 @@ export default function DashboardTab() {
         />
       </div>
 
-      {inv.totalNilai > 0 && <RencanaBar totalNilai={inv.totalNilai} />}
+      {inv.totalNilai > 0 && <RencanaBar totalNilai={inv.totalNilai} goals={goals} />}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Recent transactions */}
