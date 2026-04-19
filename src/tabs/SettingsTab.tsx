@@ -9,21 +9,20 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useThemeStore, type Theme } from '@/lib/theme'
-import { useDbStore } from '@/db/store'
-import { BookOpen, Info, FolderOpen, FilePlus2, LogOut } from 'lucide-react'
+import { useAuth } from '@/auth/useAuth'
+import { BookOpen, Info, LogOut } from 'lucide-react'
 import PanduanDialog from '@/components/PanduanDialog'
 import TentangDialog from '@/components/TentangDialog'
-import { toast } from 'sonner'
 
 export default function SettingsTab() {
   const { theme, setTheme } = useThemeStore()
-  const { handle, reset, openExisting, createNew } = useDbStore()
+  const { user, signOut } = useAuth()
   const [panduanOpen, setPanduanOpen] = useState(false)
   const [tentangOpen, setTentangOpen] = useState(false)
 
   return (
     <div className="max-w-2xl space-y-8">
-      {/* Tema */}
+      {/* Tampilan */}
       <section>
         <h2 className="mb-3 text-lg font-semibold">Tampilan</h2>
         <div className="grid max-w-sm gap-2">
@@ -41,46 +40,34 @@ export default function SettingsTab() {
         </div>
       </section>
 
-      {/* File data */}
+      {/* Akun */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">File Data</h2>
-        <div className="rounded-lg border bg-card p-4 text-sm">
-          <div className="text-muted-foreground">File aktif:</div>
-          <div className="mt-1 font-mono text-xs">
-            {handle?.name ?? '(tidak diketahui)'}
+        <h2 className="mb-3 text-lg font-semibold">Akun</h2>
+        <div className="rounded-lg border bg-card p-4">
+          <div className="flex items-center gap-3">
+            {user?.user_metadata?.avatar_url && (
+              <img
+                src={user.user_metadata.avatar_url}
+                alt="avatar"
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            )}
+            <div>
+              <div className="font-medium">{user?.user_metadata?.full_name ?? '—'}</div>
+              <div className="text-sm text-muted-foreground">{user?.email}</div>
+            </div>
           </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3">
           <Button
             variant="outline"
             onClick={async () => {
-              await openExisting()
-              toast.success('File data dibuka')
-            }}
-          >
-            <FolderOpen className="h-4 w-4" />
-            Ganti ke File Lain
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              if (!confirm('Buat file data baru? Data saat ini tidak dihapus — hanya aplikasi yang beralih file.')) return
-              await createNew()
-              toast.success('File data baru dibuat')
-            }}
-          >
-            <FilePlus2 className="h-4 w-4" />
-            Buat File Baru
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              if (!confirm('Putuskan koneksi ke file data? File tetap aman, Anda perlu pilih ulang saat buka lagi.')) return
-              await reset()
+              if (!confirm('Keluar dari aplikasi?')) return
+              await signOut()
             }}
           >
             <LogOut className="h-4 w-4" />
-            Lepas File Data
+            Keluar
           </Button>
         </div>
       </section>
