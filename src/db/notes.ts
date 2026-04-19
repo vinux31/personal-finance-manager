@@ -1,4 +1,4 @@
-import { all, one, run } from './repo'
+import { supabase } from '@/lib/supabase'
 
 export interface Note {
   id: number
@@ -15,42 +15,59 @@ export interface NoteInput {
   linked_transaction_id: number | null
 }
 
-export function listNotes(): Note[] {
-  return all<Note>(
-    `SELECT id, title, content, date, linked_transaction_id
-     FROM notes ORDER BY date DESC, id DESC`,
-  )
+export async function listNotes(): Promise<Note[]> {
+  const { data, error } = await supabase
+    .from('notes')
+    .select('id, title, content, date, linked_transaction_id')
+    .order('date', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data as Note[]
 }
 
-export function getNote(id: number): Note | null {
-  return one<Note>(
-    `SELECT id, title, content, date, linked_transaction_id
-     FROM notes WHERE id = ?`,
-    [id],
-  )
+export async function getNote(id: number): Promise<Note | null> {
+  const { data, error } = await supabase
+    .from('notes')
+    .select('id, title, content, date, linked_transaction_id')
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  return data as Note | null
 }
 
 export async function createNote(n: NoteInput): Promise<number> {
   if (!n.title.trim()) throw new Error('Judul wajib diisi')
   if (!n.content.trim()) throw new Error('Isi wajib diisi')
-  const { lastId } = await run(
-    `INSERT INTO notes (title, content, date, linked_transaction_id)
-     VALUES (?, ?, ?, ?)`,
-    [n.title, n.content, n.date, n.linked_transaction_id],
-  )
-  return lastId
+  const { data, error } = await supabase
+    .from('notes')
+    .insert({
+      title: n.title,
+      content: n.content,
+      date: n.date,
+      linked_transaction_id: n.linked_transaction_id,
+    })
+    .select('id')
+    .single()
+  if (error) throw error
+  return data.id
 }
 
 export async function updateNote(id: number, n: NoteInput): Promise<void> {
   if (!n.title.trim()) throw new Error('Judul wajib diisi')
   if (!n.content.trim()) throw new Error('Isi wajib diisi')
-  await run(
-    `UPDATE notes SET title = ?, content = ?, date = ?, linked_transaction_id = ?
-     WHERE id = ?`,
-    [n.title, n.content, n.date, n.linked_transaction_id, id],
-  )
+  const { error } = await supabase
+    .from('notes')
+    .update({
+      title: n.title,
+      content: n.content,
+      date: n.date,
+      linked_transaction_id: n.linked_transaction_id,
+    })
+    .eq('id', id)
+  if (error) throw error
 }
 
 export async function deleteNote(id: number): Promise<void> {
-  await run('DELETE FROM notes WHERE id = ?', [id])
+  const { error } = await supabase.from('notes').delete().eq('id', id)
+  if (error) throw error
 }

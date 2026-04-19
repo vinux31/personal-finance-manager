@@ -1,4 +1,4 @@
-import { all } from './repo'
+import { supabase } from '@/lib/supabase'
 
 export interface Category {
   id: number
@@ -6,12 +6,15 @@ export interface Category {
   type: 'income' | 'expense'
 }
 
-export function listCategories(type?: 'income' | 'expense'): Category[] {
-  if (type) {
-    return all<Category>(
-      'SELECT id, name, type FROM categories WHERE type = ? ORDER BY name',
-      [type],
-    )
-  }
-  return all<Category>('SELECT id, name, type FROM categories ORDER BY type, name')
+export async function listCategories(type?: 'income' | 'expense'): Promise<Category[]> {
+  let query = supabase
+    .from('categories')
+    .select('id, name, type')
+    .order('name')
+
+  if (type) query = query.eq('type', type)
+
+  const { data, error } = await query
+  if (error) throw error
+  return data as Category[]
 }

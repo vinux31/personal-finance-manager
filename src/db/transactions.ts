@@ -1,4 +1,4 @@
-import { all, run } from './repo'
+import { supabase } from '@/lib/supabase'
 
 export interface Transaction {
   id: number
@@ -17,37 +17,6 @@ export interface TransactionFilters {
   categoryId?: number | null
 }
 
-export function listTransactions(f: TransactionFilters = {}): Transaction[] {
-  const conds: string[] = []
-  const params: unknown[] = []
-  if (f.dateFrom) {
-    conds.push('t.date >= ?')
-    params.push(f.dateFrom)
-  }
-  if (f.dateTo) {
-    conds.push('t.date <= ?')
-    params.push(f.dateTo)
-  }
-  if (f.type) {
-    conds.push('t.type = ?')
-    params.push(f.type)
-  }
-  if (f.categoryId) {
-    conds.push('t.category_id = ?')
-    params.push(f.categoryId)
-  }
-  const where = conds.length ? ` WHERE ${conds.join(' AND ')}` : ''
-  return all<Transaction>(
-    `SELECT t.id, t.date, t.type, t.category_id, t.amount, t.note,
-            c.name AS category_name
-     FROM transactions t
-     JOIN categories c ON t.category_id = c.id
-     ${where}
-     ORDER BY t.date DESC, t.id DESC`,
-    params,
-  )
-}
-
 export interface TransactionInput {
   date: string
   type: 'income' | 'expense'
@@ -56,29 +25,48 @@ export interface TransactionInput {
   note: string | null
 }
 
-export async function createTransaction(t: TransactionInput): Promise<number> {
-  if (t.amount <= 0) throw new Error('Jumlah harus lebih dari 0')
-  const { lastId } = await run(
-    `INSERT INTO transactions (date, type, category_id, amount, note)
-     VALUES (?, ?, ?, ?, ?)`,
-    [t.date, t.type, t.category_id, t.amount, t.note],
-  )
-  return lastId
+export async function listTransactions(f: TransactionFilters = {}): Promise<Transaction[]> {
+  let query = supabase
+    .from('transactions')
+    .select('id, date, type, category_id, amount, note, categories(name)')
+    .order('date', { ascending: false })
+    .order('id', { ascending: false })
+
+  if (f.dateFrom) query = query.gte('date', f.dateFrom)
+  if (f.dateTo) query = query.lte('date', f.dateTo)
+  if (f.type) query = query.eq('type', f.type)
+  if (f.categoryId) query = query.eq('category_id', f.categoryId)
+
+  const { data, error } = await query
+  if (error) throw error
+
+  return (data ?? []).map((row: any) => ({
+    ...row,
+    category_name: row.categories?.name ?? '',
+  }))
 }
 
-export async function updateTransaction(
-  id: number,
-  t: TransactionInput,
-): Promise<void> {
+export async function createTransaction(t: TransactionInput): Promise<number> {
   if (t.amount <= 0) throw new Error('Jumlah harus lebih dari 0')
-  await run(
-    `UPDATE transactions
-     SET date = ?, type = ?, category_id = ?, amount = ?, note = ?
-     WHERE id = ?`,
-    [t.date, t.type, t.category_id, t.amount, t.note, id],
-  )
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert({ date: t.date, type: t.type, category_id: t.category_id, amount: t.amount, note: t.note })
+    .select('id')
+    .single()
+  if (error) throw error
+  return data.id
+}
+
+export async function updateTransaction(id: number, t: TransactionInput): Promise<void> {
+  if (t.amount <= 0) throw new Error('Jumlah harus lebih dari 0')
+  const { error } = await supabase
+    .from('transactions')
+    .update({ date: t.date, type: t.type, category_id: t.category_id, amount: t.amount, note: t.note })
+    .eq('id', id)
+  if (error) throw error
 }
 
 export async function deleteTransaction(id: number): Promise<void> {
-  await run('DELETE FROM transactions WHERE id = ?', [id])
+  const { error } = await supabase.from('transactions').delete().eq('id', id)
+  if (error) throw error
 }

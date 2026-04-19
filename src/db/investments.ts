@@ -1,4 +1,4 @@
-import { all, one, run } from './repo'
+import { supabase } from '@/lib/supabase'
 
 export interface Investment {
   id: number
@@ -28,112 +28,113 @@ export interface PriceHistoryEntry {
   date: string
 }
 
-export function listInvestments(): Investment[] {
-  return all<Investment>(
-    `SELECT id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note
-     FROM investments
-     ORDER BY buy_date DESC, id DESC`,
-  )
+export async function listInvestments(): Promise<Investment[]> {
+  const { data, error } = await supabase
+    .from('investments')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .order('buy_date', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data as Investment[]
 }
 
-export function getInvestment(id: number): Investment | null {
-  return one<Investment>(
-    `SELECT id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note
-     FROM investments WHERE id = ?`,
-    [id],
-  )
+export async function getInvestment(id: number): Promise<Investment | null> {
+  const { data, error } = await supabase
+    .from('investments')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  return data as Investment | null
 }
 
 export async function createInvestment(i: InvestmentInput): Promise<number> {
   if (i.quantity < 0) throw new Error('Kuantitas tidak boleh negatif')
   if (i.buy_price < 0) throw new Error('Harga beli tidak boleh negatif')
-  const { lastId } = await run(
-    `INSERT INTO investments (asset_type, asset_name, quantity, buy_price, current_price, buy_date, note)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [
-      i.asset_type,
-      i.asset_name,
-      i.quantity,
-      i.buy_price,
-      i.current_price,
-      i.buy_date,
-      i.note,
-    ],
-  )
+  const { data, error } = await supabase
+    .from('investments')
+    .insert({
+      asset_type: i.asset_type,
+      asset_name: i.asset_name,
+      quantity: i.quantity,
+      buy_price: i.buy_price,
+      current_price: i.current_price,
+      buy_date: i.buy_date,
+      note: i.note,
+    })
+    .select('id')
+    .single()
+  if (error) throw error
+
   if (i.current_price != null) {
-    await run(
-      `INSERT INTO price_history (investment_id, price, date) VALUES (?, ?, ?)`,
-      [lastId, i.current_price, i.buy_date],
-    )
+    await supabase.from('price_history').insert({
+      investment_id: data.id,
+      price: i.current_price,
+      date: i.buy_date,
+    })
   }
-  return lastId
+  return data.id
 }
 
-export async function updateInvestment(
-  id: number,
-  i: InvestmentInput,
-): Promise<void> {
+export async function updateInvestment(id: number, i: InvestmentInput): Promise<void> {
   if (i.quantity < 0) throw new Error('Kuantitas tidak boleh negatif')
   if (i.buy_price < 0) throw new Error('Harga beli tidak boleh negatif')
-  await run(
-    `UPDATE investments
-     SET asset_type = ?, asset_name = ?, quantity = ?, buy_price = ?,
-         current_price = ?, buy_date = ?, note = ?
-     WHERE id = ?`,
-    [
-      i.asset_type,
-      i.asset_name,
-      i.quantity,
-      i.buy_price,
-      i.current_price,
-      i.buy_date,
-      i.note,
-      id,
-    ],
-  )
+  const { error } = await supabase
+    .from('investments')
+    .update({
+      asset_type: i.asset_type,
+      asset_name: i.asset_name,
+      quantity: i.quantity,
+      buy_price: i.buy_price,
+      current_price: i.current_price,
+      buy_date: i.buy_date,
+      note: i.note,
+    })
+    .eq('id', id)
+  if (error) throw error
 }
 
 export async function deleteInvestment(id: number): Promise<void> {
-  await run('DELETE FROM price_history WHERE investment_id = ?', [id])
-  await run('DELETE FROM investments WHERE id = ?', [id])
+  const { error } = await supabase.from('investments').delete().eq('id', id)
+  if (error) throw error
 }
 
-export async function updatePrice(
-  investmentId: number,
-  price: number,
-  date: string,
-): Promise<void> {
+export async function updatePrice(investmentId: number, price: number, date: string): Promise<void> {
   if (price < 0) throw new Error('Harga tidak boleh negatif')
-  await run(
-    `UPDATE investments SET current_price = ? WHERE id = ?`,
-    [price, investmentId],
-  )
-  await run(
-    `INSERT INTO price_history (investment_id, price, date) VALUES (?, ?, ?)`,
-    [investmentId, price, date],
-  )
+  const { error: e1 } = await supabase
+    .from('investments')
+    .update({ current_price: price })
+    .eq('id', investmentId)
+  if (e1) throw e1
+
+  const { error: e2 } = await supabase
+    .from('price_history')
+    .insert({ investment_id: investmentId, price, date })
+  if (e2) throw e2
 }
 
-export function getPriceHistory(investmentId: number): PriceHistoryEntry[] {
-  return all<PriceHistoryEntry>(
-    `SELECT id, investment_id, price, date FROM price_history
-     WHERE investment_id = ? ORDER BY date DESC, id DESC`,
-    [investmentId],
-  )
+export async function getPriceHistory(investmentId: number): Promise<PriceHistoryEntry[]> {
+  const { data, error } = await supabase
+    .from('price_history')
+    .select('id, investment_id, price, date')
+    .eq('investment_id', investmentId)
+    .order('date', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data as PriceHistoryEntry[]
 }
 
-/** Distinct asset_type values seen in DB, plus defaults. */
-export function listAssetTypes(): string[] {
-  const rows = all<{ t: string }>(
-    `SELECT DISTINCT asset_type AS t FROM investments ORDER BY t`,
-  )
-  const existing = rows.map((r) => r.t)
+export async function listAssetTypes(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('investments')
+    .select('asset_type')
+  if (error) throw error
+  const existing = [...new Set((data ?? []).map((r: any) => r.asset_type as string))]
   const defaults = ['Saham', 'Reksadana', 'Emas', 'Kripto', 'Obligasi']
-  const merged = [...new Set([...defaults, ...existing])]
-  return merged
+  return [...new Set([...defaults, ...existing])].sort()
 }
 
-// Computation helpers
+// Computation helpers (pure, no network)
 export function costBasis(inv: Investment): number {
   return inv.quantity * inv.buy_price
 }
