@@ -6,7 +6,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { aggregateByPeriod, aggregateByCategory, type PeriodGranularity } from '@/db/reports'
+import { useAggregateByPeriod, useAggregateByCategory, type PeriodGranularity } from '@/queries/reports'
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { formatRupiah, todayISO } from '@/lib/format'
 
@@ -25,11 +25,11 @@ export default function ReportsTab() {
 
   const range = useMemo(() => resolvePreset(preset, from, to), [preset, from, to])
 
-  const periodData = useMemo(() => aggregateByPeriod(gran, range.from, range.to), [gran, range])
-  const expenseByCat = useMemo(() => aggregateByCategory('expense', range.from, range.to), [range])
-  const incomeByCat = useMemo(() => aggregateByCategory('income', range.from, range.to), [range])
-
+  const { data: periodData = [] } = useAggregateByPeriod(gran, range.from, range.to)
+  const { data: expenseByCat = [] } = useAggregateByCategory('expense', range.from, range.to)
+  const { data: incomeByCat = [] } = useAggregateByCategory('income', range.from, range.to)
   const { data: invRows = [] } = useInvestments()
+
   const investments = useMemo(() =>
     invRows.map((i) => ({ name: i.asset_name, modal: costBasis(i), nilai: currentValue(i) })),
     [invRows]
@@ -37,7 +37,7 @@ export default function ReportsTab() {
 
   const totals = useMemo(() => {
     let income = 0; let expense = 0
-    for (const p of periodData) { income += p.income; expense += p.expense }
+    for (const p of periodData) { income += Number(p.income); expense += Number(p.expense) }
     return { income, expense, net: income - expense }
   }, [periodData])
 
