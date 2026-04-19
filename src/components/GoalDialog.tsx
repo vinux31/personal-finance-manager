@@ -42,8 +42,8 @@ export default function GoalDialog({ open, onOpenChange, editing }: Props) {
     if (!open) return
     if (editing) {
       setName(editing.name)
-      setTargetStr(String(editing.target_amount))
-      setCurrentStr(String(editing.current_amount))
+      setTargetStr(String(Math.round(editing.target_amount)))
+      setCurrentStr(String(Math.round(editing.current_amount)))
       setTargetDate(editing.target_date ?? '')
       setStatus(editing.status)
     } else {

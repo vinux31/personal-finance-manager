@@ -53,8 +53,8 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       setCustomType('')
       setAssetName(editing.asset_name)
       setQtyStr(String(editing.quantity))
-      setBuyPriceStr(String(editing.buy_price))
-      setCurrentPriceStr(editing.current_price != null ? String(editing.current_price) : '')
+      setBuyPriceStr(String(Math.round(editing.buy_price)))
+      setCurrentPriceStr(editing.current_price != null ? String(Math.round(editing.current_price)) : '')
       setBuyDate(editing.buy_date)
       setNote(editing.note ?? '')
     } else {
@@ -72,10 +72,10 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const finalType = assetTypeSel === CUSTOM ? customType.trim() : assetTypeSel
-    const qty = Number(qtyStr)
+    const qty = Number(qtyStr.replace(',', '.'))
     const buyPrice = parseRupiah(buyPriceStr)
     const currentPrice = currentPriceStr.trim() === '' ? null : parseRupiah(currentPriceStr)
-    if (!finalType || !assetName.trim() || !buyDate || qty <= 0 || buyPrice <= 0) {
+    if (!finalType || !assetName.trim() || !buyDate || !(qty > 0) || buyPrice <= 0) {
       toast.error('Lengkapi jenis, nama, tanggal, kuantitas (> 0), harga beli (> 0)')
       return
     }

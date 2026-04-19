@@ -68,11 +68,12 @@ export async function createInvestment(i: InvestmentInput): Promise<number> {
   if (error) throw error
 
   if (i.current_price != null) {
-    await supabase.from('price_history').insert({
+    const { error: phError } = await supabase.from('price_history').insert({
       investment_id: data.id,
       price: i.current_price,
       date: i.buy_date,
     })
+    if (phError) throw phError
   }
   return data.id
 }

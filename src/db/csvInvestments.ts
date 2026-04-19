@@ -1,4 +1,5 @@
-import { listInvestments, createInvestment } from './investments'
+import { listInvestments } from './investments'
+import { supabase } from '@/lib/supabase'
 import { parseCsv, toCsv } from '@/lib/csv'
 
 const HEADER = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'current_price', 'buy_date', 'note']
@@ -43,6 +44,9 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
   }
 
   const result: ImportResult = { inserted: 0, skipped: 0, errors: [] }
+  type ValidRow = { asset_type: string; asset_name: string; quantity: number; buy_price: number; current_price: number | null; buy_date: string; note: string | null }
+  const valid: ValidRow[] = []
+
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i]
     if (r.every((f) => !f.trim())) continue
@@ -62,12 +66,29 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
       if (!(buy_price > 0)) throw new Error('buy_price harus > 0')
       if (!/^\d{4}-\d{2}-\d{2}$/.test(buy_date)) throw new Error('buy_date harus YYYY-MM-DD')
 
-      await createInvestment({ asset_type, asset_name, quantity, buy_price, current_price, buy_date, note: note || null })
-      result.inserted++
+      valid.push({ asset_type, asset_name, quantity, buy_price, current_price, buy_date, note: note || null })
     } catch (e) {
       result.skipped++
       result.errors.push({ line: i + 1, message: String(e instanceof Error ? e.message : e) })
     }
   }
+
+  if (valid.length > 0) {
+    const { data: inserted, error } = await supabase
+      .from('investments')
+      .insert(valid)
+      .select('id, buy_date, current_price')
+    if (error) throw error
+    result.inserted = valid.length
+
+    const priceRows = (inserted ?? [])
+      .filter((inv: any) => inv.current_price != null)
+      .map((inv: any) => ({ investment_id: inv.id, price: inv.current_price, date: inv.buy_date }))
+    if (priceRows.length > 0) {
+      const { error: phError } = await supabase.from('price_history').insert(priceRows)
+      if (phError) throw phError
+    }
+  }
+
   return result
 }
