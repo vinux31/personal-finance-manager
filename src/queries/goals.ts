@@ -6,6 +6,7 @@ import {
   updateGoal,
   deleteGoal,
   addMoneyToGoal,
+  withdrawFromGoal,
   goalProgress,
   type Goal,
   type GoalInput,
@@ -66,6 +67,19 @@ export function useAddMoneyToGoal() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Dana berhasil ditambahkan')
+    },
+    onError: (e) => toast.error(mapSupabaseError(e)),
+  })
+}
+
+export function useWithdrawFromGoal() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, amount, goal }: { id: number; amount: number; goal: Goal }) =>
+      withdrawFromGoal(id, amount, goal),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['goals'] })
+      toast.success('Dana berhasil ditarik')
     },
     onError: (e) => toast.error(mapSupabaseError(e)),
   })
