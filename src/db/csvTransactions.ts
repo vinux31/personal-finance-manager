@@ -1,4 +1,5 @@
-import { listTransactions, createTransaction } from './transactions'
+import { listTransactions } from './transactions'
+import { supabase } from '@/lib/supabase'
 import { listCategories } from './categories'
 import { parseCsv, toCsv } from '@/lib/csv'
 
@@ -45,14 +46,16 @@ export async function importTransactionsCsv(text: string): Promise<ImportResult>
   }
 
   const result: ImportResult = { inserted: 0, skipped: 0, errors: [] }
+  const valid: Array<{ date: string; type: 'income' | 'expense'; category_id: number; amount: number; note: string | null }> = []
 
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i]
+    if (r.every((f) => !f.trim())) continue
     try {
       const date = (r[col.date] ?? '').trim()
       const type = (r[col.type] ?? '').trim().toLowerCase()
       const categoryName = (r[col.category] ?? '').trim()
-      const amountStr = (r[col.amount] ?? '').replace(/[^\d.-]/g, '')
+      const amountStr = (r[col.amount] ?? '').replace(/[^\d]/g, '')
       const note = col.note >= 0 ? (r[col.note] ?? '').trim() : ''
 
       if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Format tanggal harus YYYY-MM-DD')
@@ -64,12 +67,18 @@ export async function importTransactionsCsv(text: string): Promise<ImportResult>
       const catId = catIndex.get(key)
       if (!catId) throw new Error(`Kategori tidak ditemukan: ${categoryName} (${type})`)
 
-      await createTransaction({ date, type: type as 'income' | 'expense', category_id: catId, amount, note: note || null })
-      result.inserted++
+      valid.push({ date, type: type as 'income' | 'expense', category_id: catId, amount, note: note || null })
     } catch (e) {
       result.skipped++
       result.errors.push({ line: i + 1, message: String(e instanceof Error ? e.message : e) })
     }
   }
+
+  if (valid.length > 0) {
+    const { error } = await supabase.from('transactions').insert(valid)
+    if (error) throw error
+    result.inserted = valid.length
+  }
+
   return result
 }

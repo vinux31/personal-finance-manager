@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line,
+  PieChart, Pie, Cell,
 } from 'recharts'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -112,7 +112,7 @@ export default function ReportsTab() {
           {expenseByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={expenseByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { name?: string }).name ?? '')}>
+                <Pie data={expenseByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { category?: string }).category ?? '')}>
                   {expenseByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
@@ -125,7 +125,7 @@ export default function ReportsTab() {
           {incomeByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={incomeByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { name?: string }).name ?? '')}>
+                <Pie data={incomeByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { category?: string }).category ?? '')}>
                   {incomeByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
@@ -138,15 +138,15 @@ export default function ReportsTab() {
       <Panel title="Kinerja Investasi">
         {investments.length === 0 ? <EmptyChart text="Belum ada investasi untuk ditampilkan." /> : (
           <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={investments}>
+            <BarChart data={investments}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis tickFormatter={shortRupiah} />
               <Tooltip formatter={(v) => formatRupiah(Number(v))} />
               <Legend />
-              <Line type="monotone" dataKey="modal" name="Modal" stroke="#64748b" />
-              <Line type="monotone" dataKey="nilai" name="Nilai Kini" stroke="#0ea5e9" />
-            </LineChart>
+              <Bar dataKey="modal" name="Modal" fill="#64748b" />
+              <Bar dataKey="nilai" name="Nilai Kini" fill="#0ea5e9" />
+            </BarChart>
           </ResponsiveContainer>
         )}
       </Panel>

@@ -45,13 +45,14 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
   const result: ImportResult = { inserted: 0, skipped: 0, errors: [] }
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i]
+    if (r.every((f) => !f.trim())) continue
     try {
       const asset_type = (r[col.asset_type] ?? '').trim()
       const asset_name = (r[col.asset_name] ?? '').trim()
-      const quantity = Number((r[col.quantity] ?? '').replace(/[^\d.-]/g, ''))
-      const buy_price = Number((r[col.buy_price] ?? '').replace(/[^\d.-]/g, ''))
+      const quantity = Number((r[col.quantity] ?? '').replace(',', '.').replace(/[^\d.]/g, ''))
+      const buy_price = Number((r[col.buy_price] ?? '').replace(/[^\d]/g, ''))
       const cpStr = col.current_price >= 0 ? (r[col.current_price] ?? '').trim() : ''
-      const current_price = cpStr === '' ? null : Number(cpStr.replace(/[^\d.-]/g, ''))
+      const current_price = cpStr === '' ? null : Number(cpStr.replace(/[^\d]/g, ''))
       const buy_date = (r[col.buy_date] ?? '').trim()
       const note = col.note >= 0 ? (r[col.note] ?? '').trim() : ''
 

@@ -10,7 +10,7 @@ export function formatRupiah(n: number): string {
 }
 
 export function parseRupiah(s: string): number {
-  const cleaned = s.replace(/[^\d-]/g, '')
+  const cleaned = s.replace(/[^\d]/g, '')
   return cleaned === '' ? 0 : Number(cleaned)
 }
 
@@ -24,8 +24,9 @@ export function todayISO(): string {
 
 export function formatDateID(iso: string): string {
   if (!iso) return ''
-  const d = new Date(iso)
-  return d.toLocaleDateString('id-ID', {
+  const [y, m, d] = iso.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  return date.toLocaleDateString('id-ID', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

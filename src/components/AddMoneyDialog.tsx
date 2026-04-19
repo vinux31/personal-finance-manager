@@ -38,9 +38,8 @@ export default function AddMoneyDialog({ open, onOpenChange, goal }: Props) {
       return
     }
     try {
-      await addMoney.mutateAsync({ id: goal.id, amount })
-      const remaining = goal.target_amount - (goal.current_amount + amount)
-      if (remaining <= 0) toast.success('Selamat! Goal tercapai 🎉')
+      const result = await addMoney.mutateAsync({ id: goal.id, amount })
+      if (result?.status === 'completed') toast.success('Selamat! Goal tercapai 🎉')
       onOpenChange(false)
     } catch {
       // error toast handled by mutation hook

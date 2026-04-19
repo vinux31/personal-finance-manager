@@ -39,6 +39,7 @@ export function usePriceHistory(investmentId: number) {
   return useQuery({
     queryKey: ['price-history', investmentId],
     queryFn: () => getPriceHistory(investmentId),
+    enabled: investmentId > 0,
   })
 }
 

@@ -30,7 +30,7 @@ export default function PriceUpdateDialog({ open, onOpenChange, investment }: Pr
 
   useEffect(() => {
     if (!open || !investment) return
-    setPriceStr(investment.current_price != null ? String(investment.current_price) : '')
+    setPriceStr(investment.current_price != null ? String(Math.round(investment.current_price)) : '')
     setDate(todayISO())
   }, [open, investment])
 

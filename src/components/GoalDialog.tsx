@@ -63,6 +63,10 @@ export default function GoalDialog({ open, onOpenChange, editing }: Props) {
       toast.error('Nama dan target (> 0) wajib diisi')
       return
     }
+    if (current > target) {
+      toast.error('Dana terkumpul tidak boleh melebihi target')
+      return
+    }
     const payload = {
       name: name.trim(),
       target_amount: target,

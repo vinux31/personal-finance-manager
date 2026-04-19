@@ -20,7 +20,7 @@ export default function DashboardTab() {
   const { data: periodData = [] } = useAggregateByPeriod('month', monthStart, today)
   const { data: invRows = [] } = useInvestments()
   const { data: goals = [] } = useGoals()
-  const { data: allTransactions = [] } = useTransactions()
+  const { data: recentTx = [] } = useTransactions({ limit: 5 })
 
   const monthly = useMemo(() => {
     let income = 0; let expense = 0
@@ -43,8 +43,6 @@ export default function DashboardTab() {
       .slice(0, 4),
     [goals]
   )
-
-  const recentTx = useMemo(() => allTransactions.slice(0, 5), [allTransactions])
 
   return (
     <div className="space-y-6">
@@ -88,8 +86,8 @@ export default function DashboardTab() {
                   <li key={r.id} className="flex items-center gap-3 py-2.5">
                     <span className={isIncome ? 'text-emerald-600' : 'text-red-500'}>
                       {isIncome
-                        ? <ArrowDownCircle className="h-4 w-4" />
-                        : <ArrowUpCircle className="h-4 w-4" />}
+                        ? <ArrowUpCircle className="h-4 w-4" />
+                        : <ArrowDownCircle className="h-4 w-4" />}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{r.category_name}</div>

@@ -51,6 +51,7 @@ export async function getInvestment(id: number): Promise<Investment | null> {
 export async function createInvestment(i: InvestmentInput): Promise<number> {
   if (i.quantity < 0) throw new Error('Kuantitas tidak boleh negatif')
   if (i.buy_price < 0) throw new Error('Harga beli tidak boleh negatif')
+  if (i.current_price !== null && i.current_price < 0) throw new Error('Harga saat ini tidak boleh negatif')
   const { data, error } = await supabase
     .from('investments')
     .insert({
@@ -79,6 +80,7 @@ export async function createInvestment(i: InvestmentInput): Promise<number> {
 export async function updateInvestment(id: number, i: InvestmentInput): Promise<void> {
   if (i.quantity < 0) throw new Error('Kuantitas tidak boleh negatif')
   if (i.buy_price < 0) throw new Error('Harga beli tidak boleh negatif')
+  if (i.current_price !== null && i.current_price < 0) throw new Error('Harga saat ini tidak boleh negatif')
   const { error } = await supabase
     .from('investments')
     .update({

@@ -62,8 +62,12 @@ export default function TransactionDialog({ open, onOpenChange, editing }: Props
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const amount = parseRupiah(amountStr)
-    if (!date || !categoryId || amount <= 0) {
-      toast.error('Lengkapi tanggal, kategori, dan jumlah (> 0)')
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      toast.error('Format tanggal tidak valid')
+      return
+    }
+    if (!categoryId || amount <= 0) {
+      toast.error('Lengkapi kategori dan jumlah (> 0)')
       return
     }
     const payload = {

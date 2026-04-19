@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTransactions, useDeleteTransaction, type TransactionFilters, type Transaction } from '@/queries/transactions'
 import { useCategories } from '@/queries/categories'
 import { Button } from '@/components/ui/button'
@@ -33,6 +34,7 @@ export default function TransactionsTab() {
   const [filters, setFilters] = useState<TransactionFilters>({})
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
+  const qc = useQueryClient()
 
   const { data: rows = [], isLoading } = useTransactions(filters)
   const { data: categories = [] } = useCategories()
@@ -108,7 +110,10 @@ export default function TransactionsTab() {
             if (!text) return
             try {
               const r = await importTransactionsCsv(text)
-              if (r.inserted > 0) toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+              if (r.inserted > 0) {
+                await qc.invalidateQueries({ queryKey: ['transactions'] })
+                toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+              }
               if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
             } catch (err) {
               toast.error(String(err instanceof Error ? err.message : err))

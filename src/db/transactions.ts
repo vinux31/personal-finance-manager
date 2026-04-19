@@ -15,6 +15,7 @@ export interface TransactionFilters {
   dateTo?: string
   type?: 'income' | 'expense' | ''
   categoryId?: number | null
+  limit?: number
 }
 
 export interface TransactionInput {
@@ -35,7 +36,8 @@ export async function listTransactions(f: TransactionFilters = {}): Promise<Tran
   if (f.dateFrom) query = query.gte('date', f.dateFrom)
   if (f.dateTo) query = query.lte('date', f.dateTo)
   if (f.type) query = query.eq('type', f.type)
-  if (f.categoryId) query = query.eq('category_id', f.categoryId)
+  if (f.categoryId != null) query = query.eq('category_id', f.categoryId)
+  if (f.limit) query = query.limit(f.limit)
 
   const { data, error } = await query
   if (error) throw error

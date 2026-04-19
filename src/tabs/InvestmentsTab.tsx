@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useInvestments, useDeleteInvestment, costBasis, currentValue, gainLoss, gainLossPercent, type Investment } from '@/queries/investments'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,6 +19,7 @@ export default function InvestmentsTab() {
   const [editing, setEditing] = useState<Investment | null>(null)
   const [priceOpen, setPriceOpen] = useState(false)
   const [priceFor, setPriceFor] = useState<Investment | null>(null)
+  const qc = useQueryClient()
 
   const { data: rows = [], isLoading } = useInvestments()
   const deleteInvestment = useDeleteInvestment()
@@ -56,7 +58,11 @@ export default function InvestmentsTab() {
           if (!text) return
           try {
             const r = await importInvestmentsCsv(text)
-            if (r.inserted > 0) toast.success(`${r.inserted} investasi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+            if (r.inserted > 0) {
+              await qc.invalidateQueries({ queryKey: ['investments'] })
+              await qc.invalidateQueries({ queryKey: ['asset-types'] })
+              toast.success(`${r.inserted} investasi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+            }
             if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
           } catch (err) {
             toast.error(String(err instanceof Error ? err.message : err))

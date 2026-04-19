@@ -79,17 +79,11 @@ export async function deleteGoal(id: number): Promise<void> {
   if (error) throw error
 }
 
-export async function addMoneyToGoal(id: number, amount: number): Promise<void> {
+export async function addMoneyToGoal(id: number, amount: number): Promise<{ current_amount: number; status: GoalStatus }> {
   if (amount <= 0) throw new Error('Jumlah harus > 0')
-  const goal = await getGoal(id)
-  if (!goal) throw new Error('Goal tidak ditemukan')
-  const newAmount = goal.current_amount + amount
-  const newStatus: GoalStatus = newAmount >= goal.target_amount ? 'completed' : goal.status
-  const { error } = await supabase
-    .from('goals')
-    .update({ current_amount: newAmount, status: newStatus })
-    .eq('id', id)
+  const { data, error } = await supabase.rpc('add_money_to_goal', { p_id: id, p_amount: amount })
   if (error) throw error
+  return data[0] as { current_amount: number; status: GoalStatus }
 }
 
 export function goalProgress(g: Goal): number {
