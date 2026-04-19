@@ -121,7 +121,6 @@ export default function GoalsTab() {
                     variant="outline"
                     size="sm"
                     onClick={() => { setAddMoneyFor(g); setAddMoneyOpen(true) }}
-                    disabled={g.status === 'completed'}
                   >
                     <PiggyBank className="h-4 w-4" />Tambah Uang
                   </Button>
