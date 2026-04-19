@@ -95,7 +95,7 @@ INSERT INTO categories (name, type, icon) VALUES
   ('Jaspro / Tantiem',       'income', '🏭'),
   ('Gaji ke-13',             'income', '💵'),
   ('Tunjangan Cuti',         'income', '🏖️')
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name, type) DO NOTHING;
 ```
 
 Idempotent — aman dijalankan ulang.
@@ -113,15 +113,16 @@ Idempotent — aman dijalankan ulang.
 4. Hook dipanggil dari `DashboardTab` — hanya saat tab Dashboard dibuka
 
 ```ts
-export function useRencanaInit(queryClient: QueryClient) {
+export function useRencanaInit() {
+  const qc = useQueryClient()
   useEffect(() => {
     if (localStorage.getItem('rencana_seeded')) return
     Promise.all([seedRencanaGoals(), seedRencanaInvestments()])
       .then(() => {
         localStorage.setItem('rencana_seeded', '1')
         // Invalidate agar UI langsung refresh setelah seed
-        queryClient.invalidateQueries({ queryKey: ['goals'] })
-        queryClient.invalidateQueries({ queryKey: ['investments'] })
+        qc.invalidateQueries({ queryKey: ['goals'] })
+        qc.invalidateQueries({ queryKey: ['investments'] })
       })
       .catch(console.error)
   }, [])
