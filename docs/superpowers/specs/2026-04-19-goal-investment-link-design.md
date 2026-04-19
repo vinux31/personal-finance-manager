@@ -93,9 +93,22 @@ deleteGoalInvestment(goalId: number, investmentId: number): Promise<void>
 ### File Baru: `src/queries/goalInvestments.ts`
 
 ```ts
-useGoalInvestments(goalId: number)    // query key: ['goal-investments', goalId]
-useUpsertGoalInvestment()             // onSuccess: invalidate ['goal-investments', goalId]
-useDeleteGoalInvestment()             // onSuccess: invalidate ['goal-investments', goalId]
+useGoalInvestments()       // fetch semua — query key: ['goal-investments']
+                           // GoalsTab filter per goal: allocs.filter(a => a.goal_id === g.id)
+useUpsertGoalInvestment()  // onSuccess: invalidate ['goal-investments']
+useDeleteGoalInvestment()  // onSuccess: invalidate ['goal-investments']
+```
+
+Satu query untuk semua alokasi, dipakai di GoalsTab sekaligus. Lebih efisien dari N query per goal.
+
+### Upsert Detail
+
+```sql
+-- Di db layer, gunakan ON CONFLICT untuk atomic upsert:
+INSERT INTO goal_investments (goal_id, investment_id, allocation_pct)
+VALUES ($1, $2, $3)
+ON CONFLICT (goal_id, investment_id)
+DO UPDATE SET allocation_pct = EXCLUDED.allocation_pct
 ```
 
 ### Cache Invalidation
