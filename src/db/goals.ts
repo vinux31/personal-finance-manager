@@ -92,6 +92,25 @@ export function goalProgress(g: Goal): number {
   return Math.min(100, (g.current_amount / g.target_amount) * 100)
 }
 
+export async function withdrawFromGoal(
+  id: number,
+  amount: number,
+  goal: Goal
+): Promise<void> {
+  if (amount <= 0) throw new Error('Jumlah harus > 0')
+  const newAmount = goal.current_amount - amount
+  if (newAmount < 0) throw new Error('Dana tidak cukup')
+  const newStatus: GoalStatus =
+    goal.status === 'completed' && newAmount < goal.target_amount
+      ? 'active'
+      : goal.status
+  const { error } = await supabase
+    .from('goals')
+    .update({ current_amount: newAmount, status: newStatus })
+    .eq('id', id)
+  if (error) throw error
+}
+
 const RENCANA_GOALS: GoalInput[] = [
   { name: RENCANA_GOAL_NAMES[0], target_amount: 100_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
   { name: RENCANA_GOAL_NAMES[1], target_amount: 118_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
