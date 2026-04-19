@@ -10,27 +10,25 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { createNote, updateNote, type Note } from '@/db/notes'
+import { type Note } from '@/queries/notes'
+import { useCreateNote, useUpdateNote } from '@/queries/notes'
 import { todayISO } from '@/lib/format'
 import { toast } from 'sonner'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSaved: () => void
   editing?: Note | null
 }
 
-export default function NoteDialog({
-  open,
-  onOpenChange,
-  onSaved,
-  editing,
-}: Props) {
+export default function NoteDialog({ open, onOpenChange, editing }: Props) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [date, setDate] = useState(todayISO())
-  const [saving, setSaving] = useState(false)
+
+  const create = useCreateNote()
+  const update = useUpdateNote()
+  const saving = create.isPending || update.isPending
 
   useEffect(() => {
     if (!open) return
@@ -51,27 +49,21 @@ export default function NoteDialog({
       toast.error('Judul dan isi wajib diisi')
       return
     }
-    setSaving(true)
+    const payload = {
+      title: title.trim(),
+      content: content.trim(),
+      date,
+      linked_transaction_id: editing?.linked_transaction_id ?? null,
+    }
     try {
-      const payload = {
-        title: title.trim(),
-        content: content.trim(),
-        date,
-        linked_transaction_id: editing?.linked_transaction_id ?? null,
-      }
       if (editing) {
-        await updateNote(editing.id, payload)
-        toast.success('Catatan diperbarui')
+        await update.mutateAsync({ id: editing.id, input: payload })
       } else {
-        await createNote(payload)
-        toast.success('Catatan ditambahkan')
+        await create.mutateAsync(payload)
       }
-      onSaved()
       onOpenChange(false)
-    } catch (err) {
-      toast.error(String(err instanceof Error ? err.message : err))
-    } finally {
-      setSaving(false)
+    } catch {
+      // error toast handled by mutation hook
     }
   }
 
@@ -86,46 +78,21 @@ export default function NoteDialog({
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="n-title">Judul</Label>
-              <Input
-                id="n-title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+              <Input id="n-title" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="n-date">Tanggal</Label>
-              <Input
-                id="n-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
+              <Input id="n-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="n-content">Isi</Label>
-              <Textarea
-                id="n-content"
-                rows={6}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
+              <Textarea id="n-content" rows={6} value={content} onChange={(e) => setContent(e.target.value)} />
             </div>
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={saving}
-            >
-              Batal
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? 'Menyimpan…' : 'Simpan'}
-            </Button>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Batal</Button>
+            <Button type="submit" disabled={saving}>{saving ? 'Menyimpan…' : 'Simpan'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

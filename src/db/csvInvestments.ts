@@ -1,18 +1,10 @@
 import { listInvestments, createInvestment } from './investments'
 import { parseCsv, toCsv } from '@/lib/csv'
 
-const HEADER = [
-  'asset_type',
-  'asset_name',
-  'quantity',
-  'buy_price',
-  'current_price',
-  'buy_date',
-  'note',
-]
+const HEADER = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'current_price', 'buy_date', 'note']
 
-export function exportInvestmentsCsv(): string {
-  const rows = listInvestments()
+export async function exportInvestmentsCsv(): Promise<string> {
+  const rows = await listInvestments()
   const body = rows.map((r) => [
     r.asset_type,
     r.asset_name,
@@ -31,9 +23,7 @@ export interface ImportResult {
   errors: Array<{ line: number; message: string }>
 }
 
-export async function importInvestmentsCsv(
-  text: string,
-): Promise<ImportResult> {
+export async function importInvestmentsCsv(text: string): Promise<ImportResult> {
   const rows = parseCsv(text)
   if (rows.length === 0) return { inserted: 0, skipped: 0, errors: [] }
 
@@ -47,13 +37,7 @@ export async function importInvestmentsCsv(
     buy_date: header.indexOf('buy_date'),
     note: header.indexOf('note'),
   }
-  const required: Array<keyof typeof col> = [
-    'asset_type',
-    'asset_name',
-    'quantity',
-    'buy_price',
-    'buy_date',
-  ]
+  const required: Array<keyof typeof col> = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'buy_date']
   for (const k of required) {
     if (col[k] < 0) throw new Error(`Kolom wajib hilang: ${k}`)
   }
@@ -66,10 +50,8 @@ export async function importInvestmentsCsv(
       const asset_name = (r[col.asset_name] ?? '').trim()
       const quantity = Number((r[col.quantity] ?? '').replace(/[^\d.-]/g, ''))
       const buy_price = Number((r[col.buy_price] ?? '').replace(/[^\d.-]/g, ''))
-      const cpStr =
-        col.current_price >= 0 ? (r[col.current_price] ?? '').trim() : ''
-      const current_price =
-        cpStr === '' ? null : Number(cpStr.replace(/[^\d.-]/g, ''))
+      const cpStr = col.current_price >= 0 ? (r[col.current_price] ?? '').trim() : ''
+      const current_price = cpStr === '' ? null : Number(cpStr.replace(/[^\d.-]/g, ''))
       const buy_date = (r[col.buy_date] ?? '').trim()
       const note = col.note >= 0 ? (r[col.note] ?? '').trim() : ''
 
@@ -77,25 +59,13 @@ export async function importInvestmentsCsv(
       if (!asset_name) throw new Error('asset_name kosong')
       if (!(quantity > 0)) throw new Error('quantity harus > 0')
       if (!(buy_price > 0)) throw new Error('buy_price harus > 0')
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(buy_date))
-        throw new Error('buy_date harus YYYY-MM-DD')
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(buy_date)) throw new Error('buy_date harus YYYY-MM-DD')
 
-      await createInvestment({
-        asset_type,
-        asset_name,
-        quantity,
-        buy_price,
-        current_price,
-        buy_date,
-        note: note || null,
-      })
+      await createInvestment({ asset_type, asset_name, quantity, buy_price, current_price, buy_date, note: note || null })
       result.inserted++
     } catch (e) {
       result.skipped++
-      result.errors.push({
-        line: i + 1,
-        message: String(e instanceof Error ? e.message : e),
-      })
+      result.errors.push({ line: i + 1, message: String(e instanceof Error ? e.message : e) })
     }
   }
   return result

@@ -10,40 +10,28 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  updatePrice,
-  getPriceHistory,
-  type Investment,
-  type PriceHistoryEntry,
-} from '@/db/investments'
+import { type Investment } from '@/queries/investments'
+import { useUpdatePrice, usePriceHistory } from '@/queries/investments'
 import { todayISO, parseRupiah, formatRupiah, formatDateID } from '@/lib/format'
 import { toast } from 'sonner'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSaved: () => void
   investment: Investment | null
 }
 
-export default function PriceUpdateDialog({
-  open,
-  onOpenChange,
-  onSaved,
-  investment,
-}: Props) {
+export default function PriceUpdateDialog({ open, onOpenChange, investment }: Props) {
   const [priceStr, setPriceStr] = useState('')
   const [date, setDate] = useState(todayISO())
-  const [history, setHistory] = useState<PriceHistoryEntry[]>([])
-  const [saving, setSaving] = useState(false)
+
+  const { data: history = [] } = usePriceHistory(investment?.id ?? 0)
+  const updatePrice = useUpdatePrice()
 
   useEffect(() => {
     if (!open || !investment) return
-    setPriceStr(
-      investment.current_price != null ? String(investment.current_price) : '',
-    )
+    setPriceStr(investment.current_price != null ? String(investment.current_price) : '')
     setDate(todayISO())
-    setHistory(getPriceHistory(investment.id))
   }, [open, investment])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -54,16 +42,11 @@ export default function PriceUpdateDialog({
       toast.error('Harga harus > 0')
       return
     }
-    setSaving(true)
     try {
-      await updatePrice(investment.id, price, date)
-      toast.success('Harga diperbarui')
-      onSaved()
+      await updatePrice.mutateAsync({ id: investment.id, price, date })
       onOpenChange(false)
-    } catch (err) {
-      toast.error(String(err instanceof Error ? err.message : err))
-    } finally {
-      setSaving(false)
+    } catch {
+      // error toast handled by mutation hook
     }
   }
 
@@ -75,32 +58,18 @@ export default function PriceUpdateDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Update Harga — {investment.asset_name}</DialogTitle>
-            <DialogDescription>
-              Masukkan harga terkini untuk menghitung gain/loss.
-            </DialogDescription>
+            <DialogDescription>Masukkan harga terkini untuk menghitung gain/loss.</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-2">
                 <Label htmlFor="pu-price">Harga / unit (Rp)</Label>
-                <Input
-                  id="pu-price"
-                  inputMode="numeric"
-                  placeholder="0"
-                  value={priceStr}
-                  onChange={(e) => setPriceStr(e.target.value)}
-                  autoFocus
-                />
+                <Input id="pu-price" inputMode="numeric" placeholder="0" value={priceStr} onChange={(e) => setPriceStr(e.target.value)} autoFocus />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="pu-date">Tanggal</Label>
-                <Input
-                  id="pu-date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
+                <Input id="pu-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
               </div>
             </div>
 
@@ -112,12 +81,8 @@ export default function PriceUpdateDialog({
                     <tbody>
                       {history.map((h) => (
                         <tr key={h.id} className="border-b last:border-0">
-                          <td className="px-3 py-1.5 text-muted-foreground">
-                            {formatDateID(h.date)}
-                          </td>
-                          <td className="px-3 py-1.5 text-right">
-                            {formatRupiah(h.price)}
-                          </td>
+                          <td className="px-3 py-1.5 text-muted-foreground">{formatDateID(h.date)}</td>
+                          <td className="px-3 py-1.5 text-right">{formatRupiah(h.price)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -128,17 +93,8 @@ export default function PriceUpdateDialog({
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={saving}
-            >
-              Batal
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? 'Menyimpan…' : 'Simpan'}
-            </Button>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={updatePrice.isPending}>Batal</Button>
+            <Button type="submit" disabled={updatePrice.isPending}>{updatePrice.isPending ? 'Menyimpan…' : 'Simpan'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

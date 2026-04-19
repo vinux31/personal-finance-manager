@@ -1,38 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line,
 } from 'recharts'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import {
-  aggregateByPeriod,
-  aggregateByCategory,
-  type PeriodGranularity,
-} from '@/db/reports'
-import {
-  listInvestments,
-  currentValue,
-  costBasis,
-} from '@/db/investments'
+import { aggregateByPeriod, aggregateByCategory, type PeriodGranularity } from '@/db/reports'
+import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { formatRupiah, todayISO } from '@/lib/format'
 
 type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
@@ -50,56 +25,29 @@ export default function ReportsTab() {
 
   const range = useMemo(() => resolvePreset(preset, from, to), [preset, from, to])
 
-  const periodData = useMemo(
-    () => aggregateByPeriod(gran, range.from, range.to),
-    [gran, range],
-  )
-  const expenseByCat = useMemo(
-    () => aggregateByCategory('expense', range.from, range.to),
-    [range],
-  )
-  const incomeByCat = useMemo(
-    () => aggregateByCategory('income', range.from, range.to),
-    [range],
-  )
+  const periodData = useMemo(() => aggregateByPeriod(gran, range.from, range.to), [gran, range])
+  const expenseByCat = useMemo(() => aggregateByCategory('expense', range.from, range.to), [range])
+  const incomeByCat = useMemo(() => aggregateByCategory('income', range.from, range.to), [range])
 
-  const [investments, setInvestments] = useState<
-    Array<{ name: string; modal: number; nilai: number }>
-  >([])
-  useEffect(() => {
-    const invs = listInvestments()
-    setInvestments(
-      invs.map((i) => ({
-        name: i.asset_name,
-        modal: costBasis(i),
-        nilai: currentValue(i),
-      })),
-    )
-  }, [range])
+  const { data: invRows = [] } = useInvestments()
+  const investments = useMemo(() =>
+    invRows.map((i) => ({ name: i.asset_name, modal: costBasis(i), nilai: currentValue(i) })),
+    [invRows]
+  )
 
   const totals = useMemo(() => {
-    let income = 0
-    let expense = 0
-    for (const p of periodData) {
-      income += p.income
-      expense += p.expense
-    }
+    let income = 0; let expense = 0
+    for (const p of periodData) { income += p.income; expense += p.expense }
     return { income, expense, net: income - expense }
   }, [periodData])
 
   return (
     <div className="space-y-6">
-      {/* Filter bar */}
       <div className="flex flex-wrap items-end gap-3">
         <div className="grid gap-1">
           <Label className="text-xs">Periode</Label>
-          <Select
-            value={preset}
-            onValueChange={(v) => setPreset(v as PeriodPreset)}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
+          <Select value={preset} onValueChange={(v) => setPreset(v as PeriodPreset)}>
+            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="today">Hari ini</SelectItem>
               <SelectItem value="month">Bulan ini</SelectItem>
@@ -114,34 +62,19 @@ export default function ReportsTab() {
           <>
             <div className="grid gap-1">
               <Label className="text-xs">Dari</Label>
-              <Input
-                type="date"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                className="w-40"
-              />
+              <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-40" />
             </div>
             <div className="grid gap-1">
               <Label className="text-xs">Sampai</Label>
-              <Input
-                type="date"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                className="w-40"
-              />
+              <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-40" />
             </div>
           </>
         )}
 
         <div className="grid gap-1">
           <Label className="text-xs">Kelompokkan per</Label>
-          <Select
-            value={gran}
-            onValueChange={(v) => setGran(v as PeriodGranularity)}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
+          <Select value={gran} onValueChange={(v) => setGran(v as PeriodGranularity)}>
+            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="day">Hari</SelectItem>
               <SelectItem value="week">Minggu</SelectItem>
@@ -152,22 +85,14 @@ export default function ReportsTab() {
         </div>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard label="Pemasukan" value={formatRupiah(totals.income)} tone="up" />
         <SummaryCard label="Pengeluaran" value={formatRupiah(totals.expense)} tone="down" />
-        <SummaryCard
-          label="Net"
-          value={formatRupiah(totals.net)}
-          tone={totals.net >= 0 ? 'up' : 'down'}
-        />
+        <SummaryCard label="Net" value={formatRupiah(totals.net)} tone={totals.net >= 0 ? 'up' : 'down'} />
       </div>
 
-      {/* Income vs Expense */}
       <Panel title="Pemasukan vs Pengeluaran">
-        {periodData.length === 0 ? (
-          <EmptyChart />
-        ) : (
+        {periodData.length === 0 ? <EmptyChart /> : (
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={periodData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -182,24 +107,13 @@ export default function ReportsTab() {
         )}
       </Panel>
 
-      {/* Category pies */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Panel title="Pengeluaran per Kategori">
-          {expenseByCat.length === 0 ? (
-            <EmptyChart />
-          ) : (
+          {expenseByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie
-                  data={expenseByCat}
-                  dataKey="total"
-                  nameKey="category"
-                  outerRadius={100}
-                  label={(e) => String((e as { name?: string }).name ?? '')}
-                >
-                  {expenseByCat.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                  ))}
+                <Pie data={expenseByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { name?: string }).name ?? '')}>
+                  {expenseByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
               </PieChart>
@@ -208,21 +122,11 @@ export default function ReportsTab() {
         </Panel>
 
         <Panel title="Pemasukan per Kategori">
-          {incomeByCat.length === 0 ? (
-            <EmptyChart />
-          ) : (
+          {incomeByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie
-                  data={incomeByCat}
-                  dataKey="total"
-                  nameKey="category"
-                  outerRadius={100}
-                  label={(e) => String((e as { name?: string }).name ?? '')}
-                >
-                  {incomeByCat.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                  ))}
+                <Pie data={incomeByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { name?: string }).name ?? '')}>
+                  {incomeByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
               </PieChart>
@@ -231,11 +135,8 @@ export default function ReportsTab() {
         </Panel>
       </div>
 
-      {/* Investment performance */}
       <Panel title="Kinerja Investasi">
-        {investments.length === 0 ? (
-          <EmptyChart text="Belum ada investasi untuk ditampilkan." />
-        ) : (
+        {investments.length === 0 ? <EmptyChart text="Belum ada investasi untuk ditampilkan." /> : (
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={investments}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -253,11 +154,7 @@ export default function ReportsTab() {
   )
 }
 
-function resolvePreset(
-  preset: PeriodPreset,
-  from: string,
-  to: string,
-): { from?: string; to?: string } {
+function resolvePreset(preset: PeriodPreset, from: string, to: string): { from?: string; to?: string } {
   if (preset === 'all') return {}
   if (preset === 'custom') return { from: from || undefined, to: to || undefined }
   const today = todayISO()
@@ -267,7 +164,6 @@ function resolvePreset(
     const first = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
     return { from: first, to: today }
   }
-  // year
   return { from: `${d.getFullYear()}-01-01`, to: today }
 }
 
@@ -295,25 +191,11 @@ function EmptyChart({ text }: { text?: string }) {
   )
 }
 
-function SummaryCard({
-  label,
-  value,
-  tone,
-}: {
-  label: string
-  value: string
-  tone: 'up' | 'down'
-}) {
+function SummaryCard({ label, value, tone }: { label: string; value: string; tone: 'up' | 'down' }) {
   return (
     <div className="rounded-lg border bg-card p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div
-        className={`mt-1 text-2xl font-semibold ${
-          tone === 'up' ? 'text-emerald-600' : 'text-red-600'
-        }`}
-      >
-        {value}
-      </div>
+      <div className={`mt-1 text-2xl font-semibold ${tone === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>{value}</div>
     </div>
   )
 }

@@ -4,8 +4,8 @@ import { parseCsv, toCsv } from '@/lib/csv'
 
 const HEADER = ['date', 'type', 'category', 'amount', 'note']
 
-export function exportTransactionsCsv(): string {
-  const rows = listTransactions()
+export async function exportTransactionsCsv(): Promise<string> {
+  const rows = await listTransactions()
   const body = rows.map((r) => [
     r.date,
     r.type,
@@ -22,9 +22,7 @@ export interface ImportResult {
   errors: Array<{ line: number; message: string }>
 }
 
-export async function importTransactionsCsv(
-  text: string,
-): Promise<ImportResult> {
+export async function importTransactionsCsv(text: string): Promise<ImportResult> {
   const rows = parseCsv(text)
   if (rows.length === 0) return { inserted: 0, skipped: 0, errors: [] }
 
@@ -37,12 +35,10 @@ export async function importTransactionsCsv(
     note: header.indexOf('note'),
   }
   if (col.date < 0 || col.type < 0 || col.category < 0 || col.amount < 0) {
-    throw new Error(
-      `Header tidak valid. Kolom wajib: date, type, category, amount. Opsional: note.`,
-    )
+    throw new Error('Header tidak valid. Kolom wajib: date, type, category, amount. Opsional: note.')
   }
 
-  const cats = listCategories()
+  const cats = await listCategories()
   const catIndex = new Map<string, number>()
   for (const c of cats) {
     catIndex.set(`${c.type}:${c.name.toLowerCase()}`, c.id)
@@ -59,31 +55,20 @@ export async function importTransactionsCsv(
       const amountStr = (r[col.amount] ?? '').replace(/[^\d.-]/g, '')
       const note = col.note >= 0 ? (r[col.note] ?? '').trim() : ''
 
-      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date))
-        throw new Error(`Format tanggal harus YYYY-MM-DD`)
-      if (type !== 'income' && type !== 'expense')
-        throw new Error(`Type harus 'income' atau 'expense'`)
+      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Format tanggal harus YYYY-MM-DD')
+      if (type !== 'income' && type !== 'expense') throw new Error("Type harus 'income' atau 'expense'")
       const amount = Number(amountStr)
-      if (!(amount > 0)) throw new Error(`Amount harus > 0`)
+      if (!(amount > 0)) throw new Error('Amount harus > 0')
 
       const key = `${type}:${categoryName.toLowerCase()}`
       const catId = catIndex.get(key)
       if (!catId) throw new Error(`Kategori tidak ditemukan: ${categoryName} (${type})`)
 
-      await createTransaction({
-        date,
-        type: type as 'income' | 'expense',
-        category_id: catId,
-        amount,
-        note: note || null,
-      })
+      await createTransaction({ date, type: type as 'income' | 'expense', category_id: catId, amount, note: note || null })
       result.inserted++
     } catch (e) {
       result.skipped++
-      result.errors.push({
-        line: i + 1,
-        message: String(e instanceof Error ? e.message : e),
-      })
+      result.errors.push({ line: i + 1, message: String(e instanceof Error ? e.message : e) })
     }
   }
   return result
