@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
 
 export interface Investment {
   id: number
@@ -158,9 +159,9 @@ export function gainLossPercent(inv: Investment): number {
 }
 
 const RENCANA_INVESTMENTS: InvestmentInput[] = [
-  { asset_type: 'Reksadana', asset_name: 'Reksadana Sukuk Sucorinvest Sharia', quantity: 1, buy_price: 100_000_000, current_price: 100_000_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-  { asset_type: 'Emas', asset_name: 'Emas Tabungan Pegadaian', quantity: 5.5278, buy_price: 2_683_000, current_price: 2_683_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-  { asset_type: 'Saham', asset_name: 'Saham BMRI', quantity: 1, buy_price: 6_129_180, current_price: 6_129_180, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Reksadana', asset_name: RENCANA_INVESTMENT_NAMES[0], quantity: 1,      buy_price: 100_000_000, current_price: 100_000_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Emas',      asset_name: RENCANA_INVESTMENT_NAMES[1], quantity: 5.5278, buy_price: 2_683_000,   current_price: 2_683_000,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Saham',     asset_name: RENCANA_INVESTMENT_NAMES[2], quantity: 1,      buy_price: 6_129_180,   current_price: 6_129_180,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
 ]
 
 export async function seedRencanaInvestments(): Promise<void> {
