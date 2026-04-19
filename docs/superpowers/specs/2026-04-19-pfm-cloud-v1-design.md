@@ -303,9 +303,9 @@ Parse di browser (kode `lib/csv.ts` existing), validasi tiap row, batch insert v
 | Case | Handling |
 |---|---|
 | Session expired | 401 → toast "Sesi habis" → auto signOut |
-| Email di-revoke | Existing session jalan sampai logout; sign-up baru ditolak |
+| Email di-revoke (mis. allowlist diubah) | Existing session jalan sampai token expire/logout (trigger hanya fire saat sign-up baru). Untuk force logout segera, ubah allowlist + manual revoke di Supabase Auth dashboard. |
 | Concurrent edit (2 tab) | Last-write-wins. Single-user, risiko rendah. |
-| OAuth callback gagal | Tetap di LoginScreen. Optional: toast "Login dibatalkan". |
+| OAuth callback gagal (user cancel di Google) | Tetap di LoginScreen + toast "Login dibatalkan". |
 | RLS bug → empty data | Empty state UI existing. Verifikasi via smoke test. |
 | Migration belum jalan | First query 42P01 → toast "Schema belum siap". Migration jalan sebelum deploy. |
 
