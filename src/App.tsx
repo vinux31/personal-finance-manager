@@ -14,8 +14,10 @@ import GoalsTab from '@/tabs/GoalsTab'
 import NotesTab from '@/tabs/NotesTab'
 import ReportsTab from '@/tabs/ReportsTab'
 import SettingsTab from '@/tabs/SettingsTab'
-import FirstRunDialog from '@/components/FirstRunDialog'
-import { useDbStore } from '@/db/store'
+import LoginScreen from '@/components/LoginScreen'
+import OfflineBanner from '@/components/OfflineBanner'
+import AccountMenu from '@/components/AccountMenu'
+import { useAuth } from '@/auth/useAuth'
 
 const TABS = [
   { value: 'transactions', label: 'Transaksi', icon: Wallet, Comp: TransactionsTab },
@@ -27,12 +29,20 @@ const TABS = [
 ] as const
 
 function App() {
-  const status = useDbStore((s) => s.status)
+  const { session, loading } = useAuth()
 
-  if (status !== 'ready') {
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <span className="text-muted-foreground text-sm">Memuat...</span>
+      </div>
+    )
+  }
+
+  if (!session) {
     return (
       <>
-        <FirstRunDialog />
+        <LoginScreen />
         <Toaster richColors position="top-right" />
       </>
     )
@@ -40,13 +50,17 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b px-6 py-4">
-        <h1 className="text-xl font-semibold tracking-tight">
-          Personal Finance Manager
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Kelola keuangan pribadi — offline, data tersimpan di laptop Anda
-        </p>
+      <OfflineBanner />
+      <header className="flex items-center justify-between border-b px-6 py-4">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">
+            Personal Finance Manager
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Kelola keuangan pribadi Anda
+          </p>
+        </div>
+        <AccountMenu />
       </header>
 
       <main className="p-6">
