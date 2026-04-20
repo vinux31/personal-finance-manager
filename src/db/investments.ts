@@ -29,6 +29,11 @@ export interface PriceHistoryEntry {
   date: string
 }
 
+export interface FetchPriceResult {
+  results: { id: number; price: number }[]
+  errors: { id: number; asset_name: string; reason: string }[]
+}
+
 export async function listInvestments(): Promise<Investment[]> {
   const { data, error } = await supabase
     .from('investments')
@@ -163,6 +168,18 @@ const RENCANA_INVESTMENTS: InvestmentInput[] = [
   { asset_type: 'Emas',      asset_name: RENCANA_INVESTMENT_NAMES[1], quantity: 5.5278, buy_price: 2_683_000,   current_price: 2_683_000,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
   { asset_type: 'Saham',     asset_name: RENCANA_INVESTMENT_NAMES[2], quantity: 1,      buy_price: 6_129_180,   current_price: 6_129_180,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
 ]
+
+export async function fetchPrices(investments: Pick<Investment, 'id' | 'asset_type' | 'asset_name'>[]): Promise<FetchPriceResult> {
+  const toFetch = investments.filter((i) => i.asset_type === 'Saham' || i.asset_type === 'Emas')
+  if (toFetch.length === 0) return { results: [], errors: [] }
+
+  const { data, error } = await supabase.functions.invoke('fetch-prices', {
+    body: { investments: toFetch },
+  })
+
+  if (error) throw new Error(`Edge Function error: ${error.message}`)
+  return data as FetchPriceResult
+}
 
 export async function seedRencanaInvestments(): Promise<void> {
   const existing = await listInvestments()
