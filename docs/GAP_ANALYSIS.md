@@ -39,22 +39,11 @@ Tab Settings ditambahkan seksi Rencana: menampilkan info computed (total target,
 
 ---
 
-### Gap 8 — Tidak Ada Export Laporan ke PDF
+### ~~Gap 8 — Tidak Ada Export Laporan ke PDF~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Laporan hanya bisa dilihat di layar browser. Tidak ada cara untuk menyimpan atau membagikan laporan dalam format yang portabel (PDF, gambar, dll). Hanya transaksi dan investasi yang bisa di-export via CSV.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Tidak bisa berbagi ringkasan keuangan bulanan
-- Tidak ada arsip laporan jika data dihapus atau akun berubah
-- Untuk perencanaan keluarga, sulit berbagi kondisi keuangan
-
-**Solusi yang mungkin:**
-- Export PDF menggunakan library `jsPDF` + `html2canvas` (capture grafik sebagai gambar)
-- Atau export laporan ke format Excel (XLSX) dengan `SheetJS`
-- Minimal: tombol "Print" yang trigger browser print dialog dengan layout yang rapi
-
-**Prioritas:** Rendah-Sedang — nice-to-have, bisa dikerjakan belakangan
+Tombol "Export PDF" ditambahkan di header filter tab Laporan (ujung kanan). PDF berisi summary Pemasukan/Pengeluaran/Net, tabel pengeluaran per kategori, tabel pemasukan per kategori, dan tabel kinerja investasi. Nama file otomatis dari periode aktif (contoh: `laporan-keuangan-2026-04.pdf`). Diimplementasikan dengan `jsPDF` + `jspdf-autotable` tanpa dependency DOM capture.
 
 ---
 
@@ -86,7 +75,7 @@ Email yang diizinkan login (`rinoadi28@gmail.com`) dikunci di level database via
 | 6 | Rencana Hardcoded → dinamis | Sedang | Tinggi | ✅ Selesai |
 | 7 | Settings berfungsi | Rendah | Tinggi | ✅ Selesai |
 | 4 | Harga investasi otomatis | Tinggi | Sedang | ✅ Selesai |
-| 8 | Export laporan PDF | Sedang | Rendah | Belum |
+| 8 | Export laporan PDF | Sedang | Rendah | ✅ Selesai |
 | 9 | Manajemen user dari UI | Tinggi | Rendah | Belum |
 
 **Urutan pengerjaan selanjutnya:**
