@@ -3,12 +3,15 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
 } from 'recharts'
+import { Download } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { useAggregateByPeriod, useAggregateByCategory, type PeriodGranularity } from '@/queries/reports'
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { formatRupiah, todayISO } from '@/lib/format'
+import { exportReportPDF, type ExportReportParams } from '@/lib/export-pdf'
 
 type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
 
@@ -40,6 +43,48 @@ export default function ReportsTab() {
     for (const p of periodData) { income += Number(p.income); expense += Number(p.expense) }
     return { income, expense, net: income - expense }
   }, [periodData])
+
+  const [exporting, setExporting] = useState(false)
+
+  function buildPeriodeLabel(p: PeriodPreset, f: string, t: string): string {
+    const d = new Date()
+    if (p === 'month') return `Bulan ini: ${d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}`
+    if (p === 'year') return `Tahun ini: ${d.getFullYear()}`
+    if (p === 'today') return `Hari ini: ${todayISO()}`
+    if (p === 'all') return 'Semua periode'
+    if (f && t) return `${f} s/d ${t}`
+    if (f) return `Dari ${f}`
+    return 'Periode kustom'
+  }
+
+  function buildFilenameMonth(p: PeriodPreset, f: string): string {
+    const d = new Date()
+    if (p === 'month') return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    if (p === 'year') return String(d.getFullYear())
+    if (p === 'today') return todayISO()
+    if (p === 'all') return 'semua'
+    if (f) return f.slice(0, 7)
+    return 'kustom'
+  }
+
+  function handleExport() {
+    setExporting(true)
+    try {
+      const params: ExportReportParams = {
+        periodeLabel: buildPeriodeLabel(preset, from, to),
+        filenameMonth: buildFilenameMonth(preset, from),
+        totals,
+        expenseByCat,
+        incomeByCat,
+        investments,
+      }
+      exportReportPDF(params)
+    } catch {
+      import('sonner').then(({ toast }) => toast.error('Gagal membuat PDF'))
+    } finally {
+      setExporting(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -82,6 +127,18 @@ export default function ReportsTab() {
               <SelectItem value="year">Tahun</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="ml-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={exporting}
+            onClick={handleExport}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export PDF
+          </Button>
         </div>
       </div>
 
