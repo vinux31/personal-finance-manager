@@ -77,8 +77,17 @@ serve(async (req) => {
   }
 })
 
+function extractTicker(assetName: string): string {
+  // Cari kode IDX: 4-6 huruf kapital (contoh: BBCA, BMRI, TLKM)
+  const match = assetName.match(/\b([A-Z]{4,6})\b/)
+  if (match) return match[1]
+  // Fallback: pakai kata terakhir uppercase
+  const words = assetName.trim().split(/\s+/)
+  return words[words.length - 1].toUpperCase()
+}
+
 async function fetchSahamPrice(assetName: string): Promise<number> {
-  const ticker = `${assetName}.JK`
+  const ticker = `${extractTicker(assetName)}.JK`
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`
   const res = await fetch(url, {
     headers: { 'User-Agent': 'Mozilla/5.0' },
