@@ -34,12 +34,14 @@ export interface FetchPriceResult {
   errors: { id: number; asset_name: string; reason: string }[]
 }
 
-export async function listInvestments(): Promise<Investment[]> {
-  const { data, error } = await supabase
+export async function listInvestments(uid?: string): Promise<Investment[]> {
+  let query = supabase
     .from('investments')
     .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
     .order('buy_date', { ascending: false })
     .order('id', { ascending: false })
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
   if (error) throw error
   return data as Investment[]
 }
@@ -133,10 +135,10 @@ export async function getPriceHistory(investmentId: number): Promise<PriceHistor
   return data as PriceHistoryEntry[]
 }
 
-export async function listAssetTypes(): Promise<string[]> {
-  const { data, error } = await supabase
-    .from('investments')
-    .select('asset_type')
+export async function listAssetTypes(uid?: string): Promise<string[]> {
+  let query = supabase.from('investments').select('asset_type')
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
   if (error) throw error
   const existing = [...new Set((data ?? []).map((r: any) => r.asset_type as string))]
   const defaults = ['Saham', 'Reksadana', 'Emas', 'Kripto', 'Obligasi']

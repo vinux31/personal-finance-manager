@@ -15,12 +15,14 @@ export interface NoteInput {
   linked_transaction_id: number | null
 }
 
-export async function listNotes(): Promise<Note[]> {
-  const { data, error } = await supabase
+export async function listNotes(uid?: string): Promise<Note[]> {
+  let query = supabase
     .from('notes')
     .select('id, title, content, date, linked_transaction_id')
     .order('date', { ascending: false })
     .order('id', { ascending: false })
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
   if (error) throw error
   return data as Note[]
 }

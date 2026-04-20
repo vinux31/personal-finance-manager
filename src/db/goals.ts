@@ -20,13 +20,15 @@ export interface GoalInput {
   status: GoalStatus
 }
 
-export async function listGoals(): Promise<Goal[]> {
-  const { data, error } = await supabase
+export async function listGoals(uid?: string): Promise<Goal[]> {
+  let query = supabase
     .from('goals')
     .select('id, name, target_amount, current_amount, target_date, status')
     .order('status')
     .order('target_date', { ascending: true, nullsFirst: false })
     .order('id', { ascending: false })
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
   if (error) throw error
   return data as Goal[]
 }

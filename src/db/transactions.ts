@@ -26,13 +26,14 @@ export interface TransactionInput {
   note: string | null
 }
 
-export async function listTransactions(f: TransactionFilters = {}): Promise<Transaction[]> {
+export async function listTransactions(f: TransactionFilters = {}, uid?: string): Promise<Transaction[]> {
   let query = supabase
     .from('transactions')
     .select('id, date, type, category_id, amount, note, categories(name)')
     .order('date', { ascending: false })
     .order('id', { ascending: false })
 
+  if (uid) query = query.eq('user_id', uid)
   if (f.dateFrom) query = query.gte('date', f.dateFrom)
   if (f.dateTo) query = query.lte('date', f.dateTo)
   if (f.type) query = query.eq('type', f.type)

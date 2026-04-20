@@ -7,11 +7,13 @@ export interface GoalInvestment {
   allocation_pct: number
 }
 
-export async function listGoalInvestments(): Promise<GoalInvestment[]> {
-  const { data, error } = await supabase
+export async function listGoalInvestments(uid?: string): Promise<GoalInvestment[]> {
+  let query = supabase
     .from('goal_investments')
     .select('id, goal_id, investment_id, allocation_pct')
     .order('id')
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
   if (error) throw error
   return data as GoalInvestment[]
 }
