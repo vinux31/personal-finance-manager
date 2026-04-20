@@ -7,81 +7,35 @@
 
 ## Gap yang Diprioritaskan
 
-### Gap 4 — Update Harga Investasi Manual
+### ~~Gap 4 — Update Harga Investasi Manual~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Harga investasi (saham, emas, reksadana) harus diupdate secara manual oleh pengguna satu per satu lewat dialog edit. Tidak ada koneksi ke sumber data eksternal.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Data portofolio bisa basi kalau lupa update
-- Tidak bisa lihat performa investasi real-time
-- Proses membosankan kalau punya banyak aset
-
-**Solusi yang mungkin:**
-- Integrasi API harga saham IDX (misalnya `api.frankfurter.app` untuk kurs, atau scraping IHSG)
-- Untuk emas: integrasi harga logam mulia Antam (tersedia publik)
-- Alternatif sederhana: tombol "Refresh Semua Harga" yang pull dari satu sumber terpusat
-- Atau minimal: bulk update harga lewat CSV
-
-**Prioritas:** Sedang-Tinggi — langsung mempengaruhi akurasi laporan investasi
+Tombol "Refresh Harga" ditambahkan di tab Investasi. Saham IDX diambil dari Yahoo Finance via Supabase Edge Function (`fetch-prices`), emas dari metals.dev × kurs USD/IDR (open.er-api.com). Reksadana tetap manual. Kode ticker IDX diekstrak otomatis dari `asset_name` (contoh: "Saham BMRI" → `BMRI.JK`).
 
 ---
 
-### Gap 5 — Goals Tidak Bisa Tarik Dana
+### ~~Gap 5 — Goals Tidak Bisa Tarik Dana~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Fitur Goals hanya bisa **menambah** uang ke goal (satu arah). Tidak ada mekanisme untuk menarik dana keluar dari goal — misalnya kalau target dibatalkan atau dana darurat dipakai.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Saldo goal tidak bisa dikurangi kecuali reset/hapus goal
-- Menghapus goal berarti kehilangan riwayat progress
-- Workflow tidak realistis (di dunia nyata kita kadang ambil uang dari tabungan)
-
-**Solusi yang mungkin:**
-- Tambah tombol "Tarik Dana" di samping "Tambah Dana" pada setiap goal
-- Validasi: tidak boleh tarik lebih dari saldo saat ini
-- Opsional: catat riwayat penarikan per goal
-
-**Prioritas:** Sedang — UX incomplete, terutama untuk goals jangka panjang
+Tombol Tarik Dana ditambahkan di AddMoneyDialog (toggle Tambah/Tarik), DB function `withdrawFromGoal` dengan auto-reset status, validasi saldo, dan mutation hook `useWithdrawFromGoal`.
 
 ---
 
-### Gap 6 — Fitur "Rencana" Hardcoded
+### ~~Gap 6 — Fitur "Rencana" Hardcoded~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Target besar ("investasi Rp 257 juta sebelum Januari 2027") dikodekan langsung di source code (`useRencanaInit.ts`). Pengguna tidak bisa mengubah angka atau tanggal target dari UI. Jika target berubah, harus edit kode dan redeploy.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Tidak fleksibel — target finansial bisa berubah seiring waktu
-- Data awal (3 investasi + 5 goals) di-seed otomatis tanpa bisa dikonfigurasi
-- Tidak ada UI untuk "Reset Rencana" kalau sudah tidak relevan
-
-**Solusi yang mungkin:**
-- Pindahkan konfigurasi Rencana ke tab Pengaturan (target amount, target date)
-- Simpan di database (tabel `settings`) bukan di localStorage + kode
-- Tambah tombol "Edit Target Rencana" di RencanaBar
-- Buat proses seeding lebih transparan (muncul dialog konfirmasi pertama kali)
-
-**Prioritas:** Sedang — penting untuk sustainability jangka panjang
+RencanaBar tidak lagi hardcode — target & deadline dihitung dinamis dari goals aktif. `rencanaNames` dijadikan single source of truth untuk nama seed. Nama investasi dan goals Rencana sudah menggunakan referensi terpusat.
 
 ---
 
-### Gap 7 — Settings Belum Berfungsi
+### ~~Gap 7 — Settings Belum Berfungsi~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Tab Pengaturan hanya menampilkan: pilihan tema (terang/gelap/sistem), info akun, dan tombol logout. Tabel `settings` di database sudah ada tapi belum dipakai. Tidak ada konfigurasi yang bisa diubah.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Tab terasa "kosong" dan tidak berguna
-- Banyak hal yang harusnya bisa dikonfigurasi pengguna (target Rencana, preferensi laporan, dll) tidak bisa diubah
-
-**Solusi yang mungkin:**
-- Integrasikan konfigurasi Rencana di sini (lihat Gap 6)
-- Tambah pengaturan: mata uang default, format tanggal, periode laporan default
-- Tambah pengaturan notifikasi (kalau goals hampir deadline)
-- Manfaatkan tabel `settings` yang sudah ada di database
-
-**Prioritas:** Sedang — terhubung erat dengan Gap 6
+Tab Settings ditambahkan seksi Rencana: menampilkan info computed (total target, deadline dari goals aktif) dan tombol Reset Seed untuk inisialisasi ulang data Rencana.
 
 ---
 
@@ -126,21 +80,18 @@ Email yang diizinkan login (`rinoadi28@gmail.com`) dikunci di level database via
 
 ## Ringkasan & Urutan Pengerjaan
 
-| # | Gap | Kompleksitas | Prioritas | Ketergantungan |
-|---|-----|-------------|-----------|----------------|
-| 6 | Rencana Hardcoded → pindah ke Settings | Sedang | Tinggi | - |
-| 7 | Settings berfungsi | Rendah | Tinggi | Tergantung Gap 6 |
-| 5 | Goals: fitur tarik dana | Rendah | Sedang | - |
-| 4 | Harga investasi otomatis | Tinggi | Sedang | - |
-| 8 | Export laporan PDF | Sedang | Rendah | - |
-| 9 | Manajemen user dari UI | Tinggi | Rendah | - |
+| # | Gap | Kompleksitas | Prioritas | Status |
+|---|-----|-------------|-----------|--------|
+| 5 | Goals: fitur tarik dana | Rendah | Sedang | ✅ Selesai |
+| 6 | Rencana Hardcoded → dinamis | Sedang | Tinggi | ✅ Selesai |
+| 7 | Settings berfungsi | Rendah | Tinggi | ✅ Selesai |
+| 4 | Harga investasi otomatis | Tinggi | Sedang | ✅ Selesai |
+| 8 | Export laporan PDF | Sedang | Rendah | Belum |
+| 9 | Manajemen user dari UI | Tinggi | Rendah | Belum |
 
-**Rekomendasi urutan:**
-1. Gap 6 + 7 (Settings fungsional + Rencana configurable) — satu paket, saling terkait
-2. Gap 5 (Tarik dana Goals) — fitur kecil, high value
-3. Gap 4 (Harga investasi otomatis) — perlu riset API dulu
-4. Gap 8 (Export PDF) — polish
-5. Gap 9 (Multi-user) — kalau memang dibutuhkan
+**Urutan pengerjaan selanjutnya:**
+1. Gap 8 (Export PDF) — polish
+2. Gap 9 (Multi-user) — kalau memang dibutuhkan
 
 ---
 
