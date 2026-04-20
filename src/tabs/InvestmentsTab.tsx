@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useInvestments, useDeleteInvestment, costBasis, currentValue, gainLoss, gainLossPercent, type Investment } from '@/queries/investments'
+import { useInvestments, useDeleteInvestment, useRefreshPrices, costBasis, currentValue, gainLoss, gainLossPercent, type Investment } from '@/queries/investments'
 import { Button } from '@/components/ui/button'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, TrendingUp, Upload, Download } from 'lucide-react'
+import { Plus, Pencil, Trash2, TrendingUp, Upload, Download, RefreshCw } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
 import InvestmentDialog from '@/components/InvestmentDialog'
 import PriceUpdateDialog from '@/components/PriceUpdateDialog'
@@ -23,6 +23,7 @@ export default function InvestmentsTab() {
 
   const { data: rows = [], isLoading } = useInvestments()
   const deleteInvestment = useDeleteInvestment()
+  const refreshPrices = useRefreshPrices()
 
   const totals = useMemo(() => {
     let cost = 0; let value = 0
@@ -69,6 +70,14 @@ export default function InvestmentsTab() {
           }
         }}>
           <Upload className="h-4 w-4" />Impor
+        </Button>
+        <Button
+          variant="outline"
+          disabled={refreshPrices.isPending || rows.length === 0}
+          onClick={() => refreshPrices.mutate(rows)}
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshPrices.isPending ? 'animate-spin' : ''}`} />
+          {refreshPrices.isPending ? 'Memperbarui…' : 'Refresh Harga'}
         </Button>
         <Button onClick={() => { setEditing(null); setDialogOpen(true) }}>
           <Plus className="h-4 w-4" />Tambah Investasi
