@@ -37,3 +37,6 @@ supabase/.temp
 .playwright-mcp/
 .superpowers/
 memory/
+
+# Local docs
+docs/PRD.md
