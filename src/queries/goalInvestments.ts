@@ -7,13 +7,16 @@ import {
   type GoalInvestment,
 } from '@/db/goalInvestments'
 import { mapSupabaseError } from '@/lib/errors'
+import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { type GoalInvestment }
 
 export function useGoalInvestments() {
+  const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['goal-investments'],
-    queryFn: listGoalInvestments,
+    queryKey: ['goal-investments', uid],
+    queryFn: () => listGoalInvestments(uid),
+    enabled: !!uid,
   })
 }
 

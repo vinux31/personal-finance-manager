@@ -10,13 +10,16 @@ import {
   type TransactionInput,
 } from '@/db/transactions'
 import { mapSupabaseError } from '@/lib/errors'
+import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { type Transaction, type TransactionFilters, type TransactionInput }
 
 export function useTransactions(filters: TransactionFilters = {}) {
+  const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['transactions', filters],
-    queryFn: () => listTransactions(filters),
+    queryKey: ['transactions', filters, uid],
+    queryFn: () => listTransactions(filters, uid),
+    enabled: !!uid,
   })
 }
 

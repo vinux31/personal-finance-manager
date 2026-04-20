@@ -7,6 +7,8 @@ import {
   type CategoryAgg,
 } from '@/db/reports'
 
+import { useTargetUserId } from '@/auth/useTargetUserId'
+
 export { type PeriodGranularity, type PeriodAgg, type CategoryAgg }
 
 export function useAggregateByPeriod(
@@ -14,9 +16,11 @@ export function useAggregateByPeriod(
   dateFrom?: string,
   dateTo?: string,
 ) {
+  const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['reports', 'period', granularity, dateFrom, dateTo],
-    queryFn: () => aggregateByPeriod(granularity, dateFrom, dateTo),
+    queryKey: ['reports', 'period', granularity, dateFrom, dateTo, uid],
+    queryFn: () => aggregateByPeriod(granularity, dateFrom, dateTo, uid),
+    enabled: !!uid,
   })
 }
 
@@ -25,8 +29,10 @@ export function useAggregateByCategory(
   dateFrom?: string,
   dateTo?: string,
 ) {
+  const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['reports', 'category', type, dateFrom, dateTo],
-    queryFn: () => aggregateByCategory(type, dateFrom, dateTo),
+    queryKey: ['reports', 'category', type, dateFrom, dateTo, uid],
+    queryFn: () => aggregateByCategory(type, dateFrom, dateTo, uid),
+    enabled: !!uid,
   })
 }

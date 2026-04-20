@@ -9,13 +9,16 @@ import {
   type NoteInput,
 } from '@/db/notes'
 import { mapSupabaseError } from '@/lib/errors'
+import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { type Note, type NoteInput }
 
 export function useNotes() {
+  const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['notes'],
-    queryFn: listNotes,
+    queryKey: ['notes', uid],
+    queryFn: () => listNotes(uid),
+    enabled: !!uid,
   })
 }
 
