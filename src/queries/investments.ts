@@ -8,6 +8,7 @@ import {
   updatePrice,
   getPriceHistory,
   listAssetTypes,
+  fetchPrices,
   costBasis,
   currentValue,
   gainLoss,
@@ -91,6 +92,31 @@ export function useUpdatePrice() {
       qc.invalidateQueries({ queryKey: ['investments'] })
       qc.invalidateQueries({ queryKey: ['price-history', id] })
       toast.success('Harga berhasil diperbarui')
+    },
+    onError: (e) => toast.error(mapSupabaseError(e)),
+  })
+}
+
+export function useRefreshPrices() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (investments: Investment[]) => {
+      const { results, errors } = await fetchPrices(investments)
+      const today = new Date().toISOString().slice(0, 10)
+      await Promise.all(results.map(({ id, price }) => updatePrice(id, price, today)))
+      return { updated: results.length, errors }
+    },
+    onSuccess: ({ updated, errors }) => {
+      qc.invalidateQueries({ queryKey: ['investments'] })
+      qc.invalidateQueries({ queryKey: ['price-history'] })
+      if (errors.length === 0) {
+        toast.success(`${updated} harga diperbarui`)
+      } else if (updated > 0) {
+        toast.success(`${updated} harga diperbarui`)
+        toast.warning(`${errors.length} gagal: ${errors.map((e) => e.asset_name).join(', ')}`)
+      } else {
+        toast.error('Gagal mengambil harga')
+      }
     },
     onError: (e) => toast.error(mapSupabaseError(e)),
   })
