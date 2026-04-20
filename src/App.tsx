@@ -18,6 +18,7 @@ import ReportsTab from '@/tabs/ReportsTab'
 import SettingsTab from '@/tabs/SettingsTab'
 import LoginScreen from '@/components/LoginScreen'
 import OfflineBanner from '@/components/OfflineBanner'
+import ViewAsBanner from '@/components/ViewAsBanner'
 import AccountMenu from '@/components/AccountMenu'
 import { useAuth } from '@/auth/useAuth'
 
@@ -54,6 +55,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <OfflineBanner />
+      <ViewAsBanner />
       <header className="flex items-center justify-between border-b px-6 py-4">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">
