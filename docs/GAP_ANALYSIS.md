@@ -47,23 +47,11 @@ Tombol "Export PDF" ditambahkan di header filter tab Laporan (ujung kanan). PDF 
 
 ---
 
-### Gap 9 — Single User Hardcoded di Database
+### ~~Gap 9 — Single User Hardcoded di Database~~ ✅ SELESAI
 
-**Kondisi sekarang:**
-Email yang diizinkan login (`rinoadi28@gmail.com`) dikunci di level database via trigger SQL. Tidak ada UI untuk mengelola daftar email yang boleh akses. Kalau ingin menambah atau mengubah email, harus langsung edit database via Supabase dashboard.
+**Diselesaikan:** 2026-04-20
 
-**Dampak:**
-- Tidak ada cara mudah ganti email akun jika suatu saat diperlukan
-- Tidak bisa berbagi akses ke anggota keluarga tanpa masuk ke Supabase
-- Risiko: kalau akun Google berubah, harus edit database manual
-
-**Solusi yang mungkin:**
-- Tambah UI di Settings untuk melihat email yang terdaftar (read-only)
-- Tambah tombol "Ganti Email Utama" dengan verifikasi
-- Untuk multi-user keluarga: tambah tabel `allowed_users` yang bisa dikelola dari UI
-- Jangka pendek: dokumentasikan cara ganti email di Supabase dashboard
-
-**Prioritas:** Rendah untuk sekarang, tapi perlu diantisipasi
+Arsitektur diubah dari single-user menjadi multi-user. Tabel `profiles` menyimpan flag `is_admin`, tabel `allowed_emails` menggantikan email hardcode di trigger SQL. Kolom `user_id` ditambahkan ke semua tabel data dengan RLS per-user. Admin bisa kelola daftar email yang diizinkan login dan melihat keuangan user lain (read-only) via banner "Sedang melihat data" di Settings.
 
 ---
 
@@ -76,11 +64,9 @@ Email yang diizinkan login (`rinoadi28@gmail.com`) dikunci di level database via
 | 7 | Settings berfungsi | Rendah | Tinggi | ✅ Selesai |
 | 4 | Harga investasi otomatis | Tinggi | Sedang | ✅ Selesai |
 | 8 | Export laporan PDF | Sedang | Rendah | ✅ Selesai |
-| 9 | Manajemen user dari UI | Tinggi | Rendah | Belum |
+| 9 | Manajemen user dari UI | Tinggi | Rendah | ✅ Selesai |
 
-**Urutan pengerjaan selanjutnya:**
-1. Gap 8 (Export PDF) — polish
-2. Gap 9 (Multi-user) — kalau memang dibutuhkan
+**Semua gap telah diselesaikan.**
 
 ---
 
