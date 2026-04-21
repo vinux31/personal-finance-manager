@@ -10,7 +10,16 @@ export function formatRupiah(n: number): string {
 }
 
 export function parseRupiah(s: string): number {
-  const cleaned = s.replace(/[^\d]/g, '')
+  let cleaned = s.trim()
+  // Handle Indonesian format: "5.107,65" (dot=thousands, comma=decimal)
+  if (cleaned.includes(',') && cleaned.includes('.')) {
+    cleaned = cleaned.replace(/\./g, '').replace(',', '.')
+  } else if (cleaned.includes(',')) {
+    // "5107,65" → treat comma as decimal separator
+    cleaned = cleaned.replace(',', '.')
+  }
+  // Remove anything except digits and decimal dot
+  cleaned = cleaned.replace(/[^\d.]/g, '')
   return cleaned === '' ? 0 : Number(cleaned)
 }
 

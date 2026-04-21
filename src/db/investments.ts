@@ -168,7 +168,7 @@ export function gainLossPercent(inv: Investment): number {
 const RENCANA_INVESTMENTS: InvestmentInput[] = [
   { asset_type: 'Reksadana', asset_name: RENCANA_INVESTMENT_NAMES[0], quantity: 1,      buy_price: 100_000_000, current_price: 100_000_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
   { asset_type: 'Emas',      asset_name: RENCANA_INVESTMENT_NAMES[1], quantity: 5.5278, buy_price: 2_683_000,   current_price: 2_683_000,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-  { asset_type: 'Saham',     asset_name: RENCANA_INVESTMENT_NAMES[2], quantity: 1,      buy_price: 6_129_180,   current_price: 6_129_180,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
+  { asset_type: 'Saham',     asset_name: RENCANA_INVESTMENT_NAMES[2], quantity: 1200,   buy_price: 5107.65,     current_price: 4620,        buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
 ]
 
 export async function fetchPrices(investments: Pick<Investment, 'id' | 'asset_type' | 'asset_name'>[]): Promise<FetchPriceResult> {

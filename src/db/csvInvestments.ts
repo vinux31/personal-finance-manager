@@ -54,9 +54,9 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
       const asset_type = (r[col.asset_type] ?? '').trim()
       const asset_name = (r[col.asset_name] ?? '').trim()
       const quantity = Number((r[col.quantity] ?? '').replace(',', '.').replace(/[^\d.]/g, ''))
-      const buy_price = Number((r[col.buy_price] ?? '').replace(/[^\d]/g, ''))
+      const buy_price = Number((r[col.buy_price] ?? '').replace(',', '.').replace(/[^\d.]/g, ''))
       const cpStr = col.current_price >= 0 ? (r[col.current_price] ?? '').trim() : ''
-      const current_price = cpStr === '' ? null : Number(cpStr.replace(/[^\d]/g, ''))
+      const current_price = cpStr === '' ? null : Number(cpStr.replace(',', '.').replace(/[^\d.]/g, ''))
       const buy_date = (r[col.buy_date] ?? '').trim()
       const note = col.note >= 0 ? (r[col.note] ?? '').trim() : ''
 

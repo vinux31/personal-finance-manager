@@ -53,8 +53,8 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       setCustomType('')
       setAssetName(editing.asset_name)
       setQtyStr(String(editing.quantity))
-      setBuyPriceStr(String(Math.round(editing.buy_price)))
-      setCurrentPriceStr(editing.current_price != null ? String(Math.round(editing.current_price)) : '')
+      setBuyPriceStr(String(editing.buy_price))
+      setCurrentPriceStr(editing.current_price != null ? String(editing.current_price) : '')
       setBuyDate(editing.buy_date)
       setNote(editing.note ?? '')
     } else {
@@ -145,7 +145,7 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
               <Input id="inv-buy" inputMode="numeric" placeholder="0" value={buyPriceStr} onChange={(e) => setBuyPriceStr(e.target.value)} />
               {buyPriceStr && (
                 <p className="text-xs text-muted-foreground">
-                  Total modal: {formatRupiah((Number(qtyStr) || 0) * parseRupiah(buyPriceStr))}
+                  Total modal: {formatRupiah((Number(qtyStr.replace(',', '.')) || 0) * parseRupiah(buyPriceStr))}
                 </p>
               )}
             </div>
