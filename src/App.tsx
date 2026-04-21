@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Wallet,
   TrendingUp,
+  Banknote,
   Target,
   StickyNote,
   BarChart3,
@@ -12,6 +13,7 @@ import {
 import DashboardTab from '@/tabs/DashboardTab'
 import TransactionsTab from '@/tabs/TransactionsTab'
 import InvestmentsTab from '@/tabs/InvestmentsTab'
+import DividenTab from '@/tabs/DividenTab'
 import GoalsTab from '@/tabs/GoalsTab'
 import NotesTab from '@/tabs/NotesTab'
 import ReportsTab from '@/tabs/ReportsTab'
@@ -21,19 +23,22 @@ import OfflineBanner from '@/components/OfflineBanner'
 import ViewAsBanner from '@/components/ViewAsBanner'
 import AccountMenu from '@/components/AccountMenu'
 import { useAuth } from '@/auth/useAuth'
+import { useTabStore } from '@/lib/tabStore'
 
 const TABS = [
-  { value: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, Comp: DashboardTab },
-  { value: 'transactions', label: 'Transaksi', icon: Wallet, Comp: TransactionsTab },
-  { value: 'investments', label: 'Investasi', icon: TrendingUp, Comp: InvestmentsTab },
-  { value: 'goals', label: 'Goals', icon: Target, Comp: GoalsTab },
-  { value: 'notes', label: 'Catatan', icon: StickyNote, Comp: NotesTab },
-  { value: 'reports', label: 'Laporan', icon: BarChart3, Comp: ReportsTab },
-  { value: 'settings', label: 'Pengaturan', icon: SettingsIcon, Comp: SettingsTab },
+  { value: 'dashboard',    label: 'Dashboard',  icon: LayoutDashboard, Comp: DashboardTab },
+  { value: 'transactions', label: 'Transaksi',  icon: Wallet,          Comp: TransactionsTab },
+  { value: 'investments',  label: 'Investasi',  icon: TrendingUp,      Comp: InvestmentsTab },
+  { value: 'dividen',      label: 'Dividen',    icon: Banknote,        Comp: DividenTab },
+  { value: 'goals',        label: 'Goals',      icon: Target,          Comp: GoalsTab },
+  { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
+  { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
+  { value: 'settings',     label: 'Pengaturan', icon: SettingsIcon,    Comp: SettingsTab },
 ] as const
 
 function App() {
   const { session, loading } = useAuth()
+  const { activeTab, setActiveTab } = useTabStore()
 
   if (loading) {
     return (
@@ -69,7 +74,7 @@ function App() {
       </header>
 
       <main className="p-6">
-        <Tabs defaultValue="dashboard" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-6">
             {TABS.map(({ value, label, icon: Icon }) => (
               <TabsTrigger key={value} value={value} className="gap-2">
