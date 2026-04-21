@@ -36,7 +36,8 @@ App.tsx (8 tabs)
    - asset_type = 'Saham'
    - asset_name = ticker (e.g. 'BMRI')
    - quantity = total_lots × 100
-   - buy_price = avg_price_per_share (integer)
+   - buy_price = avg_price_per_share (integer Rupiah)
+   - buy_date = date of first BUY transaction for this stock
    - bei_stock_id = link FK
 4. Investasi tab shows BMRI row with link icon → navigates to Dividen tab
 ```
@@ -46,7 +47,7 @@ Steps 1–3 are wrapped in a single Supabase RPC for atomicity.
 `App.tsx` tabs are currently uncontrolled (`defaultValue`). To support programmatic navigation from Investasi → Dividen, add a Zustand atom `activeTab` and convert `<Tabs>` to controlled (`value={activeTab}`).
 
 ### Price Updates
-The existing `fetch-prices` edge function already handles `asset_type = 'Saham'`. BEI stocks stored with `asset_type = 'Saham'` will be picked up automatically. Only change needed: edge function must append `.JK` suffix for BEI tickers. Existing `price_history` table is reused.
+The existing `fetch-prices` edge function already handles `asset_type = 'Saham'` **and already appends `.JK` suffix** via `extractTicker()`. BEI stocks stored with `asset_name = ticker` (e.g. `'BBCA'`) will be fetched correctly with zero changes to the edge function. Existing `price_history` table is reused. **No edge function changes needed.**
 
 ---
 
@@ -90,7 +91,7 @@ CREATE TABLE dividend_transactions (
   bei_stock_id     BIGINT NOT NULL REFERENCES bei_stocks(id),
   type             TEXT NOT NULL CHECK (type IN ('BUY', 'SELL')),
   lots             INTEGER NOT NULL CHECK (lots > 0),
-  price_per_share  INTEGER NOT NULL CHECK (price_per_share > 0), -- Rupiah integer
+  price_per_share  BIGINT NOT NULL CHECK (price_per_share > 0),  -- Rupiah integer, BIGINT for safety
   transaction_date DATE NOT NULL,
   note             TEXT,
   created_at       TIMESTAMPTZ DEFAULT NOW()
@@ -150,7 +151,8 @@ src/
 ```
 src/App.tsx                          -- add 8th tab + convert to controlled Tabs
 src/tabs/InvestmentsTab.tsx          -- show link icon for rows with bei_stock_id
-supabase/functions/fetch-prices/     -- append .JK suffix for BEI tickers
+src/db/investments.ts                -- add WHERE quantity > 0 OR bei_stock_id IS NULL filter
+supabase/functions/fetch-prices/     -- NO changes needed (.JK already handled)
 ```
 
 ### DividenTab Layout
@@ -198,7 +200,7 @@ export function useCreateDividendTransaction() { ... }
 | Yahoo Finance timeout | Toast warning, retain last known price, show "—" for unknown |
 | SELL > current lots | Validate in `db/dividends.ts` before insert: throw `"Tidak bisa jual N lot — hanya punya M lot TICKER"` |
 | Transaction + investments sync failure | Single Supabase RPC wraps both writes; rollback on failure, toast error |
-| Holdings reach 0 lots | `investments` row kept with `quantity = 0`; filtered out of InvestmentsTab display |
+| Holdings reach 0 lots | `investments` row kept with `quantity = 0`; filtered out via `listInvestments()` adding `WHERE quantity > 0 OR bei_stock_id IS NULL` |
 | Unknown ticker input | Dialog uses dropdown from `bei_stocks` only — no free-text ticker in v1 |
 
 ---
