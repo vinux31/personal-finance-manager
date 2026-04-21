@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Wallet,
   TrendingUp,
-  Banknote,
   Target,
   StickyNote,
   BarChart3,
@@ -13,7 +12,6 @@ import {
 import DashboardTab from '@/tabs/DashboardTab'
 import TransactionsTab from '@/tabs/TransactionsTab'
 import InvestmentsTab from '@/tabs/InvestmentsTab'
-import DividenTab from '@/tabs/DividenTab'
 import GoalsTab from '@/tabs/GoalsTab'
 import NotesTab from '@/tabs/NotesTab'
 import ReportsTab from '@/tabs/ReportsTab'
@@ -29,7 +27,6 @@ const TABS = [
   { value: 'dashboard',    label: 'Dashboard',  icon: LayoutDashboard, Comp: DashboardTab },
   { value: 'transactions', label: 'Transaksi',  icon: Wallet,          Comp: TransactionsTab },
   { value: 'investments',  label: 'Investasi',  icon: TrendingUp,      Comp: InvestmentsTab },
-  { value: 'dividen',      label: 'Dividen',    icon: Banknote,        Comp: DividenTab },
   { value: 'goals',        label: 'Goals',      icon: Target,          Comp: GoalsTab },
   { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
   { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
