@@ -6,8 +6,9 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, TrendingUp, Upload, Download, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, Trash2, TrendingUp, Upload, Download, RefreshCw, ExternalLink } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
+import { useTabStore } from '@/lib/tabStore'
 import InvestmentDialog from '@/components/InvestmentDialog'
 import PriceUpdateDialog from '@/components/PriceUpdateDialog'
 import { toast } from 'sonner'
@@ -24,6 +25,7 @@ export default function InvestmentsTab() {
   const { data: rows = [], isLoading } = useInvestments()
   const deleteInvestment = useDeleteInvestment()
   const refreshPrices = useRefreshPrices()
+  const { setActiveTab } = useTabStore()
 
   const totals = useMemo(() => {
     let cost = 0; let value = 0
@@ -125,6 +127,11 @@ export default function InvestmentsTab() {
                     </TableCell>
                     <TableCell>{formatDateID(r.buy_date)}</TableCell>
                     <TableCell className="text-right">
+                      {r.bei_stock_id != null && (
+                        <Button variant="ghost" size="icon" title="Lihat di tab Dividen" onClick={() => setActiveTab('dividen')}>
+                          <ExternalLink className="h-4 w-4 text-blue-500" />
+                        </Button>
+                      )}
                       <Button variant="ghost" size="icon" title="Update harga" onClick={() => { setPriceFor(r); setPriceOpen(true) }}><TrendingUp className="h-4 w-4" /></Button>
                       <Button variant="ghost" size="icon" title="Edit" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-4 w-4" /></Button>
                       <Button variant="ghost" size="icon" title="Hapus" onClick={() => onDelete(r)}><Trash2 className="h-4 w-4 text-red-600" /></Button>

@@ -10,6 +10,7 @@ export interface Investment {
   current_price: number | null
   buy_date: string
   note: string | null
+  bei_stock_id: number | null
 }
 
 export interface InvestmentInput {
@@ -37,7 +38,8 @@ export interface FetchPriceResult {
 export async function listInvestments(uid?: string): Promise<Investment[]> {
   let query = supabase
     .from('investments')
-    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note, bei_stock_id')
+    .or('bei_stock_id.is.null,quantity.gt.0')
     .order('buy_date', { ascending: false })
     .order('id', { ascending: false })
   if (uid) query = query.eq('user_id', uid)
@@ -49,7 +51,7 @@ export async function listInvestments(uid?: string): Promise<Investment[]> {
 export async function getInvestment(id: number): Promise<Investment | null> {
   const { data, error } = await supabase
     .from('investments')
-    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note, bei_stock_id')
     .eq('id', id)
     .maybeSingle()
   if (error) throw error
