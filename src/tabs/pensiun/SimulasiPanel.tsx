@@ -284,7 +284,7 @@ export default function SimulasiPanel({ form, onChange }: Props) {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="tahun" tick={{ fontSize: 11 }} label={{ value: 'Tahun ke-', position: 'insideBottom', offset: -2, fontSize: 11 }} />
                     <YAxis tickFormatter={(v) => shortRupiah(v)} tick={{ fontSize: 10 }} width={70} />
-                    <Tooltip formatter={(v: number) => formatRupiah(v)} />
+                    <Tooltip formatter={(v: unknown) => formatRupiah(typeof v === 'number' ? v : 0)} />
                     <Legend />
                     <Area type="monotone" dataKey="emas" name="Emas" stackId="1" stroke="#d97706" fill="#fde68a" />
                     <Area type="monotone" dataKey="saham" name="Saham" stackId="1" stroke="#2563eb" fill="#bfdbfe" />
