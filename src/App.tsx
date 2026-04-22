@@ -8,6 +8,7 @@ import {
   StickyNote,
   BarChart3,
   Settings as SettingsIcon,
+  PiggyBank,
 } from 'lucide-react'
 import DashboardTab from '@/tabs/DashboardTab'
 import TransactionsTab from '@/tabs/TransactionsTab'
@@ -16,6 +17,7 @@ import GoalsTab from '@/tabs/GoalsTab'
 import NotesTab from '@/tabs/NotesTab'
 import ReportsTab from '@/tabs/ReportsTab'
 import SettingsTab from '@/tabs/SettingsTab'
+import PensiunTab from '@/tabs/PensiunTab'
 import LoginScreen from '@/components/LoginScreen'
 import OfflineBanner from '@/components/OfflineBanner'
 import ViewAsBanner from '@/components/ViewAsBanner'
@@ -30,6 +32,7 @@ const TABS = [
   { value: 'goals',        label: 'Goals',      icon: Target,          Comp: GoalsTab },
   { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
   { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
+  { value: 'pensiun',      label: 'Pensiun',    icon: PiggyBank,       Comp: PensiunTab },
   { value: 'settings',     label: 'Pengaturan', icon: SettingsIcon,    Comp: SettingsTab },
 ] as const
 
