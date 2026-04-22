@@ -13,7 +13,7 @@ import PanduanPanel from './pensiun/PanduanPanel'
 
 export default function PensiunTab() {
   const { data, isLoading } = usePensionSim()
-  const upsert = useUpsertPensionSim()
+  const { mutate: upsert } = useUpsertPensionSim()
   const [form, setForm] = useState<PensionSimInput>(DEFAULT_PENSION_SIM)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -23,13 +23,14 @@ export default function PensiunTab() {
     if (data && !initializedRef.current) {
       initializedRef.current = true
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id: _id, user_id: _uid, updated_at: _ua, created_at: _ca, ...rest } = data as any
-      setForm(rest as PensionSimInput)
+      const { id: _id, user_id: _uid, updated_at: _ua, created_at: _ca, ...rest } = data
+      setForm(rest)
     } else if (data === null && !initializedRef.current) {
-      initializedRef.current = true
-      upsert.mutate(DEFAULT_PENSION_SIM)
+      upsert(DEFAULT_PENSION_SIM, {
+        onSuccess: () => { initializedRef.current = true },
+      })
     }
-  }, [data])
+  }, [data, upsert])
 
   useEffect(() => {
     return () => {
@@ -38,12 +39,12 @@ export default function PensiunTab() {
   }, [])
 
   const handleChange = useCallback((patch: Partial<PensionSimInput>) => {
+    setSaveStatus('saving')
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     setForm((prev) => {
       const next = { ...prev, ...patch }
-      setSaveStatus('saving')
-      if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
-        upsert.mutate(next, {
+        upsert(next, {
           onSuccess: () => {
             setSaveStatus('saved')
             setTimeout(() => setSaveStatus('idle'), 2000)
