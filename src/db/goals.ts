@@ -110,7 +110,7 @@ export async function withdrawFromGoal(
     .from('goals')
     .update({ current_amount: newAmount, status: newStatus })
     .eq('id', id)
-    .gte('current_amount', amount)   // only update if DB still has enough balance
+    .gte('current_amount', newAmount)   // only update if DB still has enough balance
     .select('id')
   if (error) throw error
   if (!data || data.length === 0) throw new Error('Dana tidak cukup atau data sudah berubah')
