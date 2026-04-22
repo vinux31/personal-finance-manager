@@ -106,11 +106,14 @@ export async function withdrawFromGoal(
     goal.status === 'completed' && newAmount < goal.target_amount
       ? 'active'
       : goal.status
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('goals')
     .update({ current_amount: newAmount, status: newStatus })
     .eq('id', id)
+    .gte('current_amount', amount)   // only update if DB still has enough balance
+    .select('id')
   if (error) throw error
+  if (!data || data.length === 0) throw new Error('Dana tidak cukup atau data sudah berubah')
 }
 
 const RENCANA_GOALS: GoalInput[] = [
