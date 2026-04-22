@@ -40,3 +40,6 @@ memory/
 
 # Local docs
 docs/PRD.md
+
+# Git worktrees
+.worktrees/
