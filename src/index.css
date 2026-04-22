@@ -81,6 +81,12 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    /* Pension gold accent */
+    --gold: #d97706;
+    --gold-light: #f59e0b;
+    --gold-bg: #fef9ee;
+    --gold-border: #fde68a;
+    --gold-text: #92400e;
 }
 
 .dark {
@@ -115,6 +121,12 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    /* Pension gold accent */
+    --gold: #d4a437;
+    --gold-light: #e6bb4a;
+    --gold-bg: rgba(212,164,55,0.08);
+    --gold-border: rgba(212,164,55,0.25);
+    --gold-text: #fbbf24;
 }
 
 @layer base {
