@@ -93,14 +93,14 @@ export default function NoteDialog({ open, onOpenChange, editing }: Props) {
             <div className="grid gap-2">
               <Label htmlFor="n-linked" className="text-xs">Transaksi Terkait (opsional)</Label>
               <Select
-                value={linkedTransactionId?.toString() ?? ''}
-                onValueChange={(v) => setLinkedTransactionId(v ? Number(v) : null)}
+                value={linkedTransactionId?.toString() ?? '__none__'}
+                onValueChange={(v) => setLinkedTransactionId(v === '__none__' ? null : Number(v))}
               >
                 <SelectTrigger id="n-linked">
                   <SelectValue placeholder="Pilih transaksi (opsional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tidak ada</SelectItem>
+                  <SelectItem value="__none__">Tidak ada</SelectItem>
                   {transactions.map((t) => (
                     <SelectItem key={t.id} value={t.id.toString()}>
                       {formatDateID(t.date)} · {t.category_name} · {formatRupiah(t.amount)}

@@ -96,14 +96,14 @@ export default function InvestmentsTab() {
           className="h-8 w-48"
         />
         <Select
-          value={filters.assetType ?? ''}
-          onValueChange={(v) => setFilters((f) => ({ ...f, assetType: v || undefined }))}
+          value={filters.assetType ?? '__all__'}
+          onValueChange={(v) => setFilters((f) => ({ ...f, assetType: v === '__all__' ? undefined : v }))}
         >
           <SelectTrigger className="h-8 w-36">
             <SelectValue placeholder="Semua jenis" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Semua jenis</SelectItem>
+            <SelectItem value="__all__">Semua jenis</SelectItem>
             {assetTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>

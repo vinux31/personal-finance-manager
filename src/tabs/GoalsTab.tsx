@@ -43,14 +43,14 @@ export default function GoalsTab() {
             className="h-8 w-48"
           />
           <Select
-            value={filters.status ?? ''}
-            onValueChange={(v) => setFilters((f) => ({ ...f, status: (v as GoalStatus) || undefined }))}
+            value={filters.status ?? '__all__'}
+            onValueChange={(v) => setFilters((f) => ({ ...f, status: v === '__all__' ? undefined : (v as GoalStatus) }))}
           >
             <SelectTrigger className="h-8 w-36">
               <SelectValue placeholder="Semua status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Semua status</SelectItem>
+              <SelectItem value="__all__">Semua status</SelectItem>
               <SelectItem value="active">Aktif</SelectItem>
               <SelectItem value="completed">Tercapai</SelectItem>
               <SelectItem value="paused">Jeda</SelectItem>
