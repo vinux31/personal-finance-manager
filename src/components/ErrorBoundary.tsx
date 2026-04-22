@@ -31,8 +31,7 @@ export default class ErrorBoundary extends Component<
               <h2 className="text-lg font-semibold">Terjadi kesalahan</h2>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              Aplikasi menemui masalah tak terduga. Data Anda di file{' '}
-              <code>.db</code> tetap aman.
+              Aplikasi menemui masalah tak terduga. Data Anda di cloud (Supabase) tetap aman.
             </p>
             <pre className="mt-3 max-h-48 overflow-auto rounded bg-muted p-3 text-xs">
               {this.state.error?.message}
