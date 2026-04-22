@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useGoals, useDeleteGoal, type Goal } from '@/queries/goals'
+import { useGoals, useDeleteGoal, type Goal, type GoalFilters, type GoalStatus } from '@/queries/goals'
 import { useInvestments, currentValue } from '@/queries/investments'
 import { useGoalInvestments } from '@/queries/goalInvestments'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Plus, Pencil, Trash2, PiggyBank, Link2 } from 'lucide-react'
@@ -18,8 +20,9 @@ export default function GoalsTab() {
   const [addMoneyOpen, setAddMoneyOpen] = useState(false)
   const [linkFor, setLinkFor] = useState<Goal | null>(null)
   const [linkOpen, setLinkOpen] = useState(false)
+  const [filters, setFilters] = useState<GoalFilters>({})
 
-  const { data: goals = [], isLoading } = useGoals()
+  const { data: goals = [], isLoading } = useGoals(filters)
   const { data: investments = [] } = useInvestments()
   const { data: allAllocs = [] } = useGoalInvestments()
   const deleteGoal = useDeleteGoal()
@@ -31,7 +34,29 @@ export default function GoalsTab() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Input
+            placeholder="Cari nama goal…"
+            value={filters.search ?? ''}
+            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value || undefined }))}
+            className="h-8 w-48"
+          />
+          <Select
+            value={filters.status ?? ''}
+            onValueChange={(v) => setFilters((f) => ({ ...f, status: (v as GoalStatus) || undefined }))}
+          >
+            <SelectTrigger className="h-8 w-36">
+              <SelectValue placeholder="Semua status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Semua status</SelectItem>
+              <SelectItem value="active">Aktif</SelectItem>
+              <SelectItem value="completed">Tercapai</SelectItem>
+              <SelectItem value="paused">Jeda</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button onClick={() => { setEditing(null); setDialogOpen(true) }}>
           <Plus className="h-4 w-4" />Tambah Goal
         </Button>

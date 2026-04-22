@@ -7,17 +7,18 @@ import {
   deleteNote,
   type Note,
   type NoteInput,
+  type NoteFilters,
 } from '@/db/notes'
 import { mapSupabaseError } from '@/lib/errors'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
-export { type Note, type NoteInput }
+export { type Note, type NoteInput, type NoteFilters }
 
-export function useNotes() {
+export function useNotes(filters: NoteFilters = {}) {
   const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['notes', uid],
-    queryFn: () => listNotes(uid),
+    queryKey: ['notes', uid, filters],
+    queryFn: () => listNotes(filters, uid),
     enabled: !!uid,
   })
 }

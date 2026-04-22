@@ -35,14 +35,24 @@ export interface FetchPriceResult {
   errors: { id: number; asset_name: string; reason: string }[]
 }
 
-export async function listInvestments(uid?: string): Promise<Investment[]> {
+export interface InvestmentFilters {
+  search?: string
+  assetType?: string
+}
+
+export async function listInvestments(f: InvestmentFilters | string = {}, uid?: string): Promise<Investment[]> {
+  // backward-compat: allow uid as first arg
+  const filters: InvestmentFilters = typeof f === 'string' ? {} : f
+  const resolvedUid = typeof f === 'string' ? f : uid
   let query = supabase
     .from('investments')
     .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
     .gt('quantity', 0)
     .order('buy_date', { ascending: false })
     .order('id', { ascending: false })
-  if (uid) query = query.eq('user_id', uid)
+  if (resolvedUid) query = query.eq('user_id', resolvedUid)
+  if (filters.search) query = query.ilike('asset_name', `%${filters.search}%`)
+  if (filters.assetType) query = query.eq('asset_type', filters.assetType)
   const { data, error } = await query
   if (error) throw error
   return data as Investment[]

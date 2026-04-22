@@ -21,9 +21,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download } from 'lucide-react'
+import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
+import RecurringListDialog from '@/components/RecurringListDialog'
+import { useProcessRecurring } from '@/hooks/useProcessRecurring'
 import { toast } from 'sonner'
 import { downloadCsv, pickCsvFile } from '@/lib/csv'
 import { exportTransactionsCsv, importTransactionsCsv } from '@/db/csvTransactions'
@@ -34,7 +36,10 @@ export default function TransactionsTab() {
   const [filters, setFilters] = useState<TransactionFilters>({})
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
+  const [recurringOpen, setRecurringOpen] = useState(false)
   const qc = useQueryClient()
+
+  useProcessRecurring()
 
   const { data: rows = [], isLoading } = useTransactions(filters)
   const { data: categories = [] } = useCategories()
@@ -121,6 +126,9 @@ export default function TransactionsTab() {
           }}>
             <Upload className="h-4 w-4" />Impor
           </Button>
+          <Button variant="outline" onClick={() => setRecurringOpen(true)}>
+            <RefreshCw className="h-4 w-4" />Rutin
+          </Button>
           <Button onClick={() => { setEditing(null); setDialogOpen(true) }}>
             <Plus className="h-4 w-4" />Tambah Transaksi
           </Button>
@@ -174,6 +182,7 @@ export default function TransactionsTab() {
       </div>
 
       <TransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+      <RecurringListDialog open={recurringOpen} onOpenChange={setRecurringOpen} />
     </div>
   )
 }

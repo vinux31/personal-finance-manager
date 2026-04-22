@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useInvestments, useDeleteInvestment, useRefreshPrices, costBasis, currentValue, gainLoss, gainLossPercent, type Investment } from '@/queries/investments'
+import { useInvestments, useAssetTypes, useDeleteInvestment, useRefreshPrices, costBasis, currentValue, gainLoss, gainLossPercent, type Investment, type InvestmentFilters } from '@/queries/investments'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -19,9 +21,11 @@ export default function InvestmentsTab() {
   const [editing, setEditing] = useState<Investment | null>(null)
   const [priceOpen, setPriceOpen] = useState(false)
   const [priceFor, setPriceFor] = useState<Investment | null>(null)
+  const [filters, setFilters] = useState<InvestmentFilters>({})
   const qc = useQueryClient()
 
-  const { data: rows = [], isLoading } = useInvestments()
+  const { data: rows = [], isLoading } = useInvestments(filters)
+  const { data: assetTypes = [] } = useAssetTypes()
   const deleteInvestment = useDeleteInvestment()
   const refreshPrices = useRefreshPrices()
 
@@ -82,6 +86,27 @@ export default function InvestmentsTab() {
         <Button onClick={() => { setEditing(null); setDialogOpen(true) }}>
           <Plus className="h-4 w-4" />Tambah Investasi
         </Button>
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        <Input
+          placeholder="Cari nama aset…"
+          value={filters.search ?? ''}
+          onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value || undefined }))}
+          className="h-8 w-48"
+        />
+        <Select
+          value={filters.assetType ?? ''}
+          onValueChange={(v) => setFilters((f) => ({ ...f, assetType: v || undefined }))}
+        >
+          <SelectTrigger className="h-8 w-36">
+            <SelectValue placeholder="Semua jenis" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Semua jenis</SelectItem>
+            {assetTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="rounded-lg border">

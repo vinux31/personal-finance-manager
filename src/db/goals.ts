@@ -20,14 +20,23 @@ export interface GoalInput {
   status: GoalStatus
 }
 
-export async function listGoals(uid?: string): Promise<Goal[]> {
+export interface GoalFilters {
+  search?: string
+  status?: GoalStatus | ''
+}
+
+export async function listGoals(f: GoalFilters | string = {}, uid?: string): Promise<Goal[]> {
+  const filters: GoalFilters = typeof f === 'string' ? {} : f
+  const resolvedUid = typeof f === 'string' ? f : uid
   let query = supabase
     .from('goals')
     .select('id, name, target_amount, current_amount, target_date, status')
     .order('status')
     .order('target_date', { ascending: true, nullsFirst: false })
     .order('id', { ascending: false })
-  if (uid) query = query.eq('user_id', uid)
+  if (resolvedUid) query = query.eq('user_id', resolvedUid)
+  if (filters.search) query = query.ilike('name', `%${filters.search}%`)
+  if (filters.status) query = query.eq('status', filters.status)
   const { data, error } = await query
   if (error) throw error
   return data as Goal[]

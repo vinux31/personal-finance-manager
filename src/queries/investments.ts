@@ -15,19 +15,20 @@ import {
   gainLossPercent,
   type Investment,
   type InvestmentInput,
+  type InvestmentFilters,
   type PriceHistoryEntry,
 } from '@/db/investments'
 import { mapSupabaseError } from '@/lib/errors'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { costBasis, currentValue, gainLoss, gainLossPercent }
-export { type Investment, type InvestmentInput, type PriceHistoryEntry }
+export { type Investment, type InvestmentInput, type InvestmentFilters, type PriceHistoryEntry }
 
-export function useInvestments() {
+export function useInvestments(filters: InvestmentFilters = {}) {
   const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['investments', uid],
-    queryFn: () => listInvestments(uid),
+    queryKey: ['investments', uid, filters],
+    queryFn: () => listInvestments(filters, uid),
     enabled: !!uid,
   })
 }

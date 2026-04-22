@@ -15,16 +15,33 @@ export interface NoteInput {
   linked_transaction_id: number | null
 }
 
-export async function listNotes(uid?: string): Promise<Note[]> {
+export interface NoteFilters {
+  search?: string
+  dateFrom?: string
+  dateTo?: string
+  page?: number
+}
+
+const PAGE_SIZE = 20
+
+export async function listNotes(
+  f: NoteFilters = {},
+  uid?: string
+): Promise<{ data: Note[]; count: number }> {
   let query = supabase
     .from('notes')
-    .select('id, title, content, date, linked_transaction_id')
+    .select('id, title, content, date, linked_transaction_id', { count: 'exact' })
     .order('date', { ascending: false })
     .order('id', { ascending: false })
   if (uid) query = query.eq('user_id', uid)
-  const { data, error } = await query
+  if (f.search) query = query.ilike('title', `%${f.search}%`)
+  if (f.dateFrom) query = query.gte('date', f.dateFrom)
+  if (f.dateTo) query = query.lte('date', f.dateTo)
+  const page = f.page ?? 0
+  query = query.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+  const { data, error, count } = await query
   if (error) throw error
-  return data as Note[]
+  return { data: data as Note[], count: count ?? 0 }
 }
 
 export async function getNote(id: number): Promise<Note | null> {

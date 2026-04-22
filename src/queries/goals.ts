@@ -11,18 +11,19 @@ import {
   type Goal,
   type GoalInput,
   type GoalStatus,
+  type GoalFilters,
 } from '@/db/goals'
 import { mapSupabaseError } from '@/lib/errors'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { goalProgress }
-export { type Goal, type GoalInput, type GoalStatus }
+export { type Goal, type GoalInput, type GoalStatus, type GoalFilters }
 
-export function useGoals() {
+export function useGoals(filters: GoalFilters = {}) {
   const uid = useTargetUserId()
   return useQuery({
-    queryKey: ['goals', uid],
-    queryFn: () => listGoals(uid),
+    queryKey: ['goals', uid, filters],
+    queryFn: () => listGoals(filters, uid),
     enabled: !!uid,
   })
 }
