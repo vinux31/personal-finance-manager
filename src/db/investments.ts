@@ -122,7 +122,10 @@ export async function updatePrice(investmentId: number, price: number, date: str
 
   const { error: e2 } = await supabase
     .from('price_history')
-    .insert({ investment_id: investmentId, price, date })
+    .upsert(
+      { investment_id: investmentId, price, date },
+      { onConflict: 'investment_id,date' }
+    )
   if (e2) throw e2
 }
 
