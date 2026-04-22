@@ -49,7 +49,7 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
     const invest = form.ht_en_invest ? calcInvestasiMandiri({ iuranBulanan: form.ht_inv_bulanan, returnPct: form.ht_inv_return, saldoAwal: form.ht_inv_saldo, kenaikanPct: form.ht_inv_kenaikan, masaKerja }) : null
 
     return { bpjs, dppk, dplk, taspen, pesangon, invest }
-  }, [form, masaKerja])
+  }, [form])
 
   const totalLumpSum = useMemo(() => {
     let t = 0
@@ -394,6 +394,9 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
           <Card>
             <CardContent className="pt-4 space-y-3">
               <p className="text-sm font-medium">Estimasi per Sumber (bulanan)</p>
+              {barData.length === 0 && (
+                <p className="text-xs text-muted-foreground text-center py-2">Tidak ada sumber yang dipilih.</p>
+              )}
               {barData.map((d) => (
                 <div key={d.name} className="space-y-1">
                   <div className="flex justify-between text-sm">
@@ -418,7 +421,7 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
           {barData.length > 0 && (
             <Card>
               <CardContent className="pt-4">
-                <p className="text-sm font-medium mb-3">Estimasi Bulanan vs Target per Sumber</p>
+                <p className="text-sm font-medium mb-3">Kontribusi Bulanan per Sumber + Target</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={[...barData, { name: 'Target', value: form.target_bulanan, active: true }]}>
                     <CartesianGrid strokeDasharray="3 3" />
