@@ -31,6 +31,12 @@ export default function PensiunTab() {
     }
   }, [data])
 
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
+
   const handleChange = useCallback((patch: Partial<PensionSimInput>) => {
     setForm((prev) => {
       const next = { ...prev, ...patch }
@@ -38,7 +44,10 @@ export default function PensiunTab() {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         upsert.mutate(next, {
-          onSuccess: () => setSaveStatus('saved'),
+          onSuccess: () => {
+            setSaveStatus('saved')
+            setTimeout(() => setSaveStatus('idle'), 2000)
+          },
           onError: () => setSaveStatus('idle'),
         })
       }, 1500)
