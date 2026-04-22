@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
+import { todayISO } from '@/lib/format'
 
 export interface Investment {
   id: number
@@ -80,7 +81,7 @@ export async function createInvestment(i: InvestmentInput): Promise<number> {
     const { error: phError } = await supabase.from('price_history').insert({
       investment_id: data.id,
       price: i.current_price,
-      date: i.buy_date,
+      date: todayISO(),
     })
     if (phError) throw phError
   }
