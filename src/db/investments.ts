@@ -137,7 +137,7 @@ export async function getPriceHistory(investmentId: number): Promise<PriceHistor
 }
 
 export async function listAssetTypes(uid?: string): Promise<string[]> {
-  let query = supabase.from('investments').select('asset_type')
+  let query = supabase.from('investments').select('asset_type').gt('quantity', 0)
   if (uid) query = query.eq('user_id', uid)
   const { data, error } = await query
   if (error) throw error
