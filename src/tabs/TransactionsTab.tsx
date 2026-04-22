@@ -152,7 +152,7 @@ export default function TransactionsTab() {
                     <TableCell>{formatDateID(r.date)}</TableCell>
                     <TableCell>
                       <Badge variant={isIncome ? 'default' : 'destructive'} className="gap-1">
-                        {isIncome ? <ArrowDownCircle className="h-3 w-3" /> : <ArrowUpCircle className="h-3 w-3" />}
+                        {isIncome ? <ArrowUpCircle className="h-3 w-3" /> : <ArrowDownCircle className="h-3 w-3" />}
                         {isIncome ? 'Masuk' : 'Keluar'}
                       </Badge>
                     </TableCell>
