@@ -30,8 +30,7 @@ export default function TentangDialog({ open, onOpenChange }: Props) {
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Aplikasi pengelola keuangan pribadi yang berjalan sepenuhnya offline
-            di browser Anda.
+            Aplikasi pengelola keuangan pribadi berbasis cloud.
           </p>
 
           <div className="text-sm">
@@ -39,14 +38,14 @@ export default function TentangDialog({ open, onOpenChange }: Props) {
             <ul className="mt-1 list-disc space-y-0.5 pl-5 text-muted-foreground">
               <li>React + TypeScript + Vite</li>
               <li>Tailwind CSS + shadcn/ui</li>
-              <li>SQLite (sql.js) + File System Access API</li>
+              <li>Supabase (PostgreSQL)</li>
               <li>Recharts (grafik)</li>
             </ul>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            100% gratis, open source, tanpa iklan, tanpa telemetri. Semua data
-            tersimpan di file <code>.db</code> di laptop Anda.
+            100% gratis, open source, tanpa iklan, tanpa telemetri. Data
+            tersimpan aman di cloud (Supabase).
           </p>
         </div>
       </DialogContent>
