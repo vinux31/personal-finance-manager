@@ -39,8 +39,8 @@
 ## 2. Header & Navigasi
 
 ### Header
-- Background: `linear-gradient(135deg, #1e1b4b, #312e81)` — dark indigo
-- Kiri: Logo mark monogram "₱" (kotak 32px, rounded-lg, gradient indigo) + teks "PFM" bold putih + subtitle "Personal Finance" muted
+- Background: `linear-gradient(135deg, #1e1b4b, #312e81)` — dark indigo, **tetap dark di light maupun dark mode** (header selalu gelap, tidak ikut tema)
+- Kiri: Logo mark monogram "₱" (kotak 32px, rounded-lg, gradient indigo) + teks "PFM" bold putih + subtitle "Personal Finance" muted `#a5b4fc`
 - Kanan: Chip bulan aktif (pill, warna `#a5b4fc` muted) + avatar user (lingkaran 30px, inisial, warna indigo)
 
 ### Tab Navigasi
@@ -84,7 +84,7 @@ Konten kartu:
 - Keluar: background `#fee2e2`, text `#dc2626`, pill rounded-full — menggantikan Badge solid merah
 
 ### Tabel
-- Kolom "Catatan" dipindahkan: tampil sebagai tooltip/baris expand on hover (desktop) atau dihapus dari kolom utama (mobile)
+- Kolom "Catatan" dipindahkan: tampil sebagai **tooltip** saat hover cell baris (desktop) — bukan expand row. Di mobile kolom ini dihilangkan dari tampilan tabel.
 - Dibungkus `overflow-x: auto` untuk mobile
 - Header kolom: uppercase, `font-size: 10px`, `letter-spacing: 0.3px`
 
@@ -140,11 +140,16 @@ Tab yang mendapat empty state baru: Transaksi, Investasi, Goals, Catatan, Lapora
 ## 8. Tab Pengaturan
 
 ### Section Header
-Setiap section punya: ikon 28px dalam kotak `rounded-lg` berwarna lembut + label bold.
-- Tampilan → ikon 🎨, background `#ede9fe`
-- Akun → ikon 👤, background `#dcfce7`
-- Bantuan → ikon ❓, background `#fef3c7`
-- Manajemen Pengguna → ikon 👥, background `#e0f2fe`
+Setiap section punya: ikon Lucide 16px dalam kotak 28px `rounded-lg` berwarna lembut + label bold. Pakai Lucide (konsisten dengan codebase), bukan emoji.
+- Tampilan → `<Palette />`, background `#ede9fe`
+- Rencana → `<Target />`, background `#fef3c7`
+- Akun → `<User />`, background `#dcfce7`
+- Manajemen Pengguna → `<Users />`, background `#e0f2fe`
+- Bantuan → `<HelpCircle />`, background `#f0fdf4`
+
+### Section Rencana (existing, perlu polish)
+- Card yang sudah ada (totalTarget, deadline, goals aktif, tombol reset seed) tetap fungsional
+- Hanya visual polish: spacing `p-4`, border `#e0e7ff`, section header pakai ikon `<Target />` seperti pola di atas
 
 ### Tema Switcher
 - Dropdown diganti **3 pill button** (Terang / Gelap / Sistem)
