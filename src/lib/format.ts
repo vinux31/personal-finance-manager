@@ -41,3 +41,11 @@ export function formatDateID(iso: string): string {
     year: 'numeric',
   })
 }
+
+export function shortRupiah(n: number): string {
+  const abs = Math.abs(n)
+  if (abs >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} M`
+  if (abs >= 1_000_000) return `${(n / 1_000_000).toFixed(1)} jt`
+  if (abs >= 1_000) return `${(n / 1_000).toFixed(0)} rb`
+  return formatRupiah(n)
+}
