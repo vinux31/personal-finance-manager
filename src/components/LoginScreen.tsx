@@ -27,7 +27,7 @@ export default function LoginScreen() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Dompetku</h1>
+        <h1 className="text-2xl font-bold">Duitku</h1>
         <p className="mt-2 text-muted-foreground">Masuk untuk mengakses data finansial Anda</p>
       </div>
 
