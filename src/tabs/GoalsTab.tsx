@@ -7,9 +7,10 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
-import { Plus, Pencil, Trash2, PiggyBank, Link2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, PiggyBank, Link2, Target } from 'lucide-react'
 import { formatRupiah, formatDateID } from '@/lib/format'
 import GoalDialog from '@/components/GoalDialog'
+import { EmptyState } from '@/components/ui/empty-state'
 import AddMoneyDialog from '@/components/AddMoneyDialog'
 import LinkInvestmentDialog from '@/components/LinkInvestmentDialog'
 
@@ -104,11 +105,15 @@ export default function GoalsTab() {
       </div>
 
       {isLoading ? (
-        <div className="rounded-lg border bg-card p-12 text-center text-muted-foreground">Memuat…</div>
+        <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Memuat…</div>
       ) : goals.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center text-muted-foreground">
-          Belum ada goal. Tetapkan target tabungan pertama Anda.
-        </div>
+        <EmptyState
+          icon={Target}
+          title="Belum ada goal"
+          description="Tetapkan target keuangan Anda dan pantau progresnya dari sini."
+          actionLabel="+ Buat Goal Pertama"
+          onAction={() => { setEditing(null); setDialogOpen(true) }}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {goals.map((g) => {

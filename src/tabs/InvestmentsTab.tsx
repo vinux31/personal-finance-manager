@@ -15,6 +15,7 @@ import PriceUpdateDialog from '@/components/PriceUpdateDialog'
 import { toast } from 'sonner'
 import { downloadCsv, pickCsvFile } from '@/lib/csv'
 import { exportInvestmentsCsv, importInvestmentsCsv } from '@/db/csvInvestments'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default function InvestmentsTab() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -132,7 +133,17 @@ export default function InvestmentsTab() {
             {isLoading ? (
               <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Memuat…</TableCell></TableRow>
             ) : rows.length === 0 ? (
-              <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Belum ada investasi.</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={10}>
+                  <EmptyState
+                    icon={TrendingUp}
+                    title="Belum ada investasi"
+                    description="Tambahkan aset pertama Anda untuk mulai memantau portofolio."
+                    actionLabel="+ Tambah Investasi"
+                    onAction={() => { setEditing(null); setDialogOpen(true) }}
+                  />
+                </TableCell>
+              </TableRow>
             ) : (
               rows.map((r) => {
                 const gl = gainLoss(r)
@@ -170,7 +181,13 @@ export default function InvestmentsTab() {
         {isLoading ? (
           <div className="rounded-xl border bg-card p-8 text-center text-sm text-muted-foreground">Memuat…</div>
         ) : rows.length === 0 ? (
-          <div className="rounded-xl border bg-card p-8 text-center text-sm text-muted-foreground">Belum ada investasi.</div>
+          <EmptyState
+            icon={TrendingUp}
+            title="Belum ada investasi"
+            description="Tambahkan aset pertama Anda untuk mulai memantau portofolio."
+            actionLabel="+ Tambah Investasi"
+            onAction={() => { setEditing(null); setDialogOpen(true) }}
+          />
         ) : (
           rows.map((r) => {
             const gl = gainLoss(r)

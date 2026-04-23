@@ -21,13 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw, Wallet } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
 import RecurringListDialog from '@/components/RecurringListDialog'
 import { useProcessRecurring } from '@/hooks/useProcessRecurring'
 import { toast } from 'sonner'
 import { downloadCsv, pickCsvFile } from '@/lib/csv'
+import { EmptyState } from '@/components/ui/empty-state'
 import { exportTransactionsCsv, importTransactionsCsv } from '@/db/csvTransactions'
 
 const ALL = '__all__'
@@ -161,7 +162,17 @@ export default function TransactionsTab() {
             {isLoading ? (
               <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Memuat…</TableCell></TableRow>
             ) : rows.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Belum ada transaksi. Klik "Tambah Transaksi" untuk mulai.</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <EmptyState
+                    icon={Wallet}
+                    title="Belum ada transaksi"
+                    description="Catat pemasukan dan pengeluaran pertama Anda untuk mulai melacak keuangan."
+                    actionLabel="+ Tambah Transaksi"
+                    onAction={() => { setEditing(null); setDialogOpen(true) }}
+                  />
+                </TableCell>
+              </TableRow>
             ) : (
               rows.map((r) => {
                 const isIncome = r.type === 'income'

@@ -4,9 +4,10 @@ import { useTransactions } from '@/queries/transactions'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
-import { Plus, Pencil, Trash2, Link2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, Pencil, Trash2, Link2, ChevronLeft, ChevronRight, StickyNote } from 'lucide-react'
 import { formatDateID, formatRupiah } from '@/lib/format'
 import NoteDialog from '@/components/NoteDialog'
+import { EmptyState } from '@/components/ui/empty-state'
 
 const PAGE_SIZE = 20
 
@@ -72,9 +73,13 @@ export default function NotesTab() {
       {isLoading ? (
         <div className="rounded-lg border bg-card p-12 text-center text-muted-foreground">Memuat…</div>
       ) : notes.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center text-muted-foreground">
-          Belum ada catatan. Simpan pemikiran atau reminder terkait keuangan Anda.
-        </div>
+        <EmptyState
+          icon={StickyNote}
+          title="Belum ada catatan"
+          description="Simpan pemikiran atau reminder terkait keuangan Anda."
+          actionLabel="+ Tambah Catatan"
+          onAction={() => { setEditing(null); setDialogOpen(true) }}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {notes.map((n) => (
