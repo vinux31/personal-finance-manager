@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
@@ -63,88 +62,96 @@ export default function TransactionsTab() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-3 gap-3">
         <SummaryCard label="Pemasukan" value={formatRupiah(totals.income)} tone="income" />
         <SummaryCard label="Pengeluaran" value={formatRupiah(totals.expense)} tone="expense" />
         <SummaryCard label="Net" value={formatRupiah(totals.net)} tone={totals.net >= 0 ? 'income' : 'expense'} />
       </div>
 
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="grid gap-1">
-          <Label htmlFor="f-from" className="text-xs">Dari</Label>
-          <Input id="f-from" type="date" value={filters.dateFrom ?? ''} onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value || undefined }))} className="w-40" />
-        </div>
-        <div className="grid gap-1">
-          <Label htmlFor="f-to" className="text-xs">Sampai</Label>
-          <Input id="f-to" type="date" value={filters.dateTo ?? ''} onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value || undefined }))} className="w-40" />
-        </div>
-        <div className="grid gap-1">
-          <Label className="text-xs">Jenis</Label>
-          <Select value={filters.type || ALL} onValueChange={(v) => setFilters((f) => ({ ...f, type: v === ALL ? '' : (v as 'income' | 'expense'), categoryId: null }))}>
-            <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL}>Semua</SelectItem>
-              <SelectItem value="income">Pemasukan</SelectItem>
-              <SelectItem value="expense">Pengeluaran</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid gap-1">
-          <Label className="text-xs">Kategori</Label>
-          <Select value={filters.categoryId ? String(filters.categoryId) : ALL} onValueChange={(v) => setFilters((f) => ({ ...f, categoryId: v === ALL ? null : Number(v) }))}>
-            <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL}>Semua</SelectItem>
-              {filteredCategories.map((c) => (
-                <SelectItem key={`${c.type}-${c.id}`} value={String(c.id)}>{c.name} ({c.type === 'income' ? 'masuk' : 'keluar'})</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* Toolbar — filter baris 1, aksi baris 2 */}
+      <div className="rounded-xl border border-[#e0e7ff] bg-card p-3">
+        {/* Baris 1: Filter */}
+        <div className="flex flex-wrap items-end gap-2 mb-2">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground self-center">Filter:</span>
+          <div className="grid gap-0.5">
+            <Label htmlFor="f-from" className="text-[10px]">Dari</Label>
+            <Input id="f-from" type="date" value={filters.dateFrom ?? ''} onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value || undefined }))} className="h-7 w-36 text-xs" />
+          </div>
+          <div className="grid gap-0.5">
+            <Label htmlFor="f-to" className="text-[10px]">Sampai</Label>
+            <Input id="f-to" type="date" value={filters.dateTo ?? ''} onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value || undefined }))} className="h-7 w-36 text-xs" />
+          </div>
+          <div className="grid gap-0.5">
+            <Label className="text-[10px]">Jenis</Label>
+            <Select value={filters.type || ALL} onValueChange={(v) => setFilters((f) => ({ ...f, type: v === ALL ? '' : (v as 'income' | 'expense'), categoryId: null }))}>
+              <SelectTrigger className="h-7 w-28 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>Semua</SelectItem>
+                <SelectItem value="income">Pemasukan</SelectItem>
+                <SelectItem value="expense">Pengeluaran</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-0.5">
+            <Label className="text-[10px]">Kategori</Label>
+            <Select value={filters.categoryId ? String(filters.categoryId) : ALL} onValueChange={(v) => setFilters((f) => ({ ...f, categoryId: v === ALL ? null : Number(v) }))}>
+              <SelectTrigger className="h-7 w-40 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>Semua</SelectItem>
+                {filteredCategories.map((c) => (
+                  <SelectItem key={`${c.type}-${c.id}`} value={String(c.id)}>{c.name} ({c.type === 'income' ? 'masuk' : 'keluar'})</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <div className="ml-auto flex gap-2">
-          <Button variant="outline" onClick={async () => {
-            const csv = await exportTransactionsCsv()
-            downloadCsv(`transactions-${todayISO()}.csv`, csv)
-            toast.success('CSV diekspor')
-          }}>
-            <Download className="h-4 w-4" />Ekspor
-          </Button>
-          <Button variant="outline" onClick={async () => {
-            const text = await pickCsvFile()
-            if (!text) return
-            try {
-              const r = await importTransactionsCsv(text)
-              if (r.inserted > 0) {
-                await qc.invalidateQueries({ queryKey: ['transactions'] })
-                toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+        {/* Baris 2: Aksi */}
+        <div className="flex items-center justify-between gap-2 border-t border-[#e0e7ff] pt-2">
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={async () => {
+              const csv = await exportTransactionsCsv()
+              downloadCsv(`transactions-${todayISO()}.csv`, csv)
+              toast.success('CSV diekspor')
+            }}>
+              <Download className="h-3 w-3" />Ekspor
+            </Button>
+            <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={async () => {
+              const text = await pickCsvFile()
+              if (!text) return
+              try {
+                const r = await importTransactionsCsv(text)
+                if (r.inserted > 0) {
+                  await qc.invalidateQueries({ queryKey: ['transactions'] })
+                  toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+                }
+                if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
+              } catch (err) {
+                toast.error(String(err instanceof Error ? err.message : err))
               }
-              if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
-            } catch (err) {
-              toast.error(String(err instanceof Error ? err.message : err))
-            }
-          }}>
-            <Upload className="h-4 w-4" />Impor
-          </Button>
-          <Button variant="outline" onClick={() => setRecurringOpen(true)}>
-            <RefreshCw className="h-4 w-4" />Rutin
-          </Button>
-          <Button onClick={() => { setEditing(null); setDialogOpen(true) }}>
-            <Plus className="h-4 w-4" />Tambah Transaksi
+            }}>
+              <Upload className="h-3 w-3" />Impor
+            </Button>
+            <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={() => setRecurringOpen(true)}>
+              <RefreshCw className="h-3 w-3" />Rutin
+            </Button>
+          </div>
+          <Button size="sm" className="h-7 text-xs bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white" onClick={() => { setEditing(null); setDialogOpen(true) }}>
+            <Plus className="h-3 w-3" />Tambah Transaksi
           </Button>
         </div>
       </div>
 
-      <div className="rounded-lg border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-32">Tanggal</TableHead>
-              <TableHead className="w-28">Jenis</TableHead>
-              <TableHead>Kategori</TableHead>
-              <TableHead className="text-right">Jumlah</TableHead>
-              <TableHead>Catatan</TableHead>
-              <TableHead className="w-24 text-right">Aksi</TableHead>
+              <TableHead className="w-28 text-[10px] font-semibold uppercase tracking-wider">Tanggal</TableHead>
+              <TableHead className="w-24 text-[10px] font-semibold uppercase tracking-wider">Jenis</TableHead>
+              <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Kategori</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">Jumlah</TableHead>
+              <TableHead className="hidden sm:table-cell text-[10px] font-semibold uppercase tracking-wider">Catatan</TableHead>
+              <TableHead className="w-20 text-right text-[10px] font-semibold uppercase tracking-wider">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -157,21 +164,21 @@ export default function TransactionsTab() {
                 const isIncome = r.type === 'income'
                 return (
                   <TableRow key={r.id}>
-                    <TableCell>{formatDateID(r.date)}</TableCell>
+                    <TableCell className="text-sm">{formatDateID(r.date)}</TableCell>
                     <TableCell>
-                      <Badge variant={isIncome ? 'default' : 'destructive'} className="gap-1">
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
                         {isIncome ? <ArrowUpCircle className="h-3 w-3" /> : <ArrowDownCircle className="h-3 w-3" />}
                         {isIncome ? 'Masuk' : 'Keluar'}
-                      </Badge>
+                      </span>
                     </TableCell>
-                    <TableCell>{r.category_name}</TableCell>
-                    <TableCell className={`text-right font-medium ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}>
+                    <TableCell className="font-medium">{r.category_name}</TableCell>
+                    <TableCell className={`text-right font-semibold tabular-nums ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}>
                       {isIncome ? '+' : '−'} {formatRupiah(r.amount)}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{r.note ?? ''}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">{r.note ?? ''}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => void onDelete(r.id)}><Trash2 className="h-4 w-4 text-red-600" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => void onDelete(r.id)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
                     </TableCell>
                   </TableRow>
                 )
