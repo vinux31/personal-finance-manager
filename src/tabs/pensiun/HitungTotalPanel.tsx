@@ -107,6 +107,10 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
       {/* Step 1: Sumber */}
       {step === 1 && (
         <div className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Pilih sumber dana pensiun yang Anda miliki, lalu klik <strong>Hitung Total Pensiun</strong> untuk melihat estimasi total dan kecukupan dana.
+          </p>
+
           {/* BPJS */}
           <Card>
             <CardContent className="pt-4 pb-4">
@@ -118,8 +122,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">BPJS JHT + JP</p>
+                  <p className="text-xs text-muted-foreground">
+                    Iuran wajib karyawan & perusahaan. JHT cair sekaligus saat pensiun; JP dibayar bulanan seumur hidup.
+                  </p>
                   {sumber.bpjs && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>
                       JHT: {shortRupiah(sumber.bpjs.jht)} · JP: {shortRupiah(sumber.bpjs.jpBulanan)}/bln
                     </p>
                   )}
@@ -154,8 +161,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">DPPK (Dana Pensiun Pemberi Kerja)</p>
+                  <p className="text-xs text-muted-foreground">
+                    Program pensiun yang dikelola perusahaan Anda. PPMP = manfaat sudah ditentukan; PPIP = iuran rutin diinvestasikan.
+                  </p>
                   {sumber.dppk && (
-                    <p className="text-xs text-muted-foreground">Total: {shortRupiah(sumber.dppk.total)}</p>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>Total: {shortRupiah(sumber.dppk.total)}</p>
                   )}
                 </div>
                 <span className="text-xs text-muted-foreground">{open === 'dppk' ? '▲' : '▼'}</span>
@@ -205,8 +215,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">DPLK (Dana Pensiun Lembaga Keuangan)</p>
+                  <p className="text-xs text-muted-foreground">
+                    Program pensiun dari bank atau asuransi jiwa. Anda menyetor iuran rutin; dana diinvestasikan sesuai pilihan portofolio.
+                  </p>
                   {sumber.dplk && (
-                    <p className="text-xs text-muted-foreground">Total: {shortRupiah(sumber.dplk.total)}</p>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>Total: {shortRupiah(sumber.dplk.total)}</p>
                   )}
                 </div>
                 <span className="text-xs text-muted-foreground">{open === 'dplk' ? '▲' : '▼'}</span>
@@ -241,8 +254,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">Taspen (ASN/PNS)</p>
+                  <p className="text-xs text-muted-foreground">
+                    Khusus PNS/ASN. Memberikan uang pensiun bulanan seumur hidup + THT (Tabungan Hari Tua) yang cair sekaligus.
+                  </p>
                   {sumber.taspen && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>
                       Pensiun: {shortRupiah(sumber.taspen.bulanan)}/bln · THT: {shortRupiah(sumber.taspen.tht)}
                     </p>
                   )}
@@ -279,8 +295,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">Pesangon (UU 11/2020)</p>
+                  <p className="text-xs text-muted-foreground">
+                    Uang pesangon wajib dari perusahaan saat PHK atau pensiun. Dihitung otomatis dari gaji pokok × faktor masa kerja (UU Cipta Kerja).
+                  </p>
                   {sumber.pesangon && (
-                    <p className="text-xs text-muted-foreground">Total: {shortRupiah(sumber.pesangon.total)} (otomatis dari gaji pokok + masa kerja)</p>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>Total: {shortRupiah(sumber.pesangon.total)}</p>
                   )}
                 </div>
               </div>
@@ -298,8 +317,11 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium">Investasi Mandiri</p>
+                  <p className="text-xs text-muted-foreground">
+                    Investasi yang Anda kelola sendiri (reksa dana, saham, deposito, dll). Masukkan iuran bulanan dan estimasi return tahunan.
+                  </p>
                   {sumber.invest && (
-                    <p className="text-xs text-muted-foreground">Total: {shortRupiah(sumber.invest.total)}</p>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--gold-text)' }}>Total: {shortRupiah(sumber.invest.total)}</p>
                   )}
                 </div>
                 <span className="text-xs text-muted-foreground">{open === 'invest' ? '▲' : '▼'}</span>
