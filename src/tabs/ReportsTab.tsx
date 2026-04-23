@@ -233,8 +233,8 @@ function shortRupiah(n: number): string {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border bg-card p-5">
-      <h3 className="mb-4 text-sm font-semibold">{title}</h3>
+    <div className="rounded-xl border bg-card p-5">
+      <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
       {children}
     </div>
   )
@@ -250,7 +250,7 @@ function EmptyChart({ text }: { text?: string }) {
 
 function SummaryCard({ label, value, tone }: { label: string; value: string; tone: 'up' | 'down' }) {
   return (
-    <div className="rounded-lg border bg-card p-4">
+    <div className="rounded-xl border bg-card p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className={`mt-1 text-2xl font-semibold ${tone === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>{value}</div>
     </div>

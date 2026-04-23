@@ -71,7 +71,7 @@ export default function NotesTab() {
       </div>
 
       {isLoading ? (
-        <div className="rounded-lg border bg-card p-12 text-center text-muted-foreground">Memuat…</div>
+        <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Memuat…</div>
       ) : notes.length === 0 ? (
         <EmptyState
           icon={StickyNote}
@@ -83,7 +83,7 @@ export default function NotesTab() {
       ) : (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {notes.map((n) => (
-            <div key={n.id} className="rounded-lg border bg-card p-4">
+            <div key={n.id} className="rounded-xl border bg-card p-4">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-semibold leading-tight">{n.title}</h3>
                 <div className="flex shrink-0">

@@ -65,7 +65,7 @@ export default function PensiunTab() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Profil Strip */}
       <Card className="p-4" style={{ borderTop: '3px solid var(--gold)' }}>
         <div className="flex items-center justify-between mb-3">
