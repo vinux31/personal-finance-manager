@@ -17,6 +17,9 @@ export function parseRupiah(s: string): number {
   } else if (cleaned.includes(',')) {
     // "5107,65" → treat comma as decimal separator
     cleaned = cleaned.replace(',', '.')
+  } else {
+    // No comma: dots are thousands separators (e.g. "Rp 10.000.000" → "10000000")
+    cleaned = cleaned.replace(/\./g, '')
   }
   // Remove anything except digits and decimal dot
   cleaned = cleaned.replace(/[^\d.]/g, '')
