@@ -9,7 +9,7 @@ created: 2026-04-23
 
 # Phase 1 — UI Design Contract
 
-> Visual and interaction contract untuk Phase 1: Foundation.
+> Visual dan interaction contract untuk Phase 1: Foundation.
 > Dihasilkan oleh gsd-ui-researcher. Dikonsumsi oleh gsd-planner, gsd-executor, dan gsd-ui-auditor.
 
 **Catatan penting:** Ini adalah fase minimal UI. Satu-satunya perubahan UI adalah restrukturisasi tab navigasi (Goals → Finansial dengan 2 sub-tab). Tidak ada warna, spacing, atau tipografi baru — semua mewarisi sistem desain yang sudah ada.
@@ -44,7 +44,7 @@ Skala 8-point yang sudah ada di aplikasi — tidak ada perubahan untuk fase ini.
 | 2xl | 48px | Pemisah section besar |
 | 3xl | 64px | Spacing level halaman |
 
-Exceptions: Tab trigger top-level menggunakan `px-4 py-2.5` (10px vertikal) untuk touch target — pola yang sudah ada di `src/App.tsx`. Sub-tab menggunakan default shadcn TabsList/TabsTrigger tanpa override.
+Exceptions: Tab trigger top-level menggunakan `px-4 py-2.5` (10px vertikal) untuk touch target — pola yang sudah ada di `src/App.tsx` (inherited — no change in this phase). Sub-tab menggunakan default shadcn TabsList/TabsTrigger tanpa override.
 
 ---
 
@@ -57,7 +57,7 @@ Semua nilai mewarisi dari Geist Variable yang sudah dikonfigurasi. Tidak ada tok
 | Body | 14px (`text-sm`) | 400 (regular) | 1.5 | Pola existing di PensiunTab, GoalsTab |
 | Label | 12px (`text-xs`) | 400 (regular) | 1.5 | `<Label className="text-xs">` di PensiunTab |
 | Heading | 14px (`text-sm`) | 600 (semibold) | 1.2 | `font-semibold text-sm` di PensiunTab |
-| Sub-tab trigger | 14px (`text-sm`) | 500 (medium) | 1 | Default shadcn TabsTrigger |
+| Sub-tab trigger | 14px (`text-sm`) | 400 (regular) | 1 | Default shadcn TabsTrigger |
 
 ---
 
