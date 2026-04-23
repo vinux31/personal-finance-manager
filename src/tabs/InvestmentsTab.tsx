@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Plus, Pencil, Trash2, TrendingUp, Upload, Download, RefreshCw } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
 import InvestmentDialog from '@/components/InvestmentDialog'
@@ -109,27 +108,28 @@ export default function InvestmentsTab() {
         </Select>
       </div>
 
-      <div className="rounded-lg border">
+      {/* Desktop: tabel normal */}
+      <div className="hidden overflow-x-auto rounded-xl border border-border md:block">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Jenis</TableHead>
-              <TableHead>Nama</TableHead>
-              <TableHead className="text-right">Qty</TableHead>
-              <TableHead className="text-right">Harga Beli</TableHead>
-              <TableHead className="text-right">Harga Kini</TableHead>
-              <TableHead className="text-right">Modal</TableHead>
-              <TableHead className="text-right">Nilai</TableHead>
-              <TableHead className="text-right">G/L</TableHead>
-              <TableHead className="w-32">Tgl Beli</TableHead>
-              <TableHead className="w-32 text-right">Aksi</TableHead>
+              <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Jenis</TableHead>
+              <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Nama</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">Qty</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">H.Beli</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">H.Kini</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">Modal</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">Nilai</TableHead>
+              <TableHead className="text-right text-[10px] font-semibold uppercase tracking-wider">G/L</TableHead>
+              <TableHead className="w-28 text-[10px] font-semibold uppercase tracking-wider">Tgl Beli</TableHead>
+              <TableHead className="w-28 text-right text-[10px] font-semibold uppercase tracking-wider">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Memuat…</TableCell></TableRow>
             ) : rows.length === 0 ? (
-              <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Belum ada investasi. Klik "Tambah Investasi" untuk mulai.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={10} className="py-8 text-center text-muted-foreground">Belum ada investasi.</TableCell></TableRow>
             ) : (
               rows.map((r) => {
                 const gl = gainLoss(r)
@@ -137,22 +137,22 @@ export default function InvestmentsTab() {
                 const tone = gl >= 0 ? 'text-emerald-600' : 'text-red-600'
                 return (
                   <TableRow key={r.id}>
-                    <TableCell><Badge variant="secondary">{r.asset_type}</Badge></TableCell>
+                    <TableCell><span className="rounded-full bg-[var(--brand-light)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand)]">{r.asset_type}</span></TableCell>
                     <TableCell className="font-medium">{r.asset_name}</TableCell>
-                    <TableCell className="text-right">{r.quantity}</TableCell>
-                    <TableCell className="text-right">{formatRupiah(r.buy_price)}</TableCell>
-                    <TableCell className="text-right">{r.current_price != null ? formatRupiah(r.current_price) : '—'}</TableCell>
-                    <TableCell className="text-right">{formatRupiah(costBasis(r))}</TableCell>
-                    <TableCell className="text-right">{formatRupiah(currentValue(r))}</TableCell>
-                    <TableCell className={`text-right font-medium ${tone}`}>
+                    <TableCell className="text-right tabular-nums">{r.quantity}</TableCell>
+                    <TableCell className="text-right tabular-nums">{formatRupiah(r.buy_price)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{r.current_price != null ? formatRupiah(r.current_price) : '—'}</TableCell>
+                    <TableCell className="text-right tabular-nums">{formatRupiah(costBasis(r))}</TableCell>
+                    <TableCell className="text-right tabular-nums">{formatRupiah(currentValue(r))}</TableCell>
+                    <TableCell className={`text-right font-semibold ${tone}`}>
                       {gl >= 0 ? '+' : '−'} {formatRupiah(Math.abs(gl))}
                       <div className="text-xs font-normal">{pct >= 0 ? '+' : ''}{pct.toFixed(2)}%</div>
                     </TableCell>
                     <TableCell>{formatDateID(r.buy_date)}</TableCell>
                     <TableCell className="text-right">
-<Button variant="ghost" size="icon" title="Update harga" onClick={() => { setPriceFor(r); setPriceOpen(true) }}><TrendingUp className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" title="Edit" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" title="Hapus" onClick={() => onDelete(r)}><Trash2 className="h-4 w-4 text-red-600" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Update harga" onClick={() => { setPriceFor(r); setPriceOpen(true) }}><TrendingUp className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Edit" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Hapus" onClick={() => onDelete(r)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
                     </TableCell>
                   </TableRow>
                 )
@@ -160,6 +160,56 @@ export default function InvestmentsTab() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile: card per aset */}
+      <div className="grid gap-3 md:hidden">
+        {isLoading ? (
+          <div className="rounded-xl border bg-card p-8 text-center text-sm text-muted-foreground">Memuat…</div>
+        ) : rows.length === 0 ? (
+          <div className="rounded-xl border bg-card p-8 text-center text-sm text-muted-foreground">Belum ada investasi.</div>
+        ) : (
+          rows.map((r) => {
+            const gl = gainLoss(r)
+            const pct = gainLossPercent(r)
+            const isUp = gl >= 0
+            return (
+              <div key={r.id} className="rounded-xl border bg-card p-4" style={{ borderLeft: '4px solid var(--brand)' }}>
+                <div className="mb-3 flex items-start justify-between">
+                  <div>
+                    <span className="mb-1 inline-block rounded-full bg-[var(--brand-light)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand)]">{r.asset_type}</span>
+                    <div className="text-base font-bold">{r.asset_name}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold">{formatRupiah(currentValue(r))}</div>
+                    <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                      {isUp ? '↑' : '↓'} {pct.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+                <div className="mb-3 grid grid-cols-3 gap-2">
+                  {[
+                    { label: 'QTY', value: String(r.quantity) },
+                    { label: 'H.BELI', value: formatRupiah(r.buy_price) },
+                    { label: 'H.KINI', value: r.current_price != null ? formatRupiah(r.current_price) : '—' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="rounded-lg bg-muted/40 p-2">
+                      <div className="text-[9px] font-semibold uppercase text-muted-foreground">{label}</div>
+                      <div className="truncate text-xs font-semibold">{value}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-end gap-1.5">
+                  <Button variant="outline" size="sm" className="h-7 text-xs border-[#e0e7ff] text-[var(--brand)]" onClick={() => { setPriceFor(r); setPriceOpen(true) }}>
+                    <TrendingUp className="h-3 w-3" />Update Harga
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditing(r); setDialogOpen(true) }}><Pencil className="h-3.5 w-3.5" /></Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onDelete(r)}><Trash2 className="h-3.5 w-3.5 text-red-500" /></Button>
+                </div>
+              </div>
+            )
+          })
+        )}
       </div>
 
       <InvestmentDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
