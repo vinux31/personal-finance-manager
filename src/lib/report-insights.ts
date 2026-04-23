@@ -19,10 +19,8 @@ export function generatePeriodInsight(totals: Totals, periodData: PeriodAgg[]): 
     lines.push({ text: `Net defisit sebesar ${shortRupiah(Math.abs(totals.net))} pada periode ini.`, tone: 'negative' })
   }
 
-  if (periodData.length > 0) {
-    const peak = periodData.reduce((a, b) => Number(b.expense) > Number(a.expense) ? b : a)
-    lines.push({ text: `Pengeluaran terbesar terjadi pada ${peak.period} (${shortRupiah(Number(peak.expense))}).`, tone: 'neutral' })
-  }
+  const peak = periodData.reduce((a, b) => Number(b.expense) > Number(a.expense) ? b : a)
+  lines.push({ text: `Pengeluaran terbesar terjadi pada ${peak.period} (${shortRupiah(Number(peak.expense))}).`, tone: 'neutral' })
 
   if (periodData.length >= 2) {
     const last = Number(periodData[periodData.length - 1].expense)
