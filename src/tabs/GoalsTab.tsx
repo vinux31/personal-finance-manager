@@ -137,7 +137,7 @@ export default function GoalsTab() {
                     <span className="font-medium">{formatRupiah(totalCurrent)}</span>
                     <span className="text-muted-foreground">dari {formatRupiah(g.target_amount)}</span>
                   </div>
-                  <Progress value={pct} />
+                  <Progress value={pct} className="[&>div]:bg-[var(--brand)]" />
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>{pct.toFixed(1)}%</span>
                     {remaining > 0 ? (
