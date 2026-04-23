@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTransactions, useDeleteTransaction, type TransactionFilters, type Transaction } from '@/queries/transactions'
 import { useCategories } from '@/queries/categories'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -36,6 +37,8 @@ export default function TransactionsTab() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
   const [recurringOpen, setRecurringOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmId, setConfirmId] = useState<number | null>(null)
   const qc = useQueryClient()
 
   useProcessRecurring()
@@ -53,9 +56,9 @@ export default function TransactionsTab() {
     return { income, expense, net: income - expense }
   }, [rows])
 
-  async function onDelete(id: number) {
-    if (!confirm('Hapus transaksi ini?')) return
-    deleteTransaction.mutate(id)
+  function onDelete(id: number) {
+    setConfirmId(id)
+    setConfirmOpen(true)
   }
 
   const filteredCategories = filters.type ? categories.filter((c) => c.type === filters.type) : categories
@@ -188,6 +191,13 @@ export default function TransactionsTab() {
         </Table>
       </div>
 
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Transaksi"
+        description="Transaksi ini akan dihapus permanen. Tindakan ini tidak dapat dibatalkan."
+        onConfirm={() => { if (confirmId != null) deleteTransaction.mutate(confirmId) }}
+      />
       <TransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
       <RecurringListDialog open={recurringOpen} onOpenChange={setRecurringOpen} />
     </div>

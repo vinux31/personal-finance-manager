@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useInvestments, useAssetTypes, useDeleteInvestment, useRefreshPrices, costBasis, currentValue, gainLoss, gainLossPercent, type Investment, type InvestmentFilters } from '@/queries/investments'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
@@ -21,6 +22,8 @@ export default function InvestmentsTab() {
   const [priceOpen, setPriceOpen] = useState(false)
   const [priceFor, setPriceFor] = useState<Investment | null>(null)
   const [filters, setFilters] = useState<InvestmentFilters>({})
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmInv, setConfirmInv] = useState<Investment | null>(null)
   const qc = useQueryClient()
 
   const { data: rows = [], isLoading } = useInvestments(filters)
@@ -37,8 +40,8 @@ export default function InvestmentsTab() {
   }, [rows])
 
   function onDelete(inv: Investment) {
-    if (!confirm(`Hapus investasi "${inv.asset_name}" beserta riwayat harganya?`)) return
-    deleteInvestment.mutate(inv.id)
+    setConfirmInv(inv)
+    setConfirmOpen(true)
   }
 
   return (
@@ -212,6 +215,13 @@ export default function InvestmentsTab() {
         )}
       </div>
 
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={`Hapus "${confirmInv?.asset_name ?? ''}"`}
+        description="Investasi dan riwayat harganya akan dihapus permanen."
+        onConfirm={() => { if (confirmInv) deleteInvestment.mutate(confirmInv.id) }}
+      />
       <InvestmentDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
       <PriceUpdateDialog open={priceOpen} onOpenChange={setPriceOpen} investment={priceFor} />
     </div>

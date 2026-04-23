@@ -3,6 +3,7 @@ import { useGoals, useDeleteGoal, type Goal, type GoalFilters, type GoalStatus }
 import { useInvestments, currentValue } from '@/queries/investments'
 import { useGoalInvestments } from '@/queries/goalInvestments'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
@@ -20,6 +21,8 @@ export default function GoalsTab() {
   const [linkFor, setLinkFor] = useState<Goal | null>(null)
   const [linkOpen, setLinkOpen] = useState(false)
   const [filters, setFilters] = useState<GoalFilters>({})
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmGoal, setConfirmGoal] = useState<Goal | null>(null)
 
   const { data: goals = [], isLoading } = useGoals(filters)
   const { data: investments = [] } = useInvestments()
@@ -39,8 +42,8 @@ export default function GoalsTab() {
   const totalPct = totalTarget > 0 ? Math.min(100, (totalCollected / totalTarget) * 100) : 0
 
   function onDelete(g: Goal) {
-    if (!confirm(`Hapus goal "${g.name}"?`)) return
-    deleteGoal.mutate(g.id)
+    setConfirmGoal(g)
+    setConfirmOpen(true)
   }
 
   return (
@@ -200,6 +203,13 @@ export default function GoalsTab() {
         </div>
       )}
 
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={`Hapus "${confirmGoal?.name ?? ''}"`}
+        description="Goal ini akan dihapus permanen."
+        onConfirm={() => { if (confirmGoal) deleteGoal.mutate(confirmGoal.id) }}
+      />
       <GoalDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
       <AddMoneyDialog open={addMoneyOpen} onOpenChange={setAddMoneyOpen} goal={addMoneyFor} />
       <LinkInvestmentDialog open={linkOpen} onOpenChange={setLinkOpen} goal={linkFor} />

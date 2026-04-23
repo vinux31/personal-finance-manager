@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useThemeStore, type Theme } from '@/lib/theme'
@@ -39,6 +40,10 @@ export default function SettingsTab() {
   const [tentangOpen, setTentangOpen] = useState(false)
   const [resetting, setResetting] = useState(false)
   const [newEmail, setNewEmail] = useState('')
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
+  const [removeEmailConfirmOpen, setRemoveEmailConfirmOpen] = useState(false)
+  const [removeEmailTarget, setRemoveEmailTarget] = useState<{ id: number; email: string } | null>(null)
+  const [resetSeedConfirmOpen, setResetSeedConfirmOpen] = useState(false)
   const qc = useQueryClient()
 
   const { data: goals = [] } = useGoals()
@@ -95,7 +100,10 @@ export default function SettingsTab() {
     : '—'
 
   async function handleResetSeed() {
-    if (!confirm('Reset seed Rencana? Goals dan investasi hasil seed akan dihapus.')) return
+    setResetSeedConfirmOpen(true)
+  }
+
+  async function doResetSeed() {
     setResetting(true)
     try {
       const goalsToDelete = goals.filter((g) =>
@@ -197,10 +205,7 @@ export default function SettingsTab() {
               variant="outline"
               size="sm"
               className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-              onClick={async () => {
-                if (!confirm('Keluar dari aplikasi?')) return
-                await signOut()
-              }}
+              onClick={() => setLogoutConfirmOpen(true)}
             >
               <LogOut className="h-3.5 w-3.5" />Keluar
             </Button>
@@ -228,8 +233,8 @@ export default function SettingsTab() {
                     className="h-7 text-destructive hover:text-destructive"
                     disabled={ae.email === user?.email || removeEmailMutation.isPending}
                     onClick={() => {
-                      if (!confirm(`Hapus ${ae.email}?`)) return
-                      removeEmailMutation.mutate(ae.id)
+                      setRemoveEmailTarget({ id: ae.id, email: ae.email })
+                      setRemoveEmailConfirmOpen(true)
                     }}
                   >
                     Hapus
@@ -303,6 +308,30 @@ export default function SettingsTab() {
 
       <PanduanDialog open={panduanOpen} onOpenChange={setPanduanOpen} />
       <TentangDialog open={tentangOpen} onOpenChange={setTentangOpen} />
+
+      <ConfirmDialog
+        open={logoutConfirmOpen}
+        onOpenChange={setLogoutConfirmOpen}
+        title="Keluar dari aplikasi?"
+        description="Anda akan keluar dari sesi ini."
+        confirmLabel="Keluar"
+        onConfirm={async () => { await signOut() }}
+      />
+      <ConfirmDialog
+        open={removeEmailConfirmOpen}
+        onOpenChange={setRemoveEmailConfirmOpen}
+        title={`Hapus ${removeEmailTarget?.email ?? ''}?`}
+        description="Email ini tidak akan bisa login lagi."
+        onConfirm={() => { if (removeEmailTarget) removeEmailMutation.mutate(removeEmailTarget.id) }}
+      />
+      <ConfirmDialog
+        open={resetSeedConfirmOpen}
+        onOpenChange={setResetSeedConfirmOpen}
+        title="Reset Seed Rencana?"
+        description="Goals dan investasi hasil seed akan dihapus permanen."
+        confirmLabel="Reset"
+        onConfirm={doResetSeed}
+      />
     </div>
   )
 }

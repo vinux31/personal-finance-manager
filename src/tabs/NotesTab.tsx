@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNotes, useDeleteNote, type Note, type NoteFilters } from '@/queries/notes'
 import { useTransactions } from '@/queries/transactions'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Plus, Pencil, Trash2, Link2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { formatDateID, formatRupiah } from '@/lib/format'
@@ -13,6 +14,8 @@ export default function NotesTab() {
   const [editing, setEditing] = useState<Note | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [filters, setFilters] = useState<NoteFilters>({ page: 0 })
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmNote, setConfirmNote] = useState<Note | null>(null)
 
   const { data: result, isLoading } = useNotes(filters)
   const notes = result?.data ?? []
@@ -34,8 +37,8 @@ export default function NotesTab() {
   }
 
   function onDelete(n: Note) {
-    if (!confirm(`Hapus catatan "${n.title}"?`)) return
-    deleteNote.mutate(n.id)
+    setConfirmNote(n)
+    setConfirmOpen(true)
   }
 
   return (
@@ -120,6 +123,13 @@ export default function NotesTab() {
         </div>
       )}
 
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={`Hapus "${confirmNote?.title ?? ''}"`}
+        description="Catatan ini akan dihapus permanen."
+        onConfirm={() => { if (confirmNote) deleteNote.mutate(confirmNote.id) }}
+      />
       <NoteDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
     </div>
   )
