@@ -5,7 +5,6 @@ import { useGoalInvestments } from '@/queries/goalInvestments'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Plus, Pencil, Trash2, PiggyBank, Link2 } from 'lucide-react'
 import { formatRupiah, formatDateID } from '@/lib/format'
@@ -27,6 +26,18 @@ export default function GoalsTab() {
   const { data: allAllocs = [] } = useGoalInvestments()
   const deleteGoal = useDeleteGoal()
 
+  const activeGoals = goals.filter((g) => g.status === 'active')
+  const totalCollected = activeGoals.reduce((sum, g) => {
+    const linked = allAllocs.filter((a) => a.goal_id === g.id)
+    const invested = linked.reduce((s, a) => {
+      const inv = investments.find((i) => i.id === a.investment_id)
+      return s + (inv ? currentValue(inv) * a.allocation_pct / 100 : 0)
+    }, 0)
+    return sum + g.current_amount + invested
+  }, 0)
+  const totalTarget = activeGoals.reduce((sum, g) => sum + g.target_amount, 0)
+  const totalPct = totalTarget > 0 ? Math.min(100, (totalCollected / totalTarget) * 100) : 0
+
   function onDelete(g: Goal) {
     if (!confirm(`Hapus goal "${g.name}"?`)) return
     deleteGoal.mutate(g.id)
@@ -34,6 +45,33 @@ export default function GoalsTab() {
 
   return (
     <div className="space-y-6">
+      {/* Summary bar — hanya tampil jika ada goal aktif */}
+      {activeGoals.length > 0 && (
+        <div
+          className="rounded-xl p-4 text-white"
+          style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)' }}
+        >
+          <div className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-indigo-300">
+            Ringkasan Goals Aktif
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl font-extrabold tracking-tight">{formatRupiah(totalCollected)}</div>
+              <div className="text-xs text-indigo-300">dari {formatRupiah(totalTarget)} target total</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xl font-bold text-indigo-200">{totalPct.toFixed(0)}%</div>
+              <div className="text-xs text-indigo-300">{activeGoals.length} goals aktif</div>
+            </div>
+          </div>
+          <div className="mt-3 h-1.5 rounded-full bg-white/10">
+            <div
+              className="h-1.5 rounded-full bg-indigo-400 transition-all"
+              style={{ width: `${totalPct}%` }}
+            />
+          </div>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex gap-2 flex-wrap">
           <Input
@@ -83,7 +121,7 @@ export default function GoalsTab() {
             const remaining = Math.max(0, g.target_amount - totalCurrent)
 
             return (
-              <div key={g.id} className="rounded-lg border bg-card p-5">
+              <div key={g.id} className="rounded-xl border bg-card p-4" style={{ borderLeft: '4px solid var(--brand)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-lg font-semibold">{g.name}</div>
@@ -170,7 +208,7 @@ export default function GoalsTab() {
 }
 
 function StatusBadge({ status }: { status: Goal['status'] }) {
-  if (status === 'completed') return <Badge className="bg-emerald-600">Tercapai</Badge>
-  if (status === 'paused') return <Badge variant="secondary">Jeda</Badge>
-  return <Badge>Aktif</Badge>
+  if (status === 'completed') return <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">Tercapai</span>
+  if (status === 'paused') return <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-semibold text-gray-600">Jeda</span>
+  return <span className="rounded-full bg-[var(--brand-light)] px-2.5 py-0.5 text-[10px] font-semibold text-[var(--brand)]">Aktif</span>
 }
