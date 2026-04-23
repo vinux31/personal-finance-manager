@@ -8,7 +8,7 @@ import {
 const SECTIONS: Array<{ title: string; body: string }> = [
   {
     title: 'Selamat Datang',
-    body: `Duitku membantu Anda mencatat keuangan sehari-hari dengan cara yang sederhana.
+    body: `Kantong Pintar membantu Anda mencatat keuangan sehari-hari dengan cara yang sederhana.
 
 Aplikasi ini berjalan di browser Anda — data tersimpan di file .db di laptop, tidak dikirim ke server manapun.`,
   },

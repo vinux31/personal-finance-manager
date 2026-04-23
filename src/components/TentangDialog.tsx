@@ -24,7 +24,7 @@ export default function TentangDialog({ open, onOpenChange }: Props) {
               <Wallet className="h-6 w-6" />
             </div>
             <div>
-              <div className="font-semibold">Duitku</div>
+              <div className="font-semibold">Kantong Pintar</div>
               <div className="text-xs text-muted-foreground">Versi 1.0.0 (web)</div>
             </div>
           </div>
