@@ -96,8 +96,8 @@ function App() {
       <main className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tab list — scrollable horizontal di mobile */}
-          <div className="mb-6 overflow-x-auto">
-            <TabsList className="inline-flex w-max min-w-full rounded-none border-b border-border bg-transparent p-0">
+          <div className="mb-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+            <TabsList className="inline-flex w-max min-w-full rounded-none border-b border-border bg-transparent p-0 [&>button:not([role='tab'])]:hidden">
               {TABS.map(({ value, label, icon: Icon }) => (
                 <TabsTrigger
                   key={value}
