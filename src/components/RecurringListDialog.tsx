@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { useRecurringTemplates, useDeleteRecurringTemplate, useUpdateRecurringTemplate, type RecurringTemplate } from '@/queries/recurringTransactions'
 import { useCategories } from '@/queries/categories'
@@ -28,6 +29,8 @@ interface Props {
 export default function RecurringListDialog({ open, onOpenChange }: Props) {
   const [editOpen, setEditOpen] = useState(false)
   const [editing, setEditing] = useState<RecurringTemplate | null>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmTemplate, setConfirmTemplate] = useState<RecurringTemplate | null>(null)
 
   const { data: templates = [], isLoading } = useRecurringTemplates()
   const { data: categories = [] } = useCategories()
@@ -39,8 +42,8 @@ export default function RecurringListDialog({ open, onOpenChange }: Props) {
   }
 
   function onDelete(t: RecurringTemplate) {
-    if (!confirm(`Hapus template "${t.name}"?`)) return
-    deleteTemplate.mutate(t.id)
+    setConfirmTemplate(t)
+    setConfirmOpen(true)
   }
 
   function toggleActive(t: RecurringTemplate) {
@@ -119,6 +122,13 @@ export default function RecurringListDialog({ open, onOpenChange }: Props) {
       </Dialog>
 
       <RecurringDialog open={editOpen} onOpenChange={setEditOpen} editing={editing} />
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={`Hapus "${confirmTemplate?.name ?? ''}"`}
+        description="Template rutin ini akan dihapus permanen."
+        onConfirm={() => { if (confirmTemplate) deleteTemplate.mutate(confirmTemplate.id) }}
+      />
     </>
   )
 }

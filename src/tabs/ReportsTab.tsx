@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useAggregateByPeriod, useAggregateByCategory, type PeriodGranularity } from '@/queries/reports'
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
-import { formatRupiah, todayISO } from '@/lib/format'
+import { formatRupiah, shortRupiah, todayISO } from '@/lib/format'
 import { exportReportPDF, type ExportReportParams } from '@/lib/export-pdf'
 
 type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
@@ -224,12 +224,6 @@ function resolvePreset(preset: PeriodPreset, from: string, to: string): { from?:
   return { from: `${d.getFullYear()}-01-01`, to: today }
 }
 
-function shortRupiah(n: number): string {
-  if (Math.abs(n) >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}M`
-  if (Math.abs(n) >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)}jt`
-  if (Math.abs(n) >= 1_000) return `Rp ${(n / 1_000).toFixed(0)}rb`
-  return `Rp ${n}`
-}
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (

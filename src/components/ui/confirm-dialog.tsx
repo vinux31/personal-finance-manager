@@ -16,7 +16,7 @@ interface ConfirmDialogProps {
   confirmLabel?: string
   cancelLabel?: string
   variant?: 'destructive' | 'default'
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
 }
 
 export function ConfirmDialog({
@@ -29,8 +29,8 @@ export function ConfirmDialog({
   variant = 'destructive',
   onConfirm,
 }: ConfirmDialogProps) {
-  function handleConfirm() {
-    onConfirm()
+  async function handleConfirm() {
+    await onConfirm()
     onOpenChange(false)
   }
 

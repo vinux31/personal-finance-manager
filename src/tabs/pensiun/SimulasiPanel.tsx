@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { calcDCA } from '@/lib/pensiun-calc'
-import { formatRupiah, parseRupiah } from '@/lib/format'
+import { formatRupiah, parseRupiah, shortRupiah } from '@/lib/format'
 import type { PensionSimInput } from '@/queries/pensiun'
 
 interface Props {
@@ -23,11 +23,6 @@ const RD_OPTIONS = [
   { value: 'sh', label: 'Saham (14%/thn)' },
 ]
 
-function shortRupiah(n: number): string {
-  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}M`
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)}jt`
-  return formatRupiah(n)
-}
 
 export default function SimulasiPanel({ form, onChange }: Props) {
   const [step, setStep] = useState(1)

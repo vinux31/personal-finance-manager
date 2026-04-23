@@ -15,7 +15,7 @@ import {
   calcPesangon,
   calcInvestasiMandiri,
 } from '@/lib/pensiun-calc'
-import { formatRupiah, parseRupiah } from '@/lib/format'
+import { formatRupiah, parseRupiah, shortRupiah } from '@/lib/format'
 import type { PensionSimInput } from '@/queries/pensiun'
 
 interface Props {
@@ -28,11 +28,6 @@ const GOLONGAN_OPTIONS = [
   'IIIa','IIIb','IIIc','IIId','IVa','IVb','IVc','IVd','IVe',
 ]
 
-function shortRupiah(n: number): string {
-  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}M`
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)}jt`
-  return formatRupiah(n)
-}
 
 export default function HitungTotalPanel({ form, onChange }: Props) {
   const [step, setStep] = useState(1)
@@ -136,7 +131,7 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                     <Label className="text-xs">Upah BPJS per bulan (kosong = gaji pokok)</Label>
                     <Input
                       value={form.ht_bpjs_upah === 0 ? '' : formatRupiah(form.ht_bpjs_upah)}
-                      placeholder={`Rp ${formatRupiah(form.gaji_pokok)}`}
+                      placeholder={formatRupiah(form.gaji_pokok)}
                       onChange={(e) => onChange({ ht_bpjs_upah: parseRupiah(e.target.value) })}
                       className="h-8 text-sm"
                     />
@@ -257,7 +252,7 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
                 <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-2">
                   <div className="space-y-1">
                     <Label className="text-xs">Gaji terakhir (kosong = gaji pokok)</Label>
-                    <Input value={form.ht_taspen_gaji === 0 ? '' : formatRupiah(form.ht_taspen_gaji)} placeholder={`Rp ${formatRupiah(form.gaji_pokok)}`} onChange={(e) => onChange({ ht_taspen_gaji: parseRupiah(e.target.value) })} className="h-8 text-sm" />
+                    <Input value={form.ht_taspen_gaji === 0 ? '' : formatRupiah(form.ht_taspen_gaji)} placeholder={formatRupiah(form.gaji_pokok)} onChange={(e) => onChange({ ht_taspen_gaji: parseRupiah(e.target.value) })} className="h-8 text-sm" />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Golongan</Label>
