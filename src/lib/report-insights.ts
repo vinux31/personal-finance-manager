@@ -9,6 +9,8 @@ type InvestmentRow = { name: string; modal: number; nilai: number }
 export function generatePeriodInsight(totals: Totals, periodData: PeriodAgg[]): InsightLine[] {
   const lines: InsightLine[] = []
 
+  if (periodData.length === 0) return []
+
   if (totals.net === 0) {
     lines.push({ text: 'Pemasukan dan pengeluaran seimbang pada periode ini.', tone: 'neutral' })
   } else if (totals.net > 0) {
