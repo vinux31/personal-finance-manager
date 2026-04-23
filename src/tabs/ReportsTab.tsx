@@ -12,6 +12,13 @@ import { useAggregateByPeriod, useAggregateByCategory, type PeriodGranularity } 
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { formatRupiah, shortRupiah, todayISO } from '@/lib/format'
 import { exportReportPDF, type ExportReportParams } from '@/lib/export-pdf'
+import {
+  type InsightLine,
+  generatePeriodInsight,
+  generateExpenseCatInsight,
+  generateIncomeCatInsight,
+  generateInvestmentInsight,
+} from '@/lib/report-insights'
 
 type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
 
@@ -43,6 +50,26 @@ export default function ReportsTab() {
     for (const p of periodData) { income += Number(p.income); expense += Number(p.expense) }
     return { income, expense, net: income - expense }
   }, [periodData])
+
+  const periodInsight = useMemo(
+    () => generatePeriodInsight(totals, periodData),
+    [totals, periodData]
+  )
+
+  const expenseCatInsight = useMemo(
+    () => generateExpenseCatInsight(expenseByCat),
+    [expenseByCat]
+  )
+
+  const incomeCatInsight = useMemo(
+    () => generateIncomeCatInsight(incomeByCat, periodData),
+    [incomeByCat, periodData]
+  )
+
+  const investmentInsight = useMemo(
+    () => generateInvestmentInsight(investments),
+    [investments]
+  )
 
   const [exporting, setExporting] = useState(false)
 
@@ -148,7 +175,7 @@ export default function ReportsTab() {
         <SummaryCard label="Net" value={formatRupiah(totals.net)} tone={totals.net >= 0 ? 'up' : 'down'} />
       </div>
 
-      <Panel title="Pemasukan vs Pengeluaran">
+      <Panel title="Pemasukan vs Pengeluaran" insight={periodInsight}>
         {periodData.length === 0 ? <EmptyChart /> : (
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={periodData}>
@@ -165,7 +192,7 @@ export default function ReportsTab() {
       </Panel>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <Panel title="Pengeluaran per Kategori">
+        <Panel title="Pengeluaran per Kategori" insight={expenseCatInsight}>
           {expenseByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
@@ -178,7 +205,7 @@ export default function ReportsTab() {
           )}
         </Panel>
 
-        <Panel title="Pemasukan per Kategori">
+        <Panel title="Pemasukan per Kategori" insight={incomeCatInsight}>
           {incomeByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
@@ -192,7 +219,7 @@ export default function ReportsTab() {
         </Panel>
       </div>
 
-      <Panel title="Kinerja Investasi">
+      <Panel title="Kinerja Investasi" insight={investmentInsight}>
         {investments.length === 0 ? <EmptyChart text="Belum ada investasi untuk ditampilkan." /> : (
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={investments}>
@@ -225,11 +252,25 @@ function resolvePreset(preset: PeriodPreset, from: string, to: string): { from?:
 }
 
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+function Panel({ title, children, insight }: { title: string; children: React.ReactNode; insight?: InsightLine[] }) {
   return (
     <div className="rounded-xl border bg-card p-5">
       <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
       {children}
+      {insight && insight.length > 0 && (
+        <div className="mt-4 border-t pt-3 space-y-1">
+          {insight.map((line, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                line.tone === 'positive' ? 'bg-emerald-500' :
+                line.tone === 'negative' ? 'bg-red-500' :
+                'bg-muted-foreground/40'
+              }`} />
+              <span className="text-sm text-muted-foreground">{line.text}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
