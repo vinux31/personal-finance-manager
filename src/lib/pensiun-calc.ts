@@ -65,8 +65,20 @@ export function calcDCA(p: SimulasiParams): SimulasiResult {
   }
 
   const totalDana = sEmas + sSaham + sRd
-  const targetTahunan = p.targetBulanan * 12
-  const danaCukupTahun = targetTahunan > 0 ? Math.floor(totalDana / targetTahunan) : 999
+
+  let danaCukupTahun = 0
+  if (p.targetBulanan <= 0) {
+    danaCukupTahun = 999
+  } else {
+    let sisa = totalDana
+    let pengeluaran = p.targetBulanan * 12
+    const rInflasi = p.inflasiPct / 100
+    while (sisa >= pengeluaran && danaCukupTahun < 100) {
+      sisa -= pengeluaran
+      danaCukupTahun++
+      pengeluaran *= (1 + rInflasi)
+    }
+  }
 
   return {
     totalDana: Math.round(totalDana),
@@ -157,7 +169,7 @@ export function calcDPLK(p: DPLKParams): DPLKResult {
 
 // ─── Taspen (ASN/PNS) ──────────────────────────────────────────────────────
 
-const TASPEN_GAJI: Record<string, number> = {
+export const TASPEN_GAJI: Record<string, number> = {
   Ia: 1_560_800, Ib: 1_704_500, Ic: 1_776_600, Id: 1_851_800,
   IIa: 2_022_200, IIb: 2_208_400, IIc: 2_301_800, IId: 2_399_200,
   IIIa: 2_802_300, IIIb: 2_928_300, IIIc: 3_059_700, IIId: 3_196_500,
@@ -176,7 +188,7 @@ export interface TaspenResult {
 }
 
 export function calcTaspen(p: TaspenParams): TaspenResult {
-  const gajiPensiun = TASPEN_GAJI[p.golongan] ?? p.gajiTerakhir
+  const gajiPensiun = p.gajiTerakhir > 0 ? p.gajiTerakhir : (TASPEN_GAJI[p.golongan] ?? 0)
   // Pensiun bulanan: 2.5% × masa_kerja × gaji_pensiun, max 75%
   const pct = Math.min(p.masaKerja * 0.025, 0.75)
   const bulanan = pct * gajiPensiun

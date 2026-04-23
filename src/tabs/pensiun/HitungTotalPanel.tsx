@@ -14,6 +14,7 @@ import {
   calcTaspen,
   calcPesangon,
   calcInvestasiMandiri,
+  TASPEN_GAJI,
 } from '@/lib/pensiun-calc'
 import { formatRupiah, parseRupiah, shortRupiah } from '@/lib/format'
 import type { PensionSimInput } from '@/queries/pensiun'
@@ -251,8 +252,8 @@ export default function HitungTotalPanel({ form, onChange }: Props) {
               {open === 'taspen' && form.ht_en_taspen && (
                 <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <Label className="text-xs">Gaji terakhir (kosong = gaji pokok)</Label>
-                    <Input value={form.ht_taspen_gaji === 0 ? '' : formatRupiah(form.ht_taspen_gaji)} placeholder={formatRupiah(form.gaji_pokok)} onChange={(e) => onChange({ ht_taspen_gaji: parseRupiah(e.target.value) })} className="h-8 text-sm" />
+                    <Label className="text-xs">Gaji terakhir (kosong = tabel golongan)</Label>
+                    <Input value={form.ht_taspen_gaji === 0 ? '' : formatRupiah(form.ht_taspen_gaji)} placeholder={formatRupiah(TASPEN_GAJI[form.ht_taspen_gol] ?? 0)} onChange={(e) => onChange({ ht_taspen_gaji: parseRupiah(e.target.value) })} className="h-8 text-sm" />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Golongan</Label>

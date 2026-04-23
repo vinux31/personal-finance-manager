@@ -18,6 +18,8 @@ export default function PensiunTab() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const initializedRef = useRef(false)
+  const formRef = useRef(form)
+  formRef.current = form
 
   useEffect(() => {
     if (data && !initializedRef.current) {
@@ -41,19 +43,16 @@ export default function PensiunTab() {
   const handleChange = useCallback((patch: Partial<PensionSimInput>) => {
     setSaveStatus('saving')
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    setForm((prev) => {
-      const next = { ...prev, ...patch }
-      debounceRef.current = setTimeout(() => {
-        upsert(next, {
-          onSuccess: () => {
-            setSaveStatus('saved')
-            setTimeout(() => setSaveStatus('idle'), 2000)
-          },
-          onError: () => setSaveStatus('idle'),
-        })
-      }, 1500)
-      return next
-    })
+    setForm((prev) => ({ ...prev, ...patch }))
+    debounceRef.current = setTimeout(() => {
+      upsert(formRef.current, {
+        onSuccess: () => {
+          setSaveStatus('saved')
+          setTimeout(() => setSaveStatus('idle'), 2000)
+        },
+        onError: () => setSaveStatus('idle'),
+      })
+    }, 1500)
   }, [upsert])
 
   if (isLoading) {

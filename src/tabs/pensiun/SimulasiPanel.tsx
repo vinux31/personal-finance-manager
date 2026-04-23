@@ -58,9 +58,17 @@ export default function SimulasiPanel({ form, onChange }: Props) {
       for (const k of others) {
         patch[dbKeys[k]] = Math.round((current[k] / total) * remaining)
       }
-      // fix rounding
+      // fix rounding — clamp to 0, compensate from others[0] if needed
       const sum = newVal + (patch[dbKeys[others[0]]] ?? 0) + (patch[dbKeys[others[1]]] ?? 0)
-      if (sum !== 100) patch[dbKeys[others[1]]] = (patch[dbKeys[others[1]]] ?? 0) + (100 - sum)
+      if (sum !== 100) {
+        const adjusted = (patch[dbKeys[others[1]]] ?? 0) + (100 - sum)
+        if (adjusted < 0) {
+          patch[dbKeys[others[0]]] = Math.max(0, (patch[dbKeys[others[0]]] ?? 0) + adjusted)
+          patch[dbKeys[others[1]]] = 0
+        } else {
+          patch[dbKeys[others[1]]] = adjusted
+        }
+      }
     }
     onChange(patch)
   }
