@@ -92,8 +92,10 @@ export function generateInvestmentInsight(investments: InvestmentRow[]): Insight
   const returnNominal = totalNilai - totalModal
   const returnPct = totalModal > 0 ? ((returnNominal / totalModal) * 100).toFixed(1) : '0.0'
 
-  if (returnNominal >= 0) {
+  if (returnNominal > 0) {
     lines.push({ text: `Total investasi untung ${shortRupiah(returnNominal)} dari modal ${shortRupiah(totalModal)} (return ${returnPct}%).`, tone: 'positive' })
+  } else if (returnNominal === 0) {
+    lines.push({ text: `Total investasi impas dari modal ${shortRupiah(totalModal)}.`, tone: 'neutral' })
   } else {
     lines.push({ text: `Total investasi rugi ${shortRupiah(Math.abs(returnNominal))} dari modal ${shortRupiah(totalModal)} (return ${returnPct}%).`, tone: 'negative' })
   }
