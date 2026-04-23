@@ -76,7 +76,7 @@ function App() {
             ₱
           </div>
           <div>
-            <div className="text-sm font-bold tracking-tight text-white">PFM</div>
+            <div className="text-sm font-bold tracking-tight text-white">Dompetku</div>
             <div className="text-[10px]" style={{ color: 'var(--brand-muted)' }}>Personal Finance</div>
           </div>
         </div>
