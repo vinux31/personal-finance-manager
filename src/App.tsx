@@ -30,9 +30,9 @@ const TABS = [
   { value: 'transactions', label: 'Transaksi',  icon: Wallet,          Comp: TransactionsTab },
   { value: 'investments',  label: 'Investasi',  icon: TrendingUp,      Comp: InvestmentsTab },
   { value: 'goals',        label: 'Goals',      icon: Target,          Comp: GoalsTab },
-  { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
-  { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
   { value: 'pensiun',      label: 'Pensiun',    icon: PiggyBank,       Comp: PensiunTab },
+  { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
+  { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
   { value: 'settings',     label: 'Pengaturan', icon: SettingsIcon,    Comp: SettingsTab },
 ] as const
 
