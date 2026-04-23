@@ -61,28 +61,55 @@ function App() {
     <div className="min-h-screen bg-background text-foreground">
       <OfflineBanner />
       <ViewAsBanner />
-      <header className="flex items-center justify-between border-b px-6 py-4">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">
-            Personal Finance Manager
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Kelola keuangan pribadi Anda
-          </p>
+
+      {/* Header — selalu dark, tidak ikut tema */}
+      <header
+        className="flex items-center justify-between px-6 py-3"
+        style={{ background: 'linear-gradient(135deg, var(--brand-header), var(--brand-header-end))' }}
+      >
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
+            style={{ background: 'linear-gradient(135deg, #818cf8, #6366f1)' }}
+          >
+            ₱
+          </div>
+          <div>
+            <div className="text-sm font-bold tracking-tight text-white">PFM</div>
+            <div className="text-[10px]" style={{ color: 'var(--brand-muted)' }}>Personal Finance</div>
+          </div>
         </div>
-        <AccountMenu />
+
+        {/* Kanan: bulan + avatar */}
+        <div className="flex items-center gap-3">
+          <span
+            className="hidden rounded-full px-3 py-1 text-[11px] sm:block"
+            style={{ background: 'rgba(165,180,252,0.15)', color: 'var(--brand-muted)' }}
+          >
+            {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
+          </span>
+          <AccountMenu />
+        </div>
       </header>
 
       <main className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-6">
-            {TABS.map(({ value, label, icon: Icon }) => (
-              <TabsTrigger key={value} value={value} className="gap-2">
-                <Icon className="h-4 w-4" />
-                {label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {/* Tab list — scrollable horizontal di mobile */}
+          <div className="mb-6 overflow-x-auto">
+            <TabsList className="inline-flex w-max min-w-full rounded-none border-b border-border bg-transparent p-0">
+              {TABS.map(({ value, label, icon: Icon }) => (
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="gap-1.5 whitespace-nowrap rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[var(--brand)] data-[state=active]:text-[var(--brand)] data-[state=active]:shadow-none"
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           {TABS.map(({ value, Comp }) => (
             <TabsContent key={value} value={value}>
