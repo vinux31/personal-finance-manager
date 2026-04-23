@@ -35,7 +35,7 @@ Semua fungsi adalah pure functions — tidak ada side effects, mudah di-test.
 ## Logika Insight per Section
 
 ### Panel "Pemasukan vs Pengeluaran"
-1. Net positif/negatif: `"Net [surplus/defisit] sebesar Rp X pada periode ini."` → tone positive/negative
+1. Net positif/negatif/impas: `"Net [surplus/defisit] sebesar Rp X pada periode ini."` / `"Pemasukan dan pengeluaran seimbang pada periode ini."` → tone positive/negative/neutral
 2. Periode tertinggi pengeluaran: `"Pengeluaran terbesar terjadi pada [periode] (Rp X)."` → tone neutral
 3. Tren (jika data ≥ 2 periode): `"Pengeluaran [meningkat/menurun] dibanding periode sebelumnya."` → tone negative/positive
 
@@ -47,6 +47,7 @@ Semua fungsi adalah pure functions — tidak ada side effects, mudah di-test.
 ### Panel "Pemasukan per Kategori"
 1. Sumber terbesar: `"Sumber pemasukan terbesar: [nama] (Rp X, Y%)."` → tone neutral
 2. Jumlah sumber: `"Total [N] sumber pemasukan aktif pada periode ini."` → tone neutral
+3. Tren (jika data ≥ 2 periode): `"Pemasukan [meningkat/menurun] dibanding periode sebelumnya."` → tone positive/negative
 
 ### Panel "Kinerja Investasi"
 1. Total return: `"Total investasi [untung/rugi] Rp X dari modal Rp Y (return Z%)."` → tone positive/negative. Z% = (totalNilai - totalModal) / totalModal × 100, dibulatkan 1 desimal.
@@ -69,3 +70,4 @@ Jika data kosong (tidak ada transaksi/investasi), section insight tidak dirender
 - Tidak ada network request tambahan
 - Insight menggunakan data yang sudah di-fetch oleh komponen (tidak ada query baru)
 - Jika data periode hanya 1 titik, insight tren tidak ditampilkan
+- Format angka di teks insight menggunakan `shortRupiah` (misal: Rp 1,2jt) untuk keterbacaan dalam kalimat
