@@ -66,8 +66,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
+| FOUND-01 | Phase 2 | Pending |
+| FOUND-02 (3 tabel: accounts, liabilities, snapshots) | Phase 1 | Pending |
+| FOUND-02 (1 tabel: bill_payments) | Phase 2 | Pending |
 | NW-01 | Phase 1 | Pending |
 | NW-02 | Phase 1 | Pending |
 | NW-03 | Phase 1 | Pending |
@@ -83,10 +84,10 @@
 | BILL-04 | Phase 2 | Pending |
 
 **Coverage:**
-- v1.0 requirements: 15 total
+- v1.0 requirements: 15 total (FOUND-02 split across 2 phases)
 - Mapped to phases: 15
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-23*
-*Last updated: 2026-04-23 — initial definition*
+*Last updated: 2026-04-23 — traceability updated with roadmap phase assignments*
