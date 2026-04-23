@@ -66,28 +66,28 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 2 | Pending |
-| FOUND-02 (3 tabel: accounts, liabilities, snapshots) | Phase 1 | Pending |
-| FOUND-02 (1 tabel: bill_payments) | Phase 2 | Pending |
-| NW-01 | Phase 1 | Pending |
-| NW-02 | Phase 1 | Pending |
-| NW-03 | Phase 1 | Pending |
-| NW-04 | Phase 1 | Pending |
-| NW-05 | Phase 1 | Pending |
-| NW-06 | Phase 1 | Pending |
-| NW-07 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
 | NAV-01 | Phase 1 | Pending |
-| NAV-02 | Phase 2 | Pending |
-| BILL-01 | Phase 2 | Pending |
-| BILL-02 | Phase 2 | Pending |
-| BILL-03 | Phase 2 | Pending |
-| BILL-04 | Phase 2 | Pending |
+| NW-01 | Phase 2 | Pending |
+| NW-02 | Phase 2 | Pending |
+| NW-03 | Phase 2 | Pending |
+| NW-04 | Phase 2 | Pending |
+| NW-05 | Phase 2 | Pending |
+| NW-06 | Phase 2 | Pending |
+| NW-07 | Phase 2 | Pending |
+| BILL-01 | Phase 3 | Pending |
+| BILL-02 | Phase 3 | Pending |
+| BILL-04 | Phase 3 | Pending |
+| NAV-02 (partial — bills widget) | Phase 3 | Pending |
+| BILL-03 | Phase 4 | Pending |
+| NAV-02 (partial — dashboard wiring complete) | Phase 4 | Pending |
 
 **Coverage:**
-- v1.0 requirements: 15 total (FOUND-02 split across 2 phases)
+- v1.0 requirements: 15 total (NAV-02 split across Phase 3 and Phase 4)
 - Mapped to phases: 15
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-23*
-*Last updated: 2026-04-23 — traceability updated with roadmap phase assignments*
+*Last updated: 2026-04-23 — traceability updated untuk 4-fase roadmap*
