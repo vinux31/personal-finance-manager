@@ -4,13 +4,6 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { useThemeStore, type Theme } from '@/lib/theme'
 import { useAuthContext } from '@/auth/AuthProvider'
 import { useViewAs } from '@/auth/useViewAs'
@@ -23,9 +16,20 @@ import { listProfiles } from '@/db/profiles'
 import { RENCANA_GOAL_NAMES, RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
 import { formatRupiah } from '@/lib/format'
 import { mapSupabaseError } from '@/lib/errors'
-import { BookOpen, Eye, Info, LogOut, Users } from 'lucide-react'
+import { BookOpen, Eye, HelpCircle, LogOut, Palette, Target, User, Users } from 'lucide-react'
 import PanduanDialog from '@/components/PanduanDialog'
 import TentangDialog from '@/components/TentangDialog'
+
+function SectionHeader({ icon: Icon, label, iconBg }: { icon: React.ElementType; label: string; iconBg: string }) {
+  return (
+    <div className="mb-3 flex items-center gap-2.5">
+      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${iconBg}`}>
+        <Icon className="h-4 w-4 text-foreground/70" />
+      </div>
+      <h2 className="text-base font-bold">{label}</h2>
+    </div>
+  )
+}
 
 export default function SettingsTab() {
   const { theme, setTheme } = useThemeStore()
@@ -119,26 +123,31 @@ export default function SettingsTab() {
     <div className="max-w-2xl space-y-8">
       {/* Tampilan */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Tampilan</h2>
+        <SectionHeader icon={Palette} label="Tampilan" iconBg="bg-[#ede9fe]" />
         <div className="grid max-w-sm gap-2">
           <Label>Tema</Label>
-          <Select value={theme} onValueChange={(v) => setTheme(v as Theme)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Terang</SelectItem>
-              <SelectItem value="dark">Gelap</SelectItem>
-              <SelectItem value="system">Ikuti sistem</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2">
+            {(['light', 'dark', 'system'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTheme(t as Theme)}
+                className={`flex-1 rounded-lg border py-2 text-sm font-medium transition-colors ${
+                  theme === t
+                    ? 'border-[var(--brand)] text-[var(--brand)] bg-[var(--brand-light)]'
+                    : 'border-border text-muted-foreground hover:border-[var(--brand-muted)]'
+                }`}
+              >
+                {t === 'light' ? '☀️ Terang' : t === 'dark' ? '🌙 Gelap' : '💻 Sistem'}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Rencana */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Rencana</h2>
-        <div className="rounded-lg border bg-card p-4 space-y-3">
+        <SectionHeader icon={Target} label="Rencana" iconBg="bg-[#fef3c7]" />
+        <div className="rounded-xl border border-[#e0e7ff] bg-card p-4 space-y-3">
           <div className="grid grid-cols-2 gap-y-2 text-sm">
             <span className="text-muted-foreground">Total Target</span>
             <span className="font-medium">{totalTarget > 0 ? formatRupiah(totalTarget) : '—'}</span>
@@ -165,40 +174,44 @@ export default function SettingsTab() {
 
       {/* Akun */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Akun</h2>
+        <SectionHeader icon={User} label="Akun" iconBg="bg-[#dcfce7]" />
         <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            {user?.user_metadata?.avatar_url && (
-              <img
-                src={user.user_metadata.avatar_url}
-                alt="avatar"
-                className="h-10 w-10 rounded-full object-cover"
-              />
-            )}
-            <div>
-              <div className="font-medium">{user?.user_metadata?.full_name ?? '—'}</div>
-              <div className="text-sm text-muted-foreground">{user?.email}</div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {user?.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.avatar_url} alt="avatar" className="h-10 w-10 rounded-full object-cover" />
+              ) : (
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white"
+                  style={{ background: 'linear-gradient(135deg, #818cf8, #6366f1)' }}
+                >
+                  {(user?.user_metadata?.full_name ?? user?.email ?? '?')[0].toUpperCase()}
+                </div>
+              )}
+              <div>
+                <div className="font-semibold">{user?.user_metadata?.full_name ?? '—'}</div>
+                <div className="text-sm text-muted-foreground">{user?.email}</div>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={async () => {
+                if (!confirm('Keluar dari aplikasi?')) return
+                await signOut()
+              }}
+            >
+              <LogOut className="h-3.5 w-3.5" />Keluar
+            </Button>
           </div>
-        </div>
-        <div className="mt-3">
-          <Button
-            variant="outline"
-            onClick={async () => {
-              if (!confirm('Keluar dari aplikasi?')) return
-              await signOut()
-            }}
-          >
-            <LogOut className="h-4 w-4" />
-            Keluar
-          </Button>
         </div>
       </section>
 
       {/* Manajemen Pengguna — hanya admin */}
       {isAdmin && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Manajemen Pengguna</h2>
+          <SectionHeader icon={Users} label="Manajemen Pengguna" iconBg="bg-[#e0f2fe]" />
 
           <div className="rounded-lg border bg-card p-4 space-y-4">
             <h3 className="font-medium flex items-center gap-2">
@@ -275,14 +288,14 @@ export default function SettingsTab() {
 
       {/* Bantuan */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Bantuan</h2>
+        <SectionHeader icon={HelpCircle} label="Bantuan" iconBg="bg-[#fef9c3]" />
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={() => setPanduanOpen(true)}>
             <BookOpen className="h-4 w-4" />
             Panduan Pengguna
           </Button>
           <Button variant="outline" onClick={() => setTentangOpen(true)}>
-            <Info className="h-4 w-4" />
+            <HelpCircle className="h-4 w-4" />
             Tentang
           </Button>
         </div>
