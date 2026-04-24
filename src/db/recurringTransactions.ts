@@ -102,3 +102,20 @@ export async function deleteRecurringTemplate(id: number): Promise<void> {
   const { error } = await supabase.from('recurring_templates').delete().eq('id', id)
   if (error) throw error
 }
+
+export async function listUpcomingBills(
+  uid: string | undefined,
+  endOfMonth: string,
+): Promise<RecurringTemplate[]> {
+  let query = supabase
+    .from('recurring_templates')
+    .select('id, name, type, category_id, amount, note, frequency, next_due_date, is_active')
+    .eq('is_active', true)
+    .eq('type', 'expense')
+    .lte('next_due_date', endOfMonth)
+    .order('next_due_date')
+  if (uid) query = query.eq('user_id', uid)
+  const { data, error } = await query
+  if (error) throw error
+  return data as RecurringTemplate[]
+}
