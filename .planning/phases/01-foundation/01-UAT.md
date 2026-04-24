@@ -6,7 +6,7 @@ source:
   - .planning/phases/01-foundation/01-02-SUMMARY.md
   - .planning/phases/01-foundation/01-03-SUMMARY.md
 started: "2026-04-24T00:00:00Z"
-updated: "2026-04-24T01:00:00Z"
+updated: "2026-04-24T02:00:00Z"
 ---
 
 ## Current Test
@@ -20,9 +20,8 @@ expected: |
   Run `supabase db push` from the project root.
   4 new tables appear in Dashboard: net_worth_accounts, net_worth_liabilities,
   net_worth_snapshots, bill_payments — each with RLS toggle ON (green shield).
-result: blocked
-blocked_by: server
-reason: "Requires running `supabase db push` against live Supabase project — cannot automate via browser. Migration files exist and are correctly written (verified by grep during execution)."
+result: pass
+note: "supabase db push succeeded. migration list confirms 0012 + 0013 Remote=applied. 0011 was already in DB but untracked — repaired via `migration repair --status applied 0011`."
 
 ### 2. nextDueDate Monthly Clamping
 expected: |
@@ -77,10 +76,10 @@ result: pass
 ## Summary
 
 total: 10
-passed: 7
+passed: 8
 issues: 0
 skipped: 0
-blocked: 3
+blocked: 2
 pending: 0
 
 ## Gaps
