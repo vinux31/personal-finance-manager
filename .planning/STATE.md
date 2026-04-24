@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-mark-as-paid 04-03-PLAN.md
-last_updated: "2026-04-24T11:50:07.552Z"
+stopped_at: Completed 04-mark-as-paid 04-05-PLAN.md
+last_updated: "2026-04-24T12:36:13.825Z"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 14
-  completed_plans: 11
-  percent: 79
+  completed_plans: 13
+  percent: 93
 ---
 
 # Project State
@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 04 (mark-as-paid) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 
 Progress: [██████████] 100% (Phase 02)
@@ -55,6 +55,7 @@ Progress: [██████████] 100% (Phase 02)
 | Phase 04-mark-as-paid P01 | 4m | 1 tasks | 1 files |
 | Phase 04-mark-as-paid P02 | 1m | 1 tasks | 1 files |
 | Phase 04-mark-as-paid P03 | 2m | 1 tasks | 1 files |
+| Phase 04-mark-as-paid P05 | 12m | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,7 @@ Progress: [██████████] 100% (Phase 02)
 - [Phase 04-mark-as-paid]: upcoming_bills_unpaid VIEW uses security_invoker=true (first VIEW in project); half-open month window [start, +1 month) avoids last-day edge case; NOT EXISTS subquery dual-scopes on recurring_template_id + user_id for defense-in-depth
 - [Phase 04-mark-as-paid]: First SQL test in project — convention: supabase/tests/<phase>-<feature>.sql, BEGIN/ROLLBACK wrapper, RAISE NOTICE PASS:/FAIL: assertions (zero-dep, grep-friendly)
 - [Phase 04-mark-as-paid]: SQL tests simulate Supabase auth.uid() via set_config('request.jwt.claim.sub', uid, true); DO-block EXCEPTION WHEN OTHERS provides graceful SKIP if auth.users seed is restricted
+- [Phase 04-mark-as-paid]: [Phase 04-mark-as-paid]: Client integration wave — shadcn AlertDialog installed via CLI (radix-ui meta barrel); markBillPaid DB wrapper calls mark_bill_paid RPC with exact p_template_id/p_uid/p_paid_date; listUpcomingBills silently swapped from .from('recurring_templates') to .from('upcoming_bills_unpaid') view (signature unchanged, Sisa Aman D-03 auto-satisfied); useMarkBillPaid mutation uses optimistic setQueriesData + snapshot rollback + 4-prefix invalidation (upcoming-bills, transactions, reports, recurring-templates) — first optimistic mutation in project
 
 ### Pending Todos
 
@@ -94,6 +96,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-24T11:50:07.547Z
-Stopped at: Completed 04-mark-as-paid 04-03-PLAN.md
+Last session: 2026-04-24T12:36:13.816Z
+Stopped at: Completed 04-mark-as-paid 04-05-PLAN.md
 Resume file: None
