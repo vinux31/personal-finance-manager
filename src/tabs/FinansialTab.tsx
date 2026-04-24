@@ -1,5 +1,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import GoalsTab from '@/tabs/GoalsTab'
+import KekayaanTab from '@/tabs/KekayaanTab'
 
 export default function FinansialTab() {
   return (
@@ -10,11 +11,7 @@ export default function FinansialTab() {
           <TabsTrigger value="goals">Goals</TabsTrigger>
         </TabsList>
         <TabsContent value="kekayaan">
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <span className="text-muted-foreground text-sm">
-              Fitur Kekayaan (Net Worth) akan hadir di Phase 2.
-            </span>
-          </div>
+          <KekayaanTab />
         </TabsContent>
         <TabsContent value="goals">
           <GoalsTab />
