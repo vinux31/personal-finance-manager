@@ -108,14 +108,44 @@ export async function listUpcomingBills(
   endOfMonth: string,
 ): Promise<RecurringTemplate[]> {
   let query = supabase
-    .from('recurring_templates')
+    .from('upcoming_bills_unpaid')
     .select('id, name, type, category_id, amount, note, frequency, next_due_date, is_active')
-    .eq('is_active', true)
-    .eq('type', 'expense')
     .lte('next_due_date', endOfMonth)
     .order('next_due_date')
   if (uid) query = query.eq('user_id', uid)
   const { data, error } = await query
   if (error) throw error
   return data as RecurringTemplate[]
+}
+
+export interface MarkBillPaidResult {
+  transaction_id: number
+  bill_payment_id: number
+  new_next_due: string
+}
+
+/**
+ * Atomically marks a recurring bill as paid by calling the `mark_bill_paid` RPC.
+ * - Creates one expense transaction
+ * - Inserts one bill_payments audit row
+ * - Advances the template's next_due_date by one cycle (frequency-aware via next_due_date_sql)
+ * All three writes happen in a single DB transaction.
+ *
+ * @param templateId - recurring_templates.id
+ * @param uid - target user id (undefined = caller's auth.uid())
+ * @param paidDate - ISO YYYY-MM-DD (use todayISO() from @/lib/format — never new Date().toISOString())
+ */
+export async function markBillPaid(
+  templateId: number,
+  uid: string | undefined,
+  paidDate: string,
+): Promise<MarkBillPaidResult> {
+  const { data, error } = await supabase.rpc('mark_bill_paid', {
+    p_template_id: templateId,
+    p_uid: uid ?? null,
+    p_paid_date: paidDate,
+  })
+  if (error) throw error
+  const row = Array.isArray(data) ? data[0] : data
+  return row as MarkBillPaidResult
 }
