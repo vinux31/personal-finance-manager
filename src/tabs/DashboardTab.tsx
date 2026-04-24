@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useAggregateByPeriod } from '@/queries/reports'
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
+import { useNetWorthAccounts, useNetWorthLiabilities, useNetWorthSnapshots } from '@/queries/netWorth'
 import { useGoals, goalProgress } from '@/queries/goals'
 import { useTransactions } from '@/queries/transactions'
 import { formatRupiah, todayISO, formatDateID, shortRupiah } from '@/lib/format'
@@ -37,6 +38,9 @@ export default function DashboardTab() {
   const { data: invRows = [] } = useInvestments()
   const { data: goals = [] } = useGoals()
   const { data: recentTx = [] } = useTransactions({ limit: 5 })
+  const { data: nwAccounts = [] } = useNetWorthAccounts()
+  const { data: nwLiabilities = [] } = useNetWorthLiabilities()
+  const { data: nwSnapshots = [] } = useNetWorthSnapshots()
   useRencanaInit()
 
   const monthly = useMemo(() => {
@@ -72,10 +76,23 @@ export default function DashboardTab() {
     [goals]
   )
 
+  const netWorth = useMemo(() => {
+    const totalAccounts = nwAccounts.reduce((s, a) => s + Number(a.balance), 0)
+    const totalInvestments = invRows.reduce((s, i) => s + currentValue(i), 0)
+    const totalLiabilities = nwLiabilities.reduce((s, l) => s + Number(l.amount), 0)
+    return totalAccounts + totalInvestments - totalLiabilities
+  }, [nwAccounts, nwLiabilities, invRows])
+
+  const netWorthTrend = useMemo(() => {
+    const lastTwo = nwSnapshots.slice(-2)
+    if (lastTwo.length < 2) return null
+    return trendPct(Number(lastTwo[1].net_worth), Number(lastTwo[0].net_worth))
+  }, [nwSnapshots])
+
   return (
     <div className="space-y-6">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
         <MetricCard
           label="Pemasukan"
           value={shortRupiah(monthly.income)}
@@ -104,6 +121,12 @@ export default function DashboardTab() {
             ? `${inv.gl >= 0 ? '+' : ''}${inv.pct.toFixed(1)}%`
             : undefined}
           trend={null}
+        />
+        <MetricCard
+          label="Net Worth"
+          value={shortRupiah(netWorth)}
+          gradient
+          trend={netWorthTrend}
         />
       </div>
 
@@ -190,6 +213,8 @@ function MetricCard({
   trendUp?: 'good' | 'bad'
 }) {
   if (gradient) {
+    const trendColor = trend == null ? '' : trend >= 0 ? 'bg-emerald-500/30 text-emerald-100' : 'bg-red-500/30 text-red-100'
+    const trendArrow = trend == null ? '' : trend >= 0 ? '↑' : '↓'
     return (
       <div
         className="rounded-xl p-4 text-white"
@@ -197,6 +222,11 @@ function MetricCard({
       >
         <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-200">{label}</div>
         <div className="text-xl font-extrabold tracking-tight">{value}</div>
+        {trend != null && (
+          <span className={`mt-1.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${trendColor}`}>
+            {trendArrow} {Math.abs(trend)}% vs bln lalu
+          </span>
+        )}
       </div>
     )
   }
