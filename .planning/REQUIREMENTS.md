@@ -29,7 +29,7 @@
 
 ### Foundation
 
-- [ ] **FOUND-01**: Bug `nextDueDate()` month-end overflow diperbaiki (31 Jan + 1 bulan = 28 Feb, bukan 3 Mar)
+- [x] **FOUND-01**: Bug `nextDueDate()` month-end overflow diperbaiki (31 Jan + 1 bulan = 28 Feb, bukan 3 Mar)
 - [ ] **FOUND-02**: Migrasi DB: 4 tabel baru (`net_worth_accounts`, `net_worth_liabilities`, `net_worth_snapshots`, `bill_payments`) dengan RLS policy `auth.uid() = user_id`
 
 ## Future Requirements
@@ -66,7 +66,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Pending |
 | NAV-01 | Phase 1 | Pending |
 | NW-01 | Phase 2 | Pending |
