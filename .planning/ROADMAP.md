@@ -28,7 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. 4 tabel baru ada di database (net_worth_accounts, net_worth_liabilities, net_worth_snapshots, bill_payments) masing-masing dengan RLS policy `auth.uid() = user_id` — query dari user lain mengembalikan 0 baris
   3. Tab "Goals" telah diganti menjadi tab "Finansial" dengan 2 sub-tab di dalamnya: "Goals" dan "Kekayaan" — navigasi berfungsi tanpa error
   4. Semua fitur yang sudah ada (transaksi, investasi, goals, pensiun, laporan) tetap berjalan normal setelah perubahan ini
-**Plans**: TBD
+**Plans:** 3 plans
+- [ ] 01-01-PLAN.md — Fix nextDueDate month-end overflow (FOUND-01)
+- [ ] 01-02-PLAN.md — Create 4 new Supabase tables with RLS in migrations 0012 + 0013 (FOUND-02)
+- [ ] 01-03-PLAN.md — Rename Goals tab to Finansial with Kekayaan + Goals sub-tabs (NAV-01)
 
 ### Phase 2: Net Worth Tracker
 **Goal**: User bisa mengelola aset dan liabilitas, melihat total Net Worth, dan melihat trend bulanan dari sub-tab Kekayaan dan metric card Dashboard
@@ -74,7 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Not started | - |
 | 2. Net Worth Tracker | 0/TBD | Not started | - |
 | 3. Bills Display | 0/TBD | Not started | - |
 | 4. Mark-as-Paid | 0/TBD | Not started | - |
