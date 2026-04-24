@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-mark-as-paid 04-02-PLAN.md
-last_updated: "2026-04-24T11:46:11.427Z"
+stopped_at: Completed 04-mark-as-paid 04-03-PLAN.md
+last_updated: "2026-04-24T11:50:07.552Z"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 14
-  completed_plans: 10
-  percent: 71
+  completed_plans: 11
+  percent: 79
 ---
 
 # Project State
@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 04 (mark-as-paid) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
 
 Progress: [██████████] 100% (Phase 02)
@@ -54,6 +54,7 @@ Progress: [██████████] 100% (Phase 02)
 | Phase 03-bills-display P02 | 10m | 3 tasks | 2 files |
 | Phase 04-mark-as-paid P01 | 4m | 1 tasks | 1 files |
 | Phase 04-mark-as-paid P02 | 1m | 1 tasks | 1 files |
+| Phase 04-mark-as-paid P03 | 2m | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Progress: [██████████] 100% (Phase 02)
 - [Phase 03-bills-display]: Sisa Aman = income - expense - totalBills, red when negative; empty state always renders panel (D-12)
 - [Phase 04-mark-as-paid]: mark_bill_paid RPC uses SECURITY DEFINER + explicit user_id=v_uid in dependent INSERT (cannot rely on DEFAULT auth.uid()); idempotency via FOR UPDATE row lock + IF EXISTS on bill_payments; next_due_date_sql preserves FOUND-01 month-end clamp via LEAST(EXTRACT(DAY), last_day_of_target_month)
 - [Phase 04-mark-as-paid]: upcoming_bills_unpaid VIEW uses security_invoker=true (first VIEW in project); half-open month window [start, +1 month) avoids last-day edge case; NOT EXISTS subquery dual-scopes on recurring_template_id + user_id for defense-in-depth
+- [Phase 04-mark-as-paid]: First SQL test in project — convention: supabase/tests/<phase>-<feature>.sql, BEGIN/ROLLBACK wrapper, RAISE NOTICE PASS:/FAIL: assertions (zero-dep, grep-friendly)
+- [Phase 04-mark-as-paid]: SQL tests simulate Supabase auth.uid() via set_config('request.jwt.claim.sub', uid, true); DO-block EXCEPTION WHEN OTHERS provides graceful SKIP if auth.users seed is restricted
 
 ### Pending Todos
 
@@ -91,6 +94,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-24T11:46:11.421Z
-Stopped at: Completed 04-mark-as-paid 04-02-PLAN.md
+Last session: 2026-04-24T11:50:07.547Z
+Stopped at: Completed 04-mark-as-paid 04-03-PLAN.md
 Resume file: None
