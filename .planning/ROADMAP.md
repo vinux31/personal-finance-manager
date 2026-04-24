@@ -72,7 +72,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Setelah ditandai lunas: expense transaction terbuat, bill_payments tercatat, dan next_due_date pada recurring_template sudah dimajukan ke siklus berikutnya
   3. useProcessRecurring tidak membuat duplikat transaksi untuk tagihan yang sudah ditandai lunas — bahkan jika komponen remount sebelum refresh penuh
   4. Tagihan yang sudah lunas tidak lagi muncul di widget bulan berjalan
-**Plans**: TBD
+**Plans:** 6 plans
+- [ ] 04-01-PLAN.md — Migration 0014: next_due_date_sql helper + mark_bill_paid atomic RPC (BILL-03)
+- [ ] 04-02-PLAN.md — Migration 0015: upcoming_bills_unpaid view with security_invoker (BILL-03)
+- [ ] 04-03-PLAN.md — SQL integration test script supabase/tests/04-mark-bill-paid.sql (BILL-03)
+- [ ] 04-04-PLAN.md — [BLOCKING] Schema push: apply migrations + run SQL tests (BILL-03)
+- [ ] 04-05-PLAN.md — App integration: shadcn AlertDialog + markBillPaid + useMarkBillPaid (BILL-03)
+- [ ] 04-06-PLAN.md — UpcomingBillsPanel UI: Lunas button + AlertDialog + human UAT (BILL-03, NAV-02)
 **UI hint**: yes
 
 ## Progress
@@ -85,4 +91,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 1/3 | In Progress|  |
 | 2. Net Worth Tracker | 0/3 | Not started | - |
 | 3. Bills Display | 2/2 | Complete   | 2026-04-24 |
-| 4. Mark-as-Paid | 0/TBD | Not started | - |
+| 4. Mark-as-Paid | 0/6 | Not started | - |
