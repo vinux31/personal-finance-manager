@@ -13,7 +13,7 @@ import {
 import DashboardTab from '@/tabs/DashboardTab'
 import TransactionsTab from '@/tabs/TransactionsTab'
 import InvestmentsTab from '@/tabs/InvestmentsTab'
-import GoalsTab from '@/tabs/GoalsTab'
+import FinansialTab from '@/tabs/FinansialTab'
 import NotesTab from '@/tabs/NotesTab'
 import ReportsTab from '@/tabs/ReportsTab'
 import SettingsTab from '@/tabs/SettingsTab'
@@ -29,7 +29,7 @@ const TABS = [
   { value: 'dashboard',    label: 'Dashboard',  icon: LayoutDashboard, Comp: DashboardTab },
   { value: 'transactions', label: 'Transaksi',  icon: Wallet,          Comp: TransactionsTab },
   { value: 'investments',  label: 'Investasi',  icon: TrendingUp,      Comp: InvestmentsTab },
-  { value: 'goals',        label: 'Goals',      icon: Target,          Comp: GoalsTab },
+  { value: 'goals',        label: 'Finansial',  icon: Target,          Comp: FinansialTab },
   { value: 'pensiun',      label: 'Pensiun',    icon: PiggyBank,       Comp: PensiunTab },
   { value: 'reports',      label: 'Laporan',    icon: BarChart3,       Comp: ReportsTab },
   { value: 'notes',        label: 'Catatan',    icon: StickyNote,      Comp: NotesTab },
