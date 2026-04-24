@@ -41,10 +41,17 @@ Declared values (must be multiples of 4):
 | 2xl | 48px | Not used in this phase |
 | 3xl | 64px | Not used in this phase |
 
-Exceptions:
-- Bill rows: `py-2.5` (10px vertical padding) — matches "Transaksi Terakhir" row rhythm exactly (CONTEXT.md D-05).
+### Inherited Spacing Constants
+
+The following values are frozen codebase constants inherited from Phase 2. They are NOT new design decisions introduced in this phase. The 4px-multiple rule applies only to new spacing introduced in Phase 3.
+
+| Value | Tailwind | Source | Rationale |
+|-------|----------|--------|-----------|
+| 10px vertical padding | `py-2.5` | Transaksi Terakhir row pattern (`src/tabs/DashboardTab.tsx`) | Inherited row rhythm — must match exactly to maintain visual consistency with Phase 2 panel rows |
+| 20px panel padding | `p-5` | Panel component padding (`src/tabs/DashboardTab.tsx` line 260) | Frozen Panel shell constant — all Dashboard panels use `p-5`; changing it would alter existing panels |
+
+Additional row-level values:
 - Sisa Aman summary row divider: `border-t mt-2 pt-2` — top border + 8px margin + 8px padding.
-- Panel internal padding: `p-5` — matches existing Panel component (`src/tabs/DashboardTab.tsx` line 260).
 - Urgency dot: `h-2 w-2` (8px) rounded-full — small enough to be decorative, not a touch target.
 
 Source: DashboardTab.tsx Panel component + Transaksi Terakhir row pattern, CONTEXT.md `<specifics>`.
@@ -52,6 +59,8 @@ Source: DashboardTab.tsx Panel component + Transaksi Terakhir row pattern, CONTE
 ---
 
 ## Typography
+
+Exactly 2 font weights are used in this phase: **400 (regular)** and **600 (semibold)**. No intermediate weights.
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
@@ -61,7 +70,7 @@ Source: DashboardTab.tsx Panel component + Transaksi Terakhir row pattern, CONTE
 | Sisa Aman label | 14px (text-sm) | 600 (semibold) | 1.5 |
 
 Notes:
-- Bill name: `text-sm font-medium` (14px, 500) — same as transaction category_name in DashboardTab.
+- Bill name: `text-sm font-semibold` (14px, 600) — visual distinction from due-date sub-text is achieved by size (text-sm vs text-xs), not weight. Consistent with amount column and panel heading.
 - Due-date sub-text ("jatuh tempo hari ini", "3 hari lagi", "terlambat 2 hari"): `text-xs text-muted-foreground` (12px, 400) — same as date sub-text in Transaksi Terakhir.
 - Bill amount (right-aligned): `text-sm font-semibold tabular-nums` (14px, 600) — same as transaction amount column.
 - Sisa Aman amount: `text-sm font-semibold tabular-nums` — merah (`text-red-500`) jika negatif, default foreground jika positif/nol.
@@ -131,6 +140,10 @@ No new shadcn components need to be added. All needed primitives (div, span, ul,
 
 ## Layout Contracts
 
+### Visual Hierarchy
+
+Primary visual anchor: urgency dot + bill name (left of each row); summary anchor: Sisa Aman row (bottom of panel).
+
 ### Dashboard Row 3 — UpcomingBillsPanel (full-width)
 
 ```
@@ -152,7 +165,7 @@ UpcomingBillsPanel is inserted in `DashboardTab.tsx` immediately after the closi
 ```
 [ dot (h-2 w-2 rounded-full bg-{urgency}) ]
 [ min-w-0 flex-1 ]
-  [ text-sm font-medium ] ← bill name (e.g. "PLN Listrik")
+  [ text-sm font-semibold ] ← bill name (e.g. "PLN Listrik")
   [ text-xs text-muted-foreground ] ← "jatuh tempo hari ini" / "3 hari lagi" / "terlambat 2 hari"
 [ text-sm font-semibold tabular-nums ] ← Rp X.XXX.XXX (right-aligned)
 ```
