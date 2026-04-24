@@ -1,6 +1,18 @@
-import { useMemo } from 'react'
-import { useUpcomingBills } from '@/queries/recurringTransactions'
-import { formatRupiah } from '@/lib/format'
+import { useMemo, useState } from 'react'
+import { useUpcomingBills, useMarkBillPaid } from '@/queries/recurringTransactions'
+import type { RecurringTemplate } from '@/db/recurringTransactions'
+import { formatRupiah, todayISO } from '@/lib/format'
+import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface UpcomingBillsPanelProps {
   income: number
@@ -44,6 +56,8 @@ function dueSubText(diff: number): string {
 export default function UpcomingBillsPanel({ income, expense }: UpcomingBillsPanelProps) {
   const { data, isLoading, isError } = useUpcomingBills()
   const bills = data ?? []
+  const [selectedBill, setSelectedBill] = useState<RecurringTemplate | null>(null)
+  const markPaid = useMarkBillPaid()
 
   const totalBills = useMemo(
     () => bills.reduce((sum, b) => sum + Number(b.amount), 0),
@@ -97,6 +111,14 @@ export default function UpcomingBillsPanel({ income, expense }: UpcomingBillsPan
               <span className="text-sm font-semibold tabular-nums">
                 {formatRupiah(bill.amount)}
               </span>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-auto py-0.5 px-2 text-xs"
+                onClick={() => setSelectedBill(bill)}
+              >
+                Lunas
+              </Button>
             </li>
           )
         })}
@@ -109,6 +131,42 @@ export default function UpcomingBillsPanel({ income, expense }: UpcomingBillsPan
           {formatRupiah(sisaAman)}
         </span>
       </div>
+
+      <AlertDialog
+        open={selectedBill !== null}
+        onOpenChange={(open) => {
+          // Only allow closing via this path when mutation is not in-flight.
+          if (!open && !markPaid.isPending) setSelectedBill(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tandai sebagai lunas?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tandai <strong>{selectedBill?.name}</strong> sebagai lunas? Transaksi pengeluaran akan dibuat secara otomatis.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={markPaid.isPending}>Batalkan</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={markPaid.isPending}
+              onClick={(e) => {
+                // Prevent Radix auto-close so dialog stays open during mutation
+                // (Pitfall 5 — close only on explicit onSuccess)
+                e.preventDefault()
+                if (!selectedBill) return
+                markPaid.mutate(
+                  { templateId: selectedBill.id, paidDate: todayISO() },
+                  { onSuccess: () => setSelectedBill(null) },
+                )
+              }}
+            >
+              {markPaid.isPending ? 'Memproses…' : 'Ya, Lunas'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
