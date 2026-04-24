@@ -58,7 +58,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Setiap tagihan tampil dengan color-coding urgency: merah = sudah lewat/hari ini, kuning = ≤7 hari, abu = >7 hari
   3. "Sisa Aman Bulan Ini" tampil di widget: pemasukan aktual bulan ini − pengeluaran aktual bulan ini − tagihan bulan ini yang belum lunas
   4. Semua fitur yang sudah ada tetap berjalan normal — useProcessRecurring tidak dimodifikasi di fase ini
-**Plans**: TBD
+**Plans:** 2 plans
+- [ ] 03-01-PLAN.md — Append listUpcomingBills() DB fn + useUpcomingBills() query hook (BILL-01 data layer)
+- [ ] 03-02-PLAN.md — Create UpcomingBillsPanel component + DashboardTab row 3 integration (BILL-01 UI, BILL-02, BILL-04, NAV-02 partial)
 **UI hint**: yes
 
 ### Phase 4: Mark-as-Paid
@@ -82,5 +84,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/3 | In Progress|  |
 | 2. Net Worth Tracker | 0/3 | Not started | - |
-| 3. Bills Display | 0/TBD | Not started | - |
+| 3. Bills Display | 0/2 | Not started | - |
 | 4. Mark-as-Paid | 0/TBD | Not started | - |
