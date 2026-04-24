@@ -12,8 +12,8 @@ Milestone v1.0 menambahkan Net Worth Tracker dan Upcoming Bills Calendar ke app 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - DB infrastructure, fix bug nextDueDate, restructure navigasi — tanpa UI baru
-- [ ] **Phase 2: Net Worth Tracker** - CRUD akun/liabilitas, tab Kekayaan, metric card Net Worth di Dashboard
+- [x] **Phase 1: Foundation** - DB infrastructure, fix bug nextDueDate, restructure navigasi — tanpa UI baru
+- [x] **Phase 2: Net Worth Tracker** - CRUD akun/liabilitas, tab Kekayaan, metric card Net Worth di Dashboard
 - [ ] **Phase 3: Bills Display** - Daftar tagihan bulan ini di Dashboard, color-coding urgency, proyeksi Sisa Aman
 - [ ] **Phase 4: Mark-as-Paid** - Tandai tagihan lunas secara atomik tanpa duplikasi transaksi
 
@@ -45,8 +45,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Chart trend Net Worth bulanan tersedia di sub-tab Kekayaan, dan snapshot bulan ini tercatat otomatis saat tab dibuka (sekali per bulan)
 **Plans:** 3 plans
 - [x] 02-01-PLAN.md — DB + Query layer (src/db/netWorth.ts + src/queries/netWorth.ts) for accounts, liabilities, snapshots
-- [ ] 02-02-PLAN.md — KekayaanTab + 2 dialogs + FinansialTab wiring (UI for NW-02..NW-07)
-- [ ] 02-03-PLAN.md — Dashboard 5th MetricCard "Net Worth" + grid update + gradient trend badge fix (NW-01)
+- [x] 02-02-PLAN.md — KekayaanTab + 2 dialogs + FinansialTab wiring (UI for NW-02..NW-07)
+- [x] 02-03-PLAN.md — Dashboard 5th MetricCard "Net Worth" + grid update + gradient trend badge fix (NW-01)
 **UI hint**: yes
 
 ### Phase 3: Bills Display
