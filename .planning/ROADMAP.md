@@ -43,7 +43,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Nilai investasi dari tab Investasi tampil otomatis sebagai baris read-only di breakdown Net Worth — tidak bisa diinput manual sebagai akun baru
   4. Total Net Worth (aset + investasi − liabilitas) tampil sebagai metric card ke-5 di Dashboard
   5. Chart trend Net Worth bulanan tersedia di sub-tab Kekayaan, dan snapshot bulan ini tercatat otomatis saat tab dibuka (sekali per bulan)
-**Plans**: TBD
+**Plans:** 3 plans
+- [x] 02-01-PLAN.md — DB + Query layer (src/db/netWorth.ts + src/queries/netWorth.ts) for accounts, liabilities, snapshots
+- [ ] 02-02-PLAN.md — KekayaanTab + 2 dialogs + FinansialTab wiring (UI for NW-02..NW-07)
+- [ ] 02-03-PLAN.md — Dashboard 5th MetricCard "Net Worth" + grid update + gradient trend badge fix (NW-01)
 **UI hint**: yes
 
 ### Phase 3: Bills Display
@@ -78,6 +81,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/3 | In Progress|  |
-| 2. Net Worth Tracker | 0/TBD | Not started | - |
+| 2. Net Worth Tracker | 0/3 | Not started | - |
 | 3. Bills Display | 0/TBD | Not started | - |
 | 4. Mark-as-Paid | 0/TBD | Not started | - |
