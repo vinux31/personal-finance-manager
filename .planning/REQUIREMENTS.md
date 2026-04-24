@@ -19,7 +19,7 @@
 
 - [x] **BILL-01**: User dapat melihat daftar tagihan bulan ini (dari recurring_templates, type=expense, next_due_date ≤ akhir bulan berjalan)
 - [x] **BILL-02**: Tagihan ditampilkan color-coded by urgency: merah = sudah lewat/hari ini, kuning = ≤7 hari, abu = >7 hari
-- [ ] **BILL-03**: User dapat tandai tagihan "Lunas" secara atomik — buat transaksi expense + catat bill_payment + update next_due_date dalam satu operasi
+- [x] **BILL-03**: User dapat tandai tagihan "Lunas" secara atomik — buat transaksi expense + catat bill_payment + update next_due_date dalam satu operasi
 - [x] **BILL-04**: User dapat lihat "Sisa Aman Bulan Ini" = pemasukan aktual bulan ini − pengeluaran aktual bulan ini − tagihan bulan ini yang belum lunas
 
 ### Navigasi
@@ -80,7 +80,7 @@
 | BILL-02 | Phase 3 | Complete |
 | BILL-04 | Phase 3 | Complete |
 | NAV-02 (partial — bills widget) | Phase 3 | Pending |
-| BILL-03 | Phase 4 | Pending |
+| BILL-03 | Phase 4 | Complete |
 | NAV-02 (partial — dashboard wiring complete) | Phase 4 | Pending |
 
 **Coverage:**

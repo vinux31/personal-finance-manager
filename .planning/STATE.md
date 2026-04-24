@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-bills-display 03-02-PLAN.md
-last_updated: "2026-04-24T07:42:13.842Z"
+stopped_at: Completed 04-mark-as-paid 04-01-PLAN.md
+last_updated: "2026-04-24T11:42:44.482Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_plans: 14
+  completed_plans: 9
+  percent: 64
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-23)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 03 — bills-display
+**Current focus:** Phase 04 — mark-as-paid
 
 ## Current Position
 
-Phase: 03 (bills-display) — EXECUTING
-Plan: 2 of 2
+Phase: 04 (mark-as-paid) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
 
 Progress: [██████████] 100% (Phase 02)
@@ -52,6 +52,7 @@ Progress: [██████████] 100% (Phase 02)
 | Phase 02-net-worth P02 | 15m | 2 tasks | 4 files |
 | Phase 02-net-worth P03 | 8m | 1 tasks | 1 files |
 | Phase 03-bills-display P02 | 10m | 3 tasks | 2 files |
+| Phase 04-mark-as-paid P01 | 4m | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,7 @@ Progress: [██████████] 100% (Phase 02)
 - [Phase 03-bills-display]: UpcomingBillsPanel content-only: DashboardTab provides Panel shell — no circular import
 - [Phase 03-bills-display]: dayDiff uses new Date(y, m-1, d) local-midnight — avoids UTC+7 off-by-one
 - [Phase 03-bills-display]: Sisa Aman = income - expense - totalBills, red when negative; empty state always renders panel (D-12)
+- [Phase 04-mark-as-paid]: mark_bill_paid RPC uses SECURITY DEFINER + explicit user_id=v_uid in dependent INSERT (cannot rely on DEFAULT auth.uid()); idempotency via FOR UPDATE row lock + IF EXISTS on bill_payments; next_due_date_sql preserves FOUND-01 month-end clamp via LEAST(EXTRACT(DAY), last_day_of_target_month)
 
 ### Pending Todos
 
@@ -87,6 +89,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-24T07:42:13.823Z
-Stopped at: Completed 03-bills-display 03-02-PLAN.md
+Last session: 2026-04-24T11:42:44.477Z
+Stopped at: Completed 04-mark-as-paid 04-01-PLAN.md
 Resume file: None
