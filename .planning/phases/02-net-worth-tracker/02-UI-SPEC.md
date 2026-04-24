@@ -54,14 +54,14 @@ Exceptions:
 | Body | 14px (text-sm) | 400 (regular) | 1.5 |
 | Label / sublabel | 10px (text-[10px]) | 600 (semibold) | 1.5 |
 | Heading (section title) | 16px (text-base) | 600 (semibold) | 1.2 |
-| Display (Net Worth total) | 20px (text-xl) | 800 (extrabold) | 1.1 |
+| Display (Net Worth total) | 20px (text-xl) | 600 (semibold) | 1.1 |
 
-Source: Existing MetricCard uses `text-[10px] font-semibold uppercase tracking-wider` for labels and `text-xl font-extrabold tracking-tight` for values — replicated exactly.
+Source: Existing MetricCard uses `text-[10px] font-semibold uppercase tracking-wider` for labels and `text-xl` for values — replicated with semibold weight for consistency.
 
 Notes:
 - Investasi read-only row label: `text-sm italic text-muted-foreground` with a small "otomatis" badge.
-- Chart x-axis tick labels: `text-xs` (12px), weight 400, muted-foreground color.
-- Dialog form field labels: `text-sm font-medium` (14px, 500).
+- Chart x-axis tick labels: `text-sm` (14px), weight 400, `text-muted-foreground` color.
+- Dialog form field labels: `text-sm font-semibold` (14px, 600).
 
 ---
 
@@ -155,7 +155,7 @@ Chart: full width.
 Three-number layout inside gradient card:
 ```
 Net Worth                              ← label: text-[10px] semibold uppercase tracking-wider text-indigo-200
-Rp 450.000.000                         ← value: text-2xl font-extrabold
+Rp 450.000.000                         ← value: text-2xl font-semibold
 
 Aset  Rp 500.000.000   Liabilitas  Rp 50.000.000   ← row of two, text-sm text-indigo-200
 ```
@@ -173,6 +173,12 @@ Left border: `borderLeft: '4px solid var(--brand)'` — consistent with GoalCard
 Card padding: `p-4`.
 Icon: Lucide `Landmark` for tabungan/giro, `Wallet` for cash/dompet, `Building2` for properti, `Car` for kendaraan/cicilan kendaraan, `CreditCard` for kartu kredit/paylater/KTA, `Home` for KPR.
 
+Accessibility labels on icon-only action buttons:
+- Edit account: `aria-label="Edit akun {nama}"`
+- Delete account: `aria-label="Hapus akun {nama}"`
+- Edit liability: `aria-label="Edit liabilitas {nama}"`
+- Delete liability: `aria-label="Hapus liabilitas {nama}"`
+
 ### Investasi Read-Only Row
 
 ```
@@ -188,7 +194,7 @@ Uses existing `MetricCard` component with `gradient={true}` and `trend={netWorth
 
 ```
 NET WORTH                ← label text-[10px] semibold uppercase tracking-wider text-indigo-200
-Rp 450.000.000           ← text-xl font-extrabold text-white
+Rp 450.000.000           ← text-xl font-semibold text-white
   ↑ 3%                   ← trend badge (emerald if positive, red if negative) — hidden if null
 ```
 
@@ -202,8 +208,8 @@ Source: D-06, D-07, MetricCard implementation in DashboardTab.tsx line 175+.
 [ Select: 3 bulan / 6 bulan / 12 bulan ]   ← right-aligned, h-8, above chart
 
 [ AreaChart — ResponsiveContainer width="100%" height={220} ]
-  X-axis: month label (Jan, Feb, Mar…) — text-xs muted-foreground
-  Y-axis: shortRupiah values — text-xs muted-foreground
+  X-axis: month label (Jan, Feb, Mar…) — text-sm muted-foreground
+  Y-axis: shortRupiah values — text-sm muted-foreground
   Tooltip: formatRupiah full value + bulan label
   Area stroke: #6366f1 strokeWidth={2}
   Area fill: url(#netWorthGradient) — linearGradient from #6366f1@0.3 to #6366f1@0
