@@ -31,7 +31,14 @@ export function nextDueDate(current: string, frequency: Frequency): string {
   switch (frequency) {
     case 'daily': date.setDate(date.getDate() + 1); break
     case 'weekly': date.setDate(date.getDate() + 7); break
-    case 'monthly': date.setMonth(date.getMonth() + 1); break
+    case 'monthly': {
+      const targetMonth = date.getMonth() + 1
+      date.setDate(1)
+      date.setMonth(targetMonth)
+      const lastDay = new Date(date.getFullYear(), targetMonth + 1, 0).getDate()
+      date.setDate(Math.min(d, lastDay))
+      break
+    }
     case 'yearly': date.setFullYear(date.getFullYear() + 1); break
   }
   const ny = date.getFullYear()
