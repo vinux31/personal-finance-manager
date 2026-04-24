@@ -74,7 +74,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Tagihan yang sudah lunas tidak lagi muncul di widget bulan berjalan
 **Plans:** 6 plans
 - [x] 04-01-PLAN.md — Migration 0014: next_due_date_sql helper + mark_bill_paid atomic RPC (BILL-03)
-- [ ] 04-02-PLAN.md — Migration 0015: upcoming_bills_unpaid view with security_invoker (BILL-03)
+- [x] 04-02-PLAN.md — Migration 0015: upcoming_bills_unpaid view with security_invoker (BILL-03)
 - [ ] 04-03-PLAN.md — SQL integration test script supabase/tests/04-mark-bill-paid.sql (BILL-03)
 - [ ] 04-04-PLAN.md — [BLOCKING] Schema push: apply migrations + run SQL tests (BILL-03)
 - [ ] 04-05-PLAN.md — App integration: shadcn AlertDialog + markBillPaid + useMarkBillPaid (BILL-03)
