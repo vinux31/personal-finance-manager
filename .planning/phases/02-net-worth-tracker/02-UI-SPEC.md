@@ -155,7 +155,7 @@ Chart: full width.
 Three-number layout inside gradient card:
 ```
 Net Worth                              ← label: text-[10px] semibold uppercase tracking-wider text-indigo-200
-Rp 450.000.000                         ← value: text-2xl font-semibold
+Rp 450.000.000                         ← value: text-xl font-semibold
 
 Aset  Rp 500.000.000   Liabilitas  Rp 50.000.000   ← row of two, text-sm text-indigo-200
 ```
@@ -165,8 +165,8 @@ Source: CONTEXT.md `<specifics>` — "tampilkan 3 angka dalam satu gradient card
 ### Account / Liability Card Row
 
 ```
-[ Icon ]  Name (text-sm font-semibold)     Type badge (variant="outline", text-xs)
-          Saldo: Rp X (text-xs muted)                          [ Pencil ] [ Trash2 ]
+[ Icon ]  Name (text-sm font-semibold)     Type badge (variant="outline", text-[10px])
+          Saldo: Rp X (text-[10px] muted)                      [ Pencil ] [ Trash2 ]
 ```
 
 Left border: `borderLeft: '4px solid var(--brand)'` — consistent with GoalCard.
