@@ -1,7 +1,9 @@
+import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
   listRecurringTemplates,
+  listUpcomingBills,
   createRecurringTemplate,
   updateRecurringTemplate,
   deleteRecurringTemplate,
@@ -56,5 +58,22 @@ export function useDeleteRecurringTemplate() {
       toast.success('Template dihapus')
     },
     onError: (e) => toast.error(mapSupabaseError(e)),
+  })
+}
+
+export function useUpcomingBills() {
+  const uid = useTargetUserId()
+  const endOfMonth = useMemo(() => {
+    const d = new Date()
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0)
+    const y = lastDay.getFullYear()
+    const mo = String(lastDay.getMonth() + 1).padStart(2, '0')
+    const day = String(lastDay.getDate()).padStart(2, '0')
+    return `${y}-${mo}-${day}`
+  }, [])
+  return useQuery({
+    queryKey: ['upcoming-bills', uid, endOfMonth],
+    queryFn: () => listUpcomingBills(uid, endOfMonth),
+    enabled: !!uid,
   })
 }
