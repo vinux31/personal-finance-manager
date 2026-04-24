@@ -25,7 +25,7 @@
 ### Navigasi
 
 - [ ] **NAV-01**: Tab "Goals" diganti nama menjadi "Finansial" dengan 2 sub-tab: "Goals" dan "Kekayaan"
-- [x] **NAV-02**: Dashboard mendapat metric card Net Worth (ke-5) dan widget panel "Tagihan Bulan Ini"
+- [x] **NAV-02**: Dashboard mendapat metric card Net Worth (ke-5) dan widget panel "Tagihan Bulan Ini" — mark-as-paid wiring complete (Phase 4)
 
 ### Foundation
 
@@ -79,9 +79,9 @@
 | BILL-01 | Phase 3 | Complete |
 | BILL-02 | Phase 3 | Complete |
 | BILL-04 | Phase 3 | Complete |
-| NAV-02 (partial — bills widget) | Phase 3 | Pending |
+| NAV-02 (partial — bills widget) | Phase 3 | Complete |
 | BILL-03 | Phase 4 | Complete |
-| NAV-02 (partial — dashboard wiring complete) | Phase 4 | Pending |
+| NAV-02 (partial — dashboard wiring complete) | Phase 4 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 15 total (NAV-02 split across Phase 3 and Phase 4)

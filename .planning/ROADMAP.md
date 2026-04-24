@@ -78,7 +78,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] 04-03-PLAN.md — SQL integration test script supabase/tests/04-mark-bill-paid.sql (BILL-03)
 - [x] 04-04-PLAN.md — [BLOCKING] Schema push: apply migrations + run SQL tests (BILL-03)
 - [x] 04-05-PLAN.md — App integration: shadcn AlertDialog + markBillPaid + useMarkBillPaid (BILL-03)
-- [ ] 04-06-PLAN.md — UpcomingBillsPanel UI: Lunas button + AlertDialog + human UAT (BILL-03, NAV-02)
+- [x] 04-06-PLAN.md — UpcomingBillsPanel UI: Lunas button + AlertDialog + human UAT (BILL-03, NAV-02)
 **UI hint**: yes
 
 ## Progress
