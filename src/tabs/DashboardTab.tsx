@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
 import RencanaBar from '@/components/RencanaBar'
 import { useRencanaInit } from '@/lib/useRencanaInit'
+import UpcomingBillsPanel from '@/components/UpcomingBillsPanel'
 
 function firstDayOfMonth(): string {
   const d = new Date()
@@ -191,6 +192,10 @@ export default function DashboardTab() {
           )}
         </Panel>
       </div>
+
+      <Panel title="Tagihan Bulan Ini">
+        <UpcomingBillsPanel income={monthly.income} expense={monthly.expense} />
+      </Panel>
     </div>
   )
 }
