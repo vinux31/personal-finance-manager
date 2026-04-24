@@ -1,7 +1,7 @@
 ---
 phase: 4
 slug: mark-as-paid
-status: draft
+status: approved
 shadcn_initialized: true
 preset: radix-nova
 created: 2026-04-24
