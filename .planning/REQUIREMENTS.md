@@ -17,15 +17,15 @@
 
 ### Tagihan (Upcoming Bills)
 
-- [ ] **BILL-01**: User dapat melihat daftar tagihan bulan ini (dari recurring_templates, type=expense, next_due_date ≤ akhir bulan berjalan)
-- [ ] **BILL-02**: Tagihan ditampilkan color-coded by urgency: merah = sudah lewat/hari ini, kuning = ≤7 hari, abu = >7 hari
+- [x] **BILL-01**: User dapat melihat daftar tagihan bulan ini (dari recurring_templates, type=expense, next_due_date ≤ akhir bulan berjalan)
+- [x] **BILL-02**: Tagihan ditampilkan color-coded by urgency: merah = sudah lewat/hari ini, kuning = ≤7 hari, abu = >7 hari
 - [ ] **BILL-03**: User dapat tandai tagihan "Lunas" secara atomik — buat transaksi expense + catat bill_payment + update next_due_date dalam satu operasi
-- [ ] **BILL-04**: User dapat lihat "Sisa Aman Bulan Ini" = pemasukan aktual bulan ini − pengeluaran aktual bulan ini − tagihan bulan ini yang belum lunas
+- [x] **BILL-04**: User dapat lihat "Sisa Aman Bulan Ini" = pemasukan aktual bulan ini − pengeluaran aktual bulan ini − tagihan bulan ini yang belum lunas
 
 ### Navigasi
 
 - [ ] **NAV-01**: Tab "Goals" diganti nama menjadi "Finansial" dengan 2 sub-tab: "Goals" dan "Kekayaan"
-- [ ] **NAV-02**: Dashboard mendapat metric card Net Worth (ke-5) dan widget panel "Tagihan Bulan Ini"
+- [x] **NAV-02**: Dashboard mendapat metric card Net Worth (ke-5) dan widget panel "Tagihan Bulan Ini"
 
 ### Foundation
 
@@ -76,9 +76,9 @@
 | NW-05 | Phase 2 | Pending |
 | NW-06 | Phase 2 | Pending |
 | NW-07 | Phase 2 | Pending |
-| BILL-01 | Phase 3 | Pending |
-| BILL-02 | Phase 3 | Pending |
-| BILL-04 | Phase 3 | Pending |
+| BILL-01 | Phase 3 | Complete |
+| BILL-02 | Phase 3 | Complete |
+| BILL-04 | Phase 3 | Complete |
 | NAV-02 (partial — bills widget) | Phase 3 | Pending |
 | BILL-03 | Phase 4 | Pending |
 | NAV-02 (partial — dashboard wiring complete) | Phase 4 | Pending |
