@@ -3,6 +3,7 @@
 **Researched:** 2026-04-24
 **Domain:** Supabase SQL migrations, TypeScript Date API, React tab navigation (shadcn/ui)
 **Confidence:** HIGH
+**Last revised:** 2026-04-24 (checker feedback — const/let canonicalization, open questions resolved)
 
 ---
 
@@ -143,28 +144,29 @@ supabase/
     └── 0013_bill_payments.sql # NEW — 1 tabel bill payments
 ```
 
-### Pattern 1: nextDueDate Monthly Clamping
+### Pattern 1: nextDueDate Monthly Clamping (Mutation-Only)
 
-**What:** Setelah `setMonth()`, cek apakah bulan hasil sama dengan bulan target. Jika tidak (overflow), ambil hari terakhir bulan target.
+**What:** Gunakan pola mutasi berurutan pada object `Date` yang sama: `setDate(1)` → `setMonth(target)` → hitung `lastDay` → `setDate(Math.min(d, lastDay))`. Tidak ada reassignment variabel — `const date` tetap `const`.
 
 **When to use:** Setiap kali advance tanggal monthly dengan original day > 28.
 
 ```typescript
 // Source: Derived from D-08/D-09 in CONTEXT.md + native JS Date behavior
+// Canonical mutation-only approach — const date stays const
 case 'monthly': {
-  const originalDay = d  // simpan hari asal dari input
-  const targetMonth = m - 1 + 1  // 0-indexed month + 1 bulan
-  const targetYear = targetMonth > 11 ? y + 1 : y
-  const normalizedMonth = targetMonth % 12
-  // Hari terakhir bulan target: new Date(year, month+1, 0) = hari terakhir bulan month
-  const lastDayOfTarget = new Date(targetYear, normalizedMonth + 1, 0).getDate()
-  const clampedDay = Math.min(originalDay, lastDayOfTarget)
-  date = new Date(targetYear, normalizedMonth, clampedDay)
+  const targetMonth = date.getMonth() + 1
+  date.setDate(1)                                                        // prevent setMonth overflow
+  date.setMonth(targetMonth)                                             // advance safely (day=1 always valid)
+  const lastDay = new Date(date.getFullYear(), targetMonth + 1, 0).getDate()
+  date.setDate(Math.min(d, lastDay))                                     // clamp to valid day
   break
 }
 ```
 
-**Catatan implementasi:** Fungsi existing sudah parse `y, m, d` dari string. Gunakan `d` (original day) sebagai referensi clamping, bukan `date.getDate()` setelah setMonth (karena setMonth sudah mengubah nilainya saat overflow).
+**Catatan implementasi:**
+- Gunakan `d` (hari asli hasil parse di line 29) sebagai referensi clamping, bukan `date.getDate()` (nilai `date.getDate()` adalah `1` pada titik ini karena `setDate(1)`).
+- `date.getFullYear()` dipanggil SETELAH `setMonth()` agar year rollover Desember→Januari tertangani otomatis (`setMonth(12)` roll ke Januari tahun berikutnya).
+- `const date` di line 30 **TIDAK** berubah menjadi `let` — semua operasi adalah mutasi (`setDate`, `setMonth`), tidak ada reassignment.
 
 ### Pattern 2: SQL Migration dengan RLS
 
@@ -236,6 +238,7 @@ export default function FinansialTab() {
 
 - **Mengubah `value` tab dari `'goals'` ke `'finansial'`:** Akan merusak state tab yang sudah tersimpan di `useTabStore` untuk pengguna existing (D-01).
 - **Menggunakan `date.setMonth()` tanpa clamping:** Ini adalah bug yang sedang diperbaiki — `date.setMonth(m)` pada tanggal 31 January akan auto-advance ke Maret karena 31 Feb tidak valid.
+- **Mengubah `const date` menjadi `let date`:** Tidak perlu. Pola mutation-only (lihat Pattern 1) tidak melakukan reassignment — hanya mutasi method `setDate()` / `setMonth()` pada object yang sama.
 - **Menggabungkan `net_worth_accounts` dan `net_worth_liabilities` menjadi satu tabel:** Sudah diputuskan di STATE.md untuk pakai dua tabel terpisah (D-07).
 - **Membuat satu migration file untuk semua 4 tabel:** D-05 mewajibkan split menjadi 0012 dan 0013 karena alasan konseptual (net worth vs bills).
 - **Memodifikasi GoalsTab.tsx:** Zero changes — hanya diimport ke dalam FinansialTab.
@@ -263,7 +266,7 @@ export default function FinansialTab() {
 
 **Why it happens:** JavaScript Date API tidak clamp — ia overflow ke bulan berikutnya secara otomatis.
 
-**How to avoid:** Simpan `originalDay = d` sebelum manipulasi. Setelah advance month, hitung `lastDay = new Date(targetYear, targetMonth + 1, 0).getDate()`. Set day ke `Math.min(originalDay, lastDay)`.
+**How to avoid:** Panggil `date.setDate(1)` SEBELUM `setMonth()` agar tidak overflow. Kemudian hitung `lastDay = new Date(targetYear, targetMonth + 1, 0).getDate()` dan panggil `date.setDate(Math.min(d, lastDay))` dengan `d` = hari asli hasil parse string.
 
 **Warning signs:** Test dengan tanggal 29, 30, 31 di bulan Januari, Maret, Mei, Juli, Agustus, Oktober, Desember — semua bulan yang punya hari > 28.
 
@@ -301,40 +304,36 @@ export default function FinansialTab() {
 
 ## Code Examples
 
-### Verified: nextDueDate Fix (lengkap)
+### Verified: nextDueDate Fix (lengkap — mutation-only, `const date` stays const)
 
 ```typescript
 // Source: Derived from D-08/D-09 CONTEXT.md + src/db/recurringTransactions.ts baris 28-41
 // Hanya case 'monthly' yang perlu diubah — kasus lain tidak terpengaruh
+// CANONICAL approach: mutation-only, no variable reassignment
 
 export function nextDueDate(current: string, frequency: Frequency): string {
   const [y, m, d] = current.split('-').map(Number)
-  let date: Date
+  const date = new Date(y, m - 1, d)         // const — stays const
 
   switch (frequency) {
     case 'daily':
-      date = new Date(y, m - 1, d)
       date.setDate(date.getDate() + 1)
       break
     case 'weekly':
-      date = new Date(y, m - 1, d)
       date.setDate(date.getDate() + 7)
       break
     case 'monthly': {
-      // FIX: clamp ke hari terakhir bulan target agar tidak overflow
-      const targetMonth0 = m - 1 + 1          // 0-indexed bulan target
-      const targetYear = targetMonth0 > 11 ? y + 1 : y
-      const nm0 = targetMonth0 % 12            // normalized 0-indexed month
-      const lastDay = new Date(targetYear, nm0 + 1, 0).getDate()
-      date = new Date(targetYear, nm0, Math.min(d, lastDay))
+      // FIX: mutation-only clamp. setDate(1) first so setMonth() cannot overflow.
+      const targetMonth = date.getMonth() + 1
+      date.setDate(1)
+      date.setMonth(targetMonth)
+      const lastDay = new Date(date.getFullYear(), targetMonth + 1, 0).getDate()
+      date.setDate(Math.min(d, lastDay))
       break
     }
     case 'yearly':
-      date = new Date(y, m - 1, d)
       date.setFullYear(date.getFullYear() + 1)
       break
-    default:
-      date = new Date(y, m - 1, d)
   }
 
   const ny = date.getFullYear()
@@ -470,23 +469,25 @@ CREATE POLICY "Users manage own bill payments"
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | `is_admin()` function sudah ada di Supabase dan bisa dipakai di RLS policy baru | Standard Stack / Code Examples | Policy gagal deploy karena function tidak ada — perlu verifikasi atau hapus `OR is_admin()` dari policy |
+| A1 | `is_admin()` function sudah ada di Supabase dan bisa dipakai di RLS policy baru | Standard Stack / Code Examples | **RESOLVED** — confirmed di `supabase/migrations/0006_multi_user.sql` lines 37-48 |
 | A2 | PostgreSQL GENERATED ALWAYS AS STORED column didukung oleh versi Supabase yang dipakai project | Standard Stack | Column definition gagal — fallback: hitung `net_worth` di application layer |
-| A3 | GoalsTab tidak menerima props dari parent (self-contained dengan internal hooks) | Common Pitfalls | FinansialTab perlu forward props — perlu membaca GoalsTab.tsx sebelum implementasi |
+| A3 | GoalsTab tidak menerima props dari parent (self-contained dengan internal hooks) | Common Pitfalls | **RESOLVED** — confirmed self-contained di PATTERNS.md (no props needed) |
 
 ---
 
 ## Open Questions
 
-1. **Apakah `is_admin()` function sudah ada di database?**
-   - Yang diketahui: D-06 mewajibkan `OR is_admin()` pada SELECT policy
-   - Yang tidak jelas: Apakah function ini sudah didefined di migrasi sebelumnya (tidak terlihat di 0010–0011)
-   - Rekomendasi: Planner harus tambahkan task verifikasi — cek apakah `is_admin()` sudah ada, atau skip klausa tersebut jika belum ada
+**All open questions resolved as of 2026-04-24.**
 
-2. **Apakah GoalsTab menerima props?**
-   - Yang diketahui: GoalsTab di-render langsung dari TABS array (`Comp: GoalsTab`) tanpa props tambahan
-   - Yang tidak jelas: Apakah GoalsTab mengonsumsi props dari parent atau sepenuhnya self-contained
-   - Rekomendasi: Executor harus baca GoalsTab.tsx sebelum menulis FinansialTab untuk konfirmasi
+1. ~~**Apakah `is_admin()` function sudah ada di database?**~~ **RESOLVED (2026-04-24)**
+   - **Finding:** `is_admin()` is defined in `supabase/migrations/0006_multi_user.sql` lines 37-48.
+   - **Signature:** `public.is_admin() RETURNS boolean, SECURITY DEFINER, STABLE`.
+   - **Behavior:** returns `true` if `auth.uid()` matches a profile row with `is_admin=true`.
+   - **Decision:** Proceed with `OR is_admin()` in USING clauses of all 4 new RLS policies as specified by D-06. No fallback needed.
+
+2. ~~**Apakah GoalsTab menerima props?**~~ **RESOLVED (2026-04-24)**
+   - **Finding:** `GoalsTab` is fully self-contained — zero props from parent. Uses internal `useState` + React Query hooks only. Confirmed via codebase read and recorded in `01-PATTERNS.md` (FinansialTab section, key constraints).
+   - **Decision:** Render as `<GoalsTab />` with no props. No forwarding logic needed.
 
 ---
 
@@ -506,15 +507,17 @@ Fase ini hanya membutuhkan tools yang sudah ada di development workflow normal �
 
 Tidak ada test framework terdeteksi di codebase (tidak ada `jest.config.*`, `vitest.config.*`, `pytest.ini`). D-10 dari CONTEXT.md secara eksplisit menyatakan: tidak perlu unit test di fase ini — verifikasi manual cukup.
 
+Detail strategi validasi per-plan dan per-task didokumentasikan di `.planning/phases/01-foundation/01-VALIDATION.md` — satu dokumen formal yang merekam keputusan D-10 dan perintah CLI inline untuk setiap task.
+
 ### Manual Verification Checklist (pengganti automated tests)
 
 | Req ID | Behavior | Cara Verifikasi |
 |--------|----------|-----------------|
-| FOUND-01 | `nextDueDate('2024-01-31', 'monthly')` = `'2024-02-29'` (bukan `'2024-03-02'`) | Jalankan di browser console atau buat test file sementara |
+| FOUND-01 | `nextDueDate('2024-01-31', 'monthly')` = `'2024-02-29'` (bukan `'2024-03-02'`) | Jalankan inline `npx tsx -e` script di Plan 01-01 Task 1 |
 | FOUND-01 | `nextDueDate('2024-03-31', 'monthly')` = `'2024-04-30'` | Sama seperti di atas |
-| FOUND-02 | 4 tabel ada di DB dengan RLS aktif | Cek Supabase dashboard → Table Editor |
-| FOUND-02 | Query dari user lain mengembalikan 0 baris | Test dengan dua akun berbeda |
-| NAV-01 | Klik tab "Finansial" → sub-tab "Kekayaan" tampil pertama | Manual klik di browser |
+| FOUND-02 | 4 tabel ada di DB dengan RLS aktif | Cek Supabase dashboard → Table Editor (Plan 01-02 Task 3 checkpoint) |
+| FOUND-02 | Query dari user lain mengembalikan 0 baris | Test dengan dua akun berbeda (Plan 01-02 Task 3 step 4) |
+| NAV-01 | Klik tab "Finansial" → sub-tab "Kekayaan" tampil pertama | Manual klik di browser (Plan 01-03 Task 3 checkpoint) |
 | NAV-01 | Klik sub-tab "Goals" → konten Goals tampil normal | Manual klik di browser |
 | NAV-01 | Semua tab lain (Dashboard, Transaksi, dll.) tetap berfungsi | Manual klik semua tab |
 
@@ -547,6 +550,7 @@ RLS adalah satu-satunya security concern di fase ini. Tidak ada auth flow baru, 
 
 ### Primary (HIGH confidence)
 - `src/db/recurringTransactions.ts` — bug terkonfirmasi di baris 34, interface `RecurringTemplate` dibaca langsung
+- `supabase/migrations/0006_multi_user.sql` lines 37-48 — `is_admin()` function definition [VERIFIED]
 - `supabase/migrations/0010_recurring_transactions.sql` — canonical RLS pattern (USING only, tanpa WITH CHECK explicit)
 - `supabase/migrations/0011_pension_simulations.sql` — RLS pattern dengan USING + WITH CHECK explicit
 - `src/tabs/PensiunTab.tsx` — canonical sub-tab pattern (Tabs inside top-level tab)
@@ -573,3 +577,4 @@ RLS adalah satu-satunya security concern di fase ini. Tidak ada auth flow baru, 
 
 **Research date:** 2026-04-24
 **Valid until:** 2026-05-24 (30 hari — stack stabil, tidak ada dependency baru)
+**Revision:** 2026-04-24 — Pattern 1 canonicalized to mutation-only approach; Open Questions 1+2 resolved.

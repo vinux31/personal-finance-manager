@@ -22,6 +22,10 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 
 <!-- Existing features — sudah shipped dan berjalan -->
 
+- ✓ nextDueDate() monthly clamping — Phase 1 (tagihan tgl 31 tidak overflow ke bulan berikutnya)
+- ✓ DB schema net worth (net_worth_accounts, net_worth_liabilities, net_worth_snapshots) + RLS — Phase 1
+- ✓ DB schema bill_payments + RLS + FK semantics (CASCADE/SET NULL) — Phase 1
+- ✓ Navigasi: tab "Finansial" dengan sub-tab Kekayaan + Goals — Phase 1
 - ✓ Dashboard dengan summary cards (pemasukan, pengeluaran, net bulan ini, nilai investasi)
 - ✓ Transaksi: CRUD, filter, CSV import/export, recurring transactions
 - ✓ Investasi: portfolio tracking, auto price update (saham IDX + emas), CSV, price history
@@ -75,6 +79,10 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 | Manual bank balance input | Tidak ada open banking API di Indonesia | — Pending |
 | Recurring templates sebagai sumber upcoming bills | Data sudah ada di DB, tidak perlu duplikasi | — Pending |
 | Snapshot net worth bulanan | Cukup untuk trend chart, tidak perlu real-time | — Pending |
+| Mutation-only Date clamping (setDate(1)+setMonth+Math.min) | `const date` tetap const, tidak perlu reassignment — Phase 1 | ✓ Shipped |
+| RLS D-06: USING (auth.uid()=user_id OR is_admin()) + WITH CHECK (auth.uid()=user_id) | Admin bisa READ semua tapi tidak bisa WRITE atas nama user lain — Phase 1 | ✓ Shipped |
+| net_worth_accounts & liabilities dua tabel terpisah (bukan discriminator column) | Cleaner query semantics — Phase 1 | ✓ Shipped |
+| bill_payments.transaction_id nullable + ON DELETE SET NULL | Payment bisa exist sebelum transaction dibuat (atomic create flow) — Phase 1 | ✓ Shipped |
 
 ## Evolution
 
@@ -94,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-23 — Milestone v1.0 started*
+*Last updated: 2026-04-24 after Phase 1 (Foundation)*

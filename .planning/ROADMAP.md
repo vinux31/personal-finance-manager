@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 1/3 plans executed
 - [x] 01-01-PLAN.md — Fix nextDueDate month-end overflow (FOUND-01)
 - [x] 01-02-PLAN.md — Create 4 new Supabase tables with RLS in migrations 0012 + 0013 (FOUND-02)
-- [ ] 01-03-PLAN.md — Rename Goals tab to Finansial with Kekayaan + Goals sub-tabs (NAV-01)
+- [x] 01-03-PLAN.md — Rename Goals tab to Finansial with Kekayaan + Goals sub-tabs (NAV-01)
 
 ### Phase 2: Net Worth Tracker
 **Goal**: User bisa mengelola aset dan liabilitas, melihat total Net Worth, dan melihat trend bulanan dari sub-tab Kekayaan dan metric card Dashboard
