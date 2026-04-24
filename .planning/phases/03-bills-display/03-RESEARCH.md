@@ -487,17 +487,19 @@ For Phase 3 specifically, the three pure utility functions (`dayDiff`, `getUrgen
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Panel wrapper strategy for UpcomingBillsPanel**
    - What we know: `Panel` is a local (non-exported) function in DashboardTab
    - What's unclear: Should UpcomingBillsPanel include its own panel shell, or should DashboardTab wrap it in `<Panel>`?
    - Recommendation: DashboardTab wraps with `<Panel title="Tagihan Bulan Ini"><UpcomingBillsPanel .../></Panel>` — keeps UpcomingBillsPanel as a pure content component reusable in Phase 4 (mark-as-paid will also live in a panel).
+   - RESOLVED: DashboardTab wraps UpcomingBillsPanel in `<Panel>` — component renders inner content only.
 
 2. **Sisa Aman when bills query is loading**
    - What we know: During `isLoading`, the bill list shows "Memuat...". Sisa Aman can't be computed yet.
    - What's unclear: Should the Sisa Aman row show a dash/placeholder, or be entirely hidden during load?
    - Recommendation: Hide the entire Sisa Aman row (and the divider) when `isLoading || isError || bills.length === 0`. The loading placeholder div replaces the full panel content. This avoids a misleading Rp 0 display.
+   - RESOLVED: Sisa Aman row hidden during isLoading/isError/empty states — loading placeholder replaces full panel content.
 
 ---
 
