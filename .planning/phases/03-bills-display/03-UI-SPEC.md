@@ -1,7 +1,8 @@
 ---
 phase: 3
 slug: bills-display
-status: draft
+status: approved
+reviewed_at: 2026-04-24T00:00:00Z
 shadcn_initialized: true
 preset: radix-nova
 created: 2026-04-24
