@@ -7,13 +7,15 @@ import {
   createRecurringTemplate,
   updateRecurringTemplate,
   deleteRecurringTemplate,
+  markBillPaid,
   type RecurringTemplate,
   type RecurringTemplateInput,
+  type MarkBillPaidResult,
 } from '@/db/recurringTransactions'
 import { mapSupabaseError } from '@/lib/errors'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
-export { type RecurringTemplate, type RecurringTemplateInput }
+export { type RecurringTemplate, type RecurringTemplateInput, type MarkBillPaidResult }
 
 export function useRecurringTemplates() {
   const uid = useTargetUserId()
@@ -75,5 +77,48 @@ export function useUpcomingBills() {
     queryKey: ['upcoming-bills', uid, endOfMonth],
     queryFn: () => listUpcomingBills(uid, endOfMonth),
     enabled: !!uid,
+  })
+}
+
+export function useMarkBillPaid() {
+  const qc = useQueryClient()
+  const uid = useTargetUserId()
+  return useMutation({
+    mutationFn: ({ templateId, paidDate }: { templateId: number; paidDate: string }) =>
+      markBillPaid(templateId, uid, paidDate),
+
+    onMutate: async ({ templateId }) => {
+      // Cancel any in-flight ['upcoming-bills'] refetches so they don't overwrite our optimistic update
+      await qc.cancelQueries({ queryKey: ['upcoming-bills'] })
+
+      // Snapshot every matching ['upcoming-bills', ...] cache entry for rollback
+      const snapshots = qc.getQueriesData<RecurringTemplate[]>({ queryKey: ['upcoming-bills'] })
+
+      // Optimistically remove the bill from every matching cache
+      qc.setQueriesData<RecurringTemplate[]>(
+        { queryKey: ['upcoming-bills'] },
+        (old) => old?.filter((b) => b.id !== templateId) ?? [],
+      )
+
+      return { snapshots }
+    },
+
+    onError: (err, _vars, context) => {
+      // Rollback all snapshots
+      context?.snapshots?.forEach(([key, data]) => qc.setQueryData(key, data))
+      toast.error(mapSupabaseError(err))
+    },
+
+    onSuccess: () => {
+      toast.success('✓ Tagihan dilunasi')
+    },
+
+    onSettled: () => {
+      // Refetch on both success and error to reconcile with server truth
+      qc.invalidateQueries({ queryKey: ['upcoming-bills'] })
+      qc.invalidateQueries({ queryKey: ['transactions'] })
+      qc.invalidateQueries({ queryKey: ['reports'] })
+      qc.invalidateQueries({ queryKey: ['recurring-templates'] })
+    },
   })
 }
