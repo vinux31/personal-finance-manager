@@ -183,7 +183,7 @@ Accessibility labels on icon-only action buttons:
 
 ```
 [ TrendingUp ] "Nilai Investasi"  <Badge variant="secondary">otomatis</Badge>
-               Rp X (text-xs muted)                          (no action buttons)
+               Rp X (text-[10px] muted)                      (no action buttons)
 ```
 
 Row uses `italic` on the name label. No left border accent (visually distinct from editable rows).
