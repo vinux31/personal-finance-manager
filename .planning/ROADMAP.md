@@ -59,7 +59,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. "Sisa Aman Bulan Ini" tampil di widget: pemasukan aktual bulan ini − pengeluaran aktual bulan ini − tagihan bulan ini yang belum lunas
   4. Semua fitur yang sudah ada tetap berjalan normal — useProcessRecurring tidak dimodifikasi di fase ini
 **Plans:** 2 plans
-- [ ] 03-01-PLAN.md — Append listUpcomingBills() DB fn + useUpcomingBills() query hook (BILL-01 data layer)
+- [x] 03-01-PLAN.md — Append listUpcomingBills() DB fn + useUpcomingBills() query hook (BILL-01 data layer)
 - [ ] 03-02-PLAN.md — Create UpcomingBillsPanel component + DashboardTab row 3 integration (BILL-01 UI, BILL-02, BILL-04, NAV-02 partial)
 **UI hint**: yes
 
