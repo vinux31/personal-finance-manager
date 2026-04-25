@@ -64,11 +64,10 @@ export default function TransactionsTab() {
 
   const filteredCategories = filters.type ? categories.filter((c) => c.type === filters.type) : categories
 
-  const iconById = useMemo(() => {
-    const m = new Map<number, string | null>()
-    for (const c of categories) m.set(c.id, c.icon)
-    return m
-  }, [categories])
+  const categoryById = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories],
+  )
 
   return (
     <div className="space-y-6">
@@ -191,7 +190,10 @@ export default function TransactionsTab() {
                         {isIncome ? 'Masuk' : 'Keluar'}
                       </span>
                     </TableCell>
-                    <TableCell className="font-medium">{categoryLabel({ name: r.category_name, icon: iconById.get(r.category_id) ?? null })}</TableCell>
+                    <TableCell className="font-medium">{(() => {
+                      const c = categoryById.get(r.category_id)
+                      return c ? categoryLabel(c) : r.category_name
+                    })()}</TableCell>
                     <TableCell className={`text-right font-semibold tabular-nums ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}>
                       {isIncome ? '+' : '−'} {formatRupiah(r.amount)}
                     </TableCell>

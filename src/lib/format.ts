@@ -5,6 +5,8 @@ const rupiahFmt = new Intl.NumberFormat('id-ID', {
   maximumFractionDigits: 0,
 })
 
+const pad2 = (n: number) => String(n).padStart(2, '0')
+
 export function formatRupiah(n: number): string {
   return rupiahFmt.format(n)
 }
@@ -28,10 +30,7 @@ export function parseRupiah(s: string): number {
 
 export function todayISO(): string {
   const d = new Date()
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 }
 
 export function formatDateID(iso: string): string {
@@ -61,9 +60,9 @@ export function currentMonthRange(): { dateFrom: string; dateTo: string } {
   const now = new Date()
   const y = now.getFullYear()
   const m = now.getMonth()
-  const pad = (n: number) => String(n).padStart(2, '0')
-  const dateFrom = `${y}-${pad(m + 1)}-01`
-  const last = new Date(y, m + 1, 0).getDate()
-  const dateTo = `${y}-${pad(m + 1)}-${pad(last)}`
-  return { dateFrom, dateTo }
+  const lastDay = new Date(y, m + 1, 0).getDate()
+  return {
+    dateFrom: `${y}-${pad2(m + 1)}-01`,
+    dateTo: `${y}-${pad2(m + 1)}-${pad2(lastDay)}`,
+  }
 }
