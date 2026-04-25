@@ -52,3 +52,7 @@ export function shortRupiah(n: number): string {
   if (abs >= 1_000) return `${(n / 1_000).toFixed(0)} rb`
   return formatRupiah(n)
 }
+
+export function categoryLabel(cat: { name: string; icon: string | null }): string {
+  return cat.icon ? `${cat.icon} ${cat.name}` : cat.name
+}
