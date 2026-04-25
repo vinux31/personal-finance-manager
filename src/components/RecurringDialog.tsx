@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { type RecurringTemplate } from '@/queries/recurringTransactions'
 import { useCreateRecurringTemplate, useUpdateRecurringTemplate } from '@/queries/recurringTransactions'
 import { useCategories } from '@/queries/categories'
-import { todayISO, parseRupiah, formatRupiah } from '@/lib/format'
+import { todayISO, parseRupiah, formatRupiah, categoryLabel } from '@/lib/format'
 import { type Frequency } from '@/db/recurringTransactions'
 import { toast } from 'sonner'
 
@@ -127,7 +127,7 @@ export default function RecurringDialog({ open, onOpenChange, editing }: Props) 
                 <SelectTrigger id="rec-cat"><SelectValue placeholder="Pilih kategori" /></SelectTrigger>
                 <SelectContent>
                   {categories.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
+                    <SelectItem key={c.id} value={String(c.id)}>{categoryLabel(c)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
