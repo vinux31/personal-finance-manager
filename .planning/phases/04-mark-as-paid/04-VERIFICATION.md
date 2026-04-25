@@ -1,8 +1,9 @@
 ---
 phase: 04-mark-as-paid
 verified: 2026-04-24T14:05:00Z
-status: human_needed
+status: verified_with_known_debt
 verdict: PASS-WITH-NOTES
+human_verification_followup: "2026-04-25 verify-before-close UAT (.planning/phases/04-mark-as-paid/04-UAT.md) closed 3/4 deferred items. Test 4 (network failure) found bug in mapSupabaseError + fixed via commit a1f96eb. Tests 3 & 5 (dedup + useProcessRecurring) verified via UAT/Playwright. Test 7 (full psql regression) remains BLOCKED by Docker absence — accepted at milestone close as Tech Debt #2 deferred to v1.1."
 score: 4/4 roadmap success criteria verified (all truths VERIFIED; 2 items deferred to human UAT regression)
 overrides_applied: 1
 overrides:

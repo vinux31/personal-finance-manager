@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 04-mark-as-paid 04-06-PLAN.md (Phase 4 complete)
-last_updated: "2026-04-24T13:00:55.863Z"
+last_updated: "2026-04-25T05:37:28.136Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -94,9 +94,18 @@ None.
 
 ## Deferred Items
 
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
+Items acknowledged and deferred at v1.0 milestone close on 2026-04-25:
+
+| Category | Item | Status | Severity | Deferred At | Source |
+|----------|------|--------|----------|-------------|--------|
+| bug | createRecurringTemplate missing user_id → RLS 403 (pre-existing, predates Phase 4) | open | HIGH | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #1 |
+| test | Full psql regression `supabase/tests/04-mark-bill-paid.sql` not executed (Docker absent) | blocked-by-environment | MEDIUM | 2026-04-25 | 04-VERIFICATION.md + 04-UAT.md Test 7 |
+| ux | UpcomingBillsPanel AlertDialog body shows only nama bill, missing nominal+tanggal | open | cosmetic | 2026-04-25 | 04-UAT.md Test 2 minor cosmetic gap |
+| ux | Net Worth card no auto-refresh post mark-as-paid (by-design — manual balance) — needs tooltip/helper text | open | cosmetic | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #6 |
+| test | useMarkBillPaid does not invalidate `['net-worth-snapshots']` query | open | INFO | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #9 (benign — idempotent on next mount) |
+| test | `mapSupabaseError` unit test for plain-object errors not added | open | LOW | 2026-04-25 | 04-UAT.md Test 4 fix follow-up — fix itself shipped (commit a1f96eb) |
+| docs | REQUIREMENTS.md top-level checkbox stale (NW-01..07, NAV-01) — Traceability table OK | resolved-on-archive | DOC-ONLY | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #7 (will be closed when REQUIREMENTS archived) |
+| docs | Phase 1 + 3 lack VERIFICATION.md (only Phase 2+4 have it) | accepted-as-coverage-gap | DOC-ONLY | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #8 (milestone audit covers it) |
 
 ## Session Continuity
 

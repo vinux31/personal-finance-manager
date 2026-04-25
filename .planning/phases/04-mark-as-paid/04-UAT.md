@@ -1,6 +1,7 @@
 ---
-status: testing
+status: partial
 phase: 04-mark-as-paid
+acknowledged_at_milestone_close: "2026-04-25 — 5 PASS, 0 issues (Test 4 fixed in same session via commit a1f96eb), 2 BLOCKED accepted as deferred tech debt (Test 3 by-design, Test 7 by-environment Docker absent)"
 source:
   - .planning/phases/04-mark-as-paid/04-01-SUMMARY.md
   - .planning/phases/04-mark-as-paid/04-02-SUMMARY.md
