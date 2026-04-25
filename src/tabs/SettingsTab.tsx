@@ -17,9 +17,9 @@ import { listProfiles } from '@/db/profiles'
 import { RENCANA_GOAL_NAMES, RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
 import { formatRupiah } from '@/lib/format'
 import { mapSupabaseError } from '@/lib/errors'
-import { BookOpen, Eye, HelpCircle, LogOut, Palette, Target, User, Users } from 'lucide-react'
-import PanduanDialog from '@/components/PanduanDialog'
+import { Eye, HelpCircle, LogOut, Palette, Target, User, Users } from 'lucide-react'
 import TentangDialog from '@/components/TentangDialog'
+import PanduanWelcomeCard from '@/components/PanduanWelcomeCard'
 
 function SectionHeader({ icon: Icon, label, iconBg }: { icon: React.ElementType; label: string; iconBg: string }) {
   return (
@@ -36,7 +36,6 @@ export default function SettingsTab() {
   const { theme, setTheme } = useThemeStore()
   const { user, signOut, isAdmin } = useAuthContext()
   const { setViewingAs } = useViewAs()
-  const [panduanOpen, setPanduanOpen] = useState(false)
   const [tentangOpen, setTentangOpen] = useState(false)
   const [resetting, setResetting] = useState(false)
   const [newEmail, setNewEmail] = useState('')
@@ -129,6 +128,8 @@ export default function SettingsTab() {
 
   return (
     <div className="max-w-2xl space-y-8">
+      <PanduanWelcomeCard />
+
       {/* Tampilan */}
       <section>
         <SectionHeader icon={Palette} label="Tampilan" iconBg="bg-[#ede9fe]" />
@@ -295,10 +296,6 @@ export default function SettingsTab() {
       <section>
         <SectionHeader icon={HelpCircle} label="Bantuan" iconBg="bg-[#fef9c3]" />
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => setPanduanOpen(true)}>
-            <BookOpen className="h-4 w-4" />
-            Panduan Pengguna
-          </Button>
           <Button variant="outline" onClick={() => setTentangOpen(true)}>
             <HelpCircle className="h-4 w-4" />
             Tentang
@@ -306,7 +303,6 @@ export default function SettingsTab() {
         </div>
       </section>
 
-      <PanduanDialog open={panduanOpen} onOpenChange={setPanduanOpen} />
       <TentangDialog open={tentangOpen} onOpenChange={setTentangOpen} />
 
       <ConfirmDialog
