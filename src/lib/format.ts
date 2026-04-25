@@ -56,3 +56,14 @@ export function shortRupiah(n: number): string {
 export function categoryLabel(cat: { name: string; icon: string | null }): string {
   return cat.icon ? `${cat.icon} ${cat.name}` : cat.name
 }
+
+export function currentMonthRange(): { dateFrom: string; dateTo: string } {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = now.getMonth()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const dateFrom = `${y}-${pad(m + 1)}-01`
+  const last = new Date(y, m + 1, 0).getDate()
+  const dateTo = `${y}-${pad(m + 1)}-${pad(last)}`
+  return { dateFrom, dateTo }
+}
