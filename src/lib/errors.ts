@@ -1,6 +1,15 @@
 export function mapSupabaseError(error: unknown): string {
   if (!error) return 'Terjadi kesalahan tidak diketahui'
-  const msg = error instanceof Error ? error.message : String(error)
+  const objMessage =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? (error as { message: unknown }).message
+      : undefined
+  const msg =
+    typeof objMessage === 'string'
+      ? objMessage
+      : error instanceof Error
+        ? error.message
+        : String(error)
 
   if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
     return 'Tidak ada koneksi internet. Periksa jaringan Anda.'
