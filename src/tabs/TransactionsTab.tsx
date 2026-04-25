@@ -22,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw, Wallet } from 'lucide-react'
-import { formatRupiah, formatDateID, todayISO } from '@/lib/format'
+import { formatRupiah, formatDateID, todayISO, categoryLabel } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
 import RecurringListDialog from '@/components/RecurringListDialog'
 import { useProcessRecurring } from '@/hooks/useProcessRecurring'
@@ -64,6 +64,12 @@ export default function TransactionsTab() {
 
   const filteredCategories = filters.type ? categories.filter((c) => c.type === filters.type) : categories
 
+  const iconById = useMemo(() => {
+    const m = new Map<number, string | null>()
+    for (const c of categories) m.set(c.id, c.icon)
+    return m
+  }, [categories])
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-3 gap-3">
@@ -103,7 +109,7 @@ export default function TransactionsTab() {
               <SelectContent>
                 <SelectItem value={ALL}>Semua</SelectItem>
                 {filteredCategories.map((c) => (
-                  <SelectItem key={`${c.type}-${c.id}`} value={String(c.id)}>{c.name} ({c.type === 'income' ? 'masuk' : 'keluar'})</SelectItem>
+                  <SelectItem key={`${c.type}-${c.id}`} value={String(c.id)}>{categoryLabel(c)} ({c.type === 'income' ? 'masuk' : 'keluar'})</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -185,7 +191,7 @@ export default function TransactionsTab() {
                         {isIncome ? 'Masuk' : 'Keluar'}
                       </span>
                     </TableCell>
-                    <TableCell className="font-medium">{r.category_name}</TableCell>
+                    <TableCell className="font-medium">{categoryLabel({ name: r.category_name, icon: iconById.get(r.category_id) ?? null })}</TableCell>
                     <TableCell className={`text-right font-semibold tabular-nums ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}>
                       {isIncome ? '+' : '−'} {formatRupiah(r.amount)}
                     </TableCell>
