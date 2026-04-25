@@ -22,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw, Wallet } from 'lucide-react'
-import { formatRupiah, formatDateID, todayISO, categoryLabel } from '@/lib/format'
+import { formatRupiah, formatDateID, todayISO, categoryLabel, currentMonthRange } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
 import RecurringListDialog from '@/components/RecurringListDialog'
 import { useProcessRecurring } from '@/hooks/useProcessRecurring'
@@ -34,7 +34,7 @@ import { exportTransactionsCsv, importTransactionsCsv } from '@/db/csvTransactio
 const ALL = '__all__'
 
 export default function TransactionsTab() {
-  const [filters, setFilters] = useState<TransactionFilters>({})
+  const [filters, setFilters] = useState<TransactionFilters>(() => currentMonthRange())
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
   const [recurringOpen, setRecurringOpen] = useState(false)
