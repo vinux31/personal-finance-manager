@@ -24,6 +24,8 @@ import ViewAsBanner from '@/components/ViewAsBanner'
 import AccountMenu from '@/components/AccountMenu'
 import { useAuth } from '@/auth/useAuth'
 import { useTabStore } from '@/lib/tabStore'
+import PanduanFullPage from '@/components/PanduanFullPage'
+import { usePanduanStore } from '@/lib/panduanStore'
 
 const TABS = [
   { value: 'dashboard',    label: 'Dashboard',  icon: LayoutDashboard, Comp: DashboardTab },
@@ -39,6 +41,7 @@ const TABS = [
 function App() {
   const { session, loading } = useAuth()
   const { activeTab, setActiveTab } = useTabStore()
+  const { open: panduanOpen } = usePanduanStore()
 
   if (loading) {
     return (
@@ -93,30 +96,33 @@ function App() {
         </div>
       </header>
 
-      <main className="p-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Tab list — scrollable horizontal di mobile */}
-          <div className="mb-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-            <TabsList className="inline-flex w-max min-w-full rounded-none border-b border-border bg-transparent p-0 [&>button:not([role='tab'])]:hidden">
-              {TABS.map(({ value, label, icon: Icon }) => (
-                <TabsTrigger
-                  key={value}
-                  value={value}
-                  className="gap-1.5 whitespace-nowrap rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[var(--brand)] data-[state=active]:text-[var(--brand)] data-[state=active]:shadow-none"
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
+      <main className={panduanOpen ? '' : 'p-6'}>
+        {panduanOpen ? (
+          <PanduanFullPage />
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="mb-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+              <TabsList className="inline-flex w-max min-w-full rounded-none border-b border-border bg-transparent p-0 [&>button:not([role='tab'])]:hidden">
+                {TABS.map(({ value, label, icon: Icon }) => (
+                  <TabsTrigger
+                    key={value}
+                    value={value}
+                    className="gap-1.5 whitespace-nowrap rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[var(--brand)] data-[state=active]:text-[var(--brand)] data-[state=active]:shadow-none"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
 
-          {TABS.map(({ value, Comp }) => (
-            <TabsContent key={value} value={value}>
-              <Comp />
-            </TabsContent>
-          ))}
-        </Tabs>
+            {TABS.map(({ value, Comp }) => (
+              <TabsContent key={value} value={value}>
+                <Comp />
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </main>
 
       <Toaster richColors position="top-right" />
