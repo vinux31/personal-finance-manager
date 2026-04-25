@@ -27,13 +27,13 @@ Filter kosong → `useTransactions({})` query Supabase tanpa `dateFrom`/`dateTo`
 
 ### Mount lifecycle
 
-`src/App.tsx:103-124` pakai Radix `<Tabs>` dengan semua `<TabsContent>` selalu di-render (line 119-123 mapping tabs tanpa conditional). Artinya:
+`src/App.tsx:103-124` pakai Radix `<Tabs>` tanpa `forceMount` di `<TabsContent>`. **Verified via UAT 2026-04-26:** Radix unmount tab inactive secara default. Artinya:
 
-- TransactionsTab di-mount **sekali** setelah login, sampai page reload
-- Pindah tab Dashboard → balik Transaksi: state `filters` tetap, tidak recompute
-- Auto-rolling bulan hanya terjadi saat user buka aplikasi di session baru setelah ganti hari/bulan
+- Setiap kali user pindah tab dan balik ke Transaksi → component di-mount ulang
+- `useState` initializer dipanggil fresh setiap re-mount → filter selalu = bulan berjalan saat itu
+- Auto-rolling bulan: bahkan kalau user biarkan aplikasi terbuka semalam, cukup pindah tab + balik untuk dapat filter bulan baru
 
-Ini acceptable: user yang biarkan tab terbuka semalam akan tetap lihat bulan lama sampai reload — bukan kondisi umum.
+**Konsekuensi:** Filter user yang custom (mis. set ke Maret) akan ter-reset setiap kali pindah tab dan balik. User yang ingin lihat bulan non-current harus set ulang. Ini tradeoff acceptable mengingat goal "default = bulan ini" terpenuhi konsisten.
 
 ### Helper `format.ts` existing
 
@@ -108,7 +108,7 @@ Setelah deploy:
 5. Set Dari = `2026-03-01`, Sampai = `2026-03-31`.
 6. **Expected:** Filter ke Maret. List hanya transaksi Maret.
 7. Pindah ke tab Dashboard, lalu balik ke Transaksi.
-8. **Expected:** Filter Maret tetap (state persist) — confirmed Tabs tidak unmount.
+8. **Expected:** Filter ter-reset ke bulan berjalan (`2026-04-01`/`2026-04-30`) karena Radix unmount tab inactive. Behavior ini desired untuk goal "default = bulan ini".
 9. Klik tombol Ekspor.
 10. **Expected:** CSV berisi seluruh history (existing behavior unchanged) — flag.
 
