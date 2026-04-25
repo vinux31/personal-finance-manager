@@ -486,4 +486,134 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
       },
     ],
   },
+  {
+    slug: 'skenario-kelola-hutang',
+    title: 'Mengelola hutang dan kewajiban',
+    category: 'skenario',
+    summary: 'Catat semua utang, update saldo bulanan, pantau progress pelunasan.',
+    sections: [
+      {
+        heading: 'Mendaftarkan semua hutang',
+        intro: 'Tujuannya: punya satu daftar lengkap berapa total yang harus dibayar dan ke siapa.',
+        steps: [
+          { number: 1, text: 'Buka Finansial → sub-tab Kekayaan.' },
+          { number: 2, text: 'Klik "Tambah Kewajiban" untuk setiap utang yang Anda miliki (KPR, KMG, kartu kredit, pinjaman pribadi, dll).' },
+          { number: 3, text: 'Isi nama (mis. "KPR BTN", "Kartu Kredit Mandiri"), jenis, dan saldo terutang saat ini.' },
+          { number: 4, text: 'Simpan tiap entri.' },
+        ],
+        tip: 'Daftarkan walau utang kecil — total kewajiban yang akurat penting untuk hitung Net Worth.',
+      },
+      {
+        heading: 'Update saldo bulanan',
+        steps: [
+          { number: 1, text: 'Cek saldo terutang dari aplikasi kreditur (mis. mobile banking, billing kartu kredit).' },
+          { number: 2, text: 'Buka Kekayaan, klik entri kewajiban yang mau di-update.' },
+          { number: 3, text: 'Ganti angka saldo terutang dengan nilai terbaru.' },
+          { number: 4, text: 'Simpan.' },
+        ],
+        tip: 'Lakukan update di tanggal yang konsisten tiap bulan (mis. tanggal 1 atau setelah bayar) supaya tren akurat.',
+      },
+      {
+        heading: 'Tracking progress pelunasan',
+        steps: [
+          { number: 1, text: 'Bandingkan saldo bulan ini vs bulan sebelumnya — turun = pelunasan berjalan.' },
+          { number: 2, text: 'Lihat angka Total Kewajiban di header Kekayaan untuk gambaran agregat.' },
+          { number: 3, text: 'Saat utang lunas, hapus entri agar daftar tetap rapi.' },
+          { number: 4, text: 'Catat milestone pelunasan di tab Catatan jika ingin log historis.' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'skenario-cicilan-kredit',
+    title: 'Tracking cicilan kredit KPR atau kendaraan',
+    category: 'skenario',
+    summary: 'Setup pembayaran cicilan bulanan + sinkronkan saldo terutang.',
+    sections: [
+      {
+        heading: 'Daftarkan kredit di Kekayaan',
+        intro: 'Cicilan butuh dua tracking: pembayaran rutin (transaksi keluar) + saldo pokok yang terus turun (kewajiban).',
+        steps: [
+          { number: 1, text: 'Buka Finansial → Kekayaan → "Tambah Kewajiban".' },
+          { number: 2, text: 'Isi nama (mis. "KPR Rumah", "Cicilan Xpander"), jenis, dan saldo pokok awal kredit.' },
+          { number: 3, text: 'Simpan.' },
+        ],
+      },
+      {
+        heading: 'Setup tagihan cicilan rutin',
+        steps: [
+          { number: 1, text: 'Buka tab Transaksi → "Tambah Transaksi".' },
+          { number: 2, text: 'Pilih Pengeluaran, kategori "Cicilan" atau buat kategori baru sesuai jenis kredit.' },
+          { number: 3, text: 'Aktifkan opsi "Berulang" → Bulanan, set tanggal jatuh tempo cicilan.' },
+          { number: 4, text: 'Isi jumlah cicilan tetap (pokok + bunga total per bulan), lalu Simpan sebagai template.' },
+        ],
+        tip: 'Template cicilan otomatis muncul di panel "Tagihan Mendatang" Dashboard tiap bulan.',
+      },
+      {
+        heading: 'Sinkronisasi saldo bulanan setelah bayar',
+        steps: [
+          { number: 1, text: 'Saat tagihan jatuh tempo, klik "Tandai Dibayar" di Dashboard — pengeluaran otomatis tercatat.' },
+          { number: 2, text: 'Buka Kekayaan, edit entri kewajiban kredit.' },
+          { number: 3, text: 'Update saldo terutang: kurangi sebesar pokok bulan itu (cek dari skedul amortisasi atau app bank).' },
+          { number: 4, text: 'Simpan.' },
+        ],
+        tip: 'Bunga sudah masuk transaksi pengeluaran; saldo kewajiban hanya menampilkan pokok yang tersisa.',
+      },
+      {
+        heading: 'Cek progress menuju lunas',
+        steps: [
+          { number: 1, text: 'Buka Dashboard → kartu Net Worth.' },
+          { number: 2, text: 'Net Worth naik tiap bulan = cicilan jalan + pokok turun + aset stabil/naik.' },
+          { number: 3, text: 'Bandingkan saldo kewajiban awal vs sekarang untuk lihat berapa persen sudah dilunasi.' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'skenario-tagihan-rutin',
+    title: 'Mengelola tagihan rutin bulanan',
+    category: 'skenario',
+    summary: 'Setup, monitor, dan tandai bayar untuk semua tagihan tetap (di luar gaji).',
+    sections: [
+      {
+        heading: 'Setup template tagihan',
+        intro: 'Tagihan rutin = pengeluaran tetap tiap bulan: listrik, air, internet, BPJS, langganan streaming, dll.',
+        steps: [
+          { number: 1, text: 'Buka tab Transaksi → "Tambah Transaksi".' },
+          { number: 2, text: 'Pilih Pengeluaran, kategori sesuai jenis tagihan (mis. "Listrik", "Internet", "Langganan").' },
+          { number: 3, text: 'Aktifkan "Berulang" → Bulanan, set tanggal jatuh tempo perkiraan.' },
+          { number: 4, text: 'Isi estimasi nominal (boleh berdasarkan rata-rata bulan-bulan sebelumnya).' },
+          { number: 5, text: 'Simpan sebagai template — ulangi untuk tiap tagihan.' },
+        ],
+      },
+      {
+        heading: 'Monitor di Dashboard',
+        steps: [
+          { number: 1, text: 'Buka Dashboard.' },
+          { number: 2, text: 'Cek panel "Tagihan Mendatang" — semua template aktif yang jatuh tempo bulan ini muncul di sini.' },
+          { number: 3, text: 'Urutan biasanya berdasarkan tanggal jatuh tempo terdekat.' },
+        ],
+        tip: 'Tagihan yang sudah dibayar bulan ini tidak muncul lagi di panel — hanya yang masih outstanding.',
+      },
+      {
+        heading: 'Tandai dibayar',
+        steps: [
+          { number: 1, text: 'Klik tagihan di panel "Tagihan Mendatang".' },
+          { number: 2, text: 'Pilih "Tandai Dibayar".' },
+          { number: 3, text: 'Konfirmasi tanggal pembayaran dan nominal aktual (boleh edit jika beda dari estimasi template).' },
+          { number: 4, text: 'Simpan — transaksi pengeluaran otomatis tercatat di tab Transaksi.' },
+        ],
+      },
+      {
+        heading: 'Edit atau hapus template',
+        steps: [
+          { number: 1, text: 'Buka tab Transaksi → daftar template berulang.' },
+          { number: 2, text: 'Klik template yang mau diubah.' },
+          { number: 3, text: 'Edit nominal/tanggal/kategori jika berubah (mis. naik tarif listrik), lalu Simpan.' },
+          { number: 4, text: 'Hapus template jika langganan dihentikan supaya tidak muncul lagi di Tagihan Mendatang.' },
+        ],
+        tip: 'Untuk tagihan yang nominalnya fluktuatif (listrik, pulsa), template hanya jadi reminder — nominal aktual diisi saat "Tandai Dibayar".',
+      },
+    ],
+  },
 ]
