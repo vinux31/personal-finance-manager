@@ -93,7 +93,7 @@ export async function listCategories(type?: 'income' | 'expense'): Promise<Categ
 
 ### 3.3 Helper format label kategori
 
-**File:** `src/lib/format.ts` (atau file sejenis — tempatkan di mana helper format lain berada)
+**File:** `src/lib/format.ts` (sudah ada — file ini house `formatRupiah`, `parseRupiah`, `todayISO`)
 
 Tambah helper kecil untuk reuse:
 
