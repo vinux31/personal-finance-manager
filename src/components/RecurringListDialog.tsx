@@ -11,7 +11,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { useRecurringTemplates, useDeleteRecurringTemplate, useUpdateRecurringTemplate, type RecurringTemplate } from '@/queries/recurringTransactions'
 import { useCategories } from '@/queries/categories'
-import { formatRupiah, formatDateID } from '@/lib/format'
+import { formatRupiah, formatDateID, categoryLabel } from '@/lib/format'
 import RecurringDialog from '@/components/RecurringDialog'
 
 const FREQ_LABEL: Record<string, string> = {
@@ -37,8 +37,9 @@ export default function RecurringListDialog({ open, onOpenChange }: Props) {
   const deleteTemplate = useDeleteRecurringTemplate()
   const updateTemplate = useUpdateRecurringTemplate()
 
-  function getCategoryName(id: number) {
-    return categories.find((c) => c.id === id)?.name ?? String(id)
+  function getCategoryLabel(id: number) {
+    const c = categories.find((c) => c.id === id)
+    return c ? categoryLabel(c) : String(id)
   }
 
   function onDelete(t: RecurringTemplate) {
@@ -88,7 +89,7 @@ export default function RecurringListDialog({ open, onOpenChange }: Props) {
                           <Badge variant="secondary" className="text-xs">{FREQ_LABEL[t.frequency]}</Badge>
                         </div>
                         <div className="text-xs text-muted-foreground mt-1">
-                          {getCategoryName(t.category_id)} · {formatRupiah(t.amount)}
+                          {getCategoryLabel(t.category_id)} · {formatRupiah(t.amount)}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           Jatuh tempo: {formatDateID(t.next_due_date)}
