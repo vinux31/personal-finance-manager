@@ -66,3 +66,15 @@ export function currentMonthRange(): { dateFrom: string; dateTo: string } {
     dateTo: `${y}-${pad2(m + 1)}-${pad2(lastDay)}`,
   }
 }
+
+export function previousMonthRange(): { dateFrom: string; dateTo: string } {
+  const d = new Date()
+  d.setDate(0) // hari terakhir bulan lalu
+  const y = d.getFullYear()
+  const m = d.getMonth()
+  const lastDay = d.getDate()
+  return {
+    dateFrom: `${y}-${pad2(m + 1)}-01`,
+    dateTo: `${y}-${pad2(m + 1)}-${pad2(lastDay)}`,
+  }
+}

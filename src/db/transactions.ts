@@ -26,10 +26,14 @@ export interface TransactionInput {
   note: string | null
 }
 
+type ListTransactionsRow = Omit<Transaction, 'category_name'> & {
+  categories: { name: string } | null
+}
+
 export async function listTransactions(f: TransactionFilters = {}, uid?: string): Promise<Transaction[]> {
   let query = supabase
     .from('transactions')
-    .select('id, date, type, category_id, amount, note, categories(name)')
+    .select('id, date, type, category_id, amount, note, categories!transactions_category_id_fkey(name)')
     .order('date', { ascending: false })
     .order('id', { ascending: false })
 
@@ -43,9 +47,9 @@ export async function listTransactions(f: TransactionFilters = {}, uid?: string)
   const { data, error } = await query
   if (error) throw error
 
-  return (data ?? []).map((row: any) => ({
-    ...row,
-    category_name: row.categories?.name ?? '',
+  return ((data as unknown as ListTransactionsRow[]) ?? []).map(({ categories, ...rest }) => ({
+    ...rest,
+    category_name: categories?.name ?? '',
   }))
 }
 

@@ -4,7 +4,7 @@ import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { useNetWorthAccounts, useNetWorthLiabilities, useNetWorthSnapshots } from '@/queries/netWorth'
 import { useGoals, goalProgress } from '@/queries/goals'
 import { useTransactions } from '@/queries/transactions'
-import { formatRupiah, formatDateID, shortRupiah, currentMonthRange } from '@/lib/format'
+import { formatRupiah, formatDateID, shortRupiah, currentMonthRange, previousMonthRange } from '@/lib/format'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
@@ -14,20 +14,9 @@ import UpcomingBillsPanel from '@/components/UpcomingBillsPanel'
 
 export default function DashboardTab() {
   const month = currentMonthRange()
+  const prevMonth = useMemo(() => previousMonthRange(), [])
 
-  const prevMonthStart = useMemo(() => {
-    const d = new Date()
-    d.setMonth(d.getMonth() - 1)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
-  }, [])
-
-  const prevMonthEnd = useMemo(() => {
-    const d = new Date()
-    d.setDate(0) // hari terakhir bulan lalu
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  }, [])
-
-  const { data: prevPeriodData = [] } = useAggregateByPeriod('month', prevMonthStart, prevMonthEnd)
+  const { data: prevPeriodData = [] } = useAggregateByPeriod('month', prevMonth.dateFrom, prevMonth.dateTo)
 
   const { data: periodData = [] } = useAggregateByPeriod('month', month.dateFrom, month.dateTo)
   const { data: invRows = [] } = useInvestments()
