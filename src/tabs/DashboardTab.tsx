@@ -4,7 +4,7 @@ import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { useNetWorthAccounts, useNetWorthLiabilities, useNetWorthSnapshots } from '@/queries/netWorth'
 import { useGoals, goalProgress } from '@/queries/goals'
 import { useTransactions } from '@/queries/transactions'
-import { formatRupiah, todayISO, formatDateID, shortRupiah } from '@/lib/format'
+import { formatRupiah, formatDateID, shortRupiah, currentMonthRange } from '@/lib/format'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
@@ -12,14 +12,8 @@ import RencanaBar from '@/components/RencanaBar'
 import { useRencanaInit } from '@/lib/useRencanaInit'
 import UpcomingBillsPanel from '@/components/UpcomingBillsPanel'
 
-function firstDayOfMonth(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
-}
-
 export default function DashboardTab() {
-  const today = todayISO()
-  const monthStart = firstDayOfMonth()
+  const month = currentMonthRange()
 
   const prevMonthStart = useMemo(() => {
     const d = new Date()
@@ -35,7 +29,7 @@ export default function DashboardTab() {
 
   const { data: prevPeriodData = [] } = useAggregateByPeriod('month', prevMonthStart, prevMonthEnd)
 
-  const { data: periodData = [] } = useAggregateByPeriod('month', monthStart, today)
+  const { data: periodData = [] } = useAggregateByPeriod('month', month.dateFrom, month.dateTo)
   const { data: invRows = [] } = useInvestments()
   const { data: goals = [] } = useGoals()
   const { data: recentTx = [] } = useTransactions({ limit: 5 })

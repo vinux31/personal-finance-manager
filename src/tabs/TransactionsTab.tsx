@@ -192,7 +192,7 @@ export default function TransactionsTab() {
                     </TableCell>
                     <TableCell className="font-medium">{(() => {
                       const c = categoryById.get(r.category_id)
-                      return c ? categoryLabel(c) : r.category_name
+                      return c ? categoryLabel(c) : (r.category_name || '—')
                     })()}</TableCell>
                     <TableCell className={`text-right font-semibold tabular-nums ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}>
                       {isIncome ? '+' : '−'} {formatRupiah(r.amount)}
