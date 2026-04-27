@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
-status: defining-requirements
-stopped_at: Milestone v1.1 started — research running before REQUIREMENTS
+status: ready-to-plan
+stopped_at: Roadmap created — 4 phases (5-8), 16/16 requirements mapped, ready for /gsd-plan-phase 5
 last_updated: "2026-04-27T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** v1.1 Hardening & Consistency — defining requirements (post-REVIEW-2026-04-27 audit)
+**Current focus:** v1.1 Hardening & Consistency — Phase 5 (Security Hardening) ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 5 — Security Hardening (not started, ready to plan)
 Plan: —
-Status: Research running, REQUIREMENTS pending
-Last activity: 2026-04-27 — Milestone v1.1 started after audit found 22 issues (3 Critical / 6 High / 7 Medium scoped in)
+Status: Roadmap approved, awaiting `/gsd-plan-phase 5`
+Last activity: 2026-04-27 — Roadmap created (4 phases, 16/16 REQ-IDs mapped)
+
+## v1.1 Phase Summary
+
+| Phase | Name | Requirements | Migrations | Status |
+|-------|------|--------------|-----------|--------|
+| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql` | Not started |
+| 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0018_process_due_recurring.sql`, `0019_withdraw_from_goal.sql`, `0020_goal_investments_total_check.sql` | Not started |
+| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0021_user_seed_markers.sql` + seed_rencana, `0022_goals_with_progress.sql`, `0023_add_money_to_goal_v2.sql` | Not started |
+| 8 | Dev Hygiene | DEV-02..04 | (none) | Not started |
 
 ## Accumulated Context
 
@@ -46,27 +55,39 @@ Last activity: 2026-04-27 — Milestone v1.1 started after audit found 22 issues
 - Production verify-before-close (Playwright + Supabase Cloud) — caught 1 deploy gap + 1 toast bug
 - mapSupabaseError extract `.message` dari plain-object errors (Supabase RPC errors bukan Error instance)
 
+### Decisions (v1.1 roadmap-time)
+
+- **Phase order:** 5 (Security) → 6 (Race) → 7 (UI Consistency) → 8 (Dev Hygiene). Phase 5 first per blast-radius hierarchy (defensive only, zero user-facing change). Phase 6 isolated karena highest-blast-radius DB writes. Phase 7 has dep on Phase 6 (CONS-01 reuses pattern dari RACE-03 withdraw RPC). Phase 8 last — pure code/config, no DB.
+- **Phase 5 single migration:** `0017_tighten_rls.sql` bundles all 4 SEC findings — `CREATE OR REPLACE FUNCTION` + `DROP POLICY IF EXISTS` make it idempotent; splitting would risk incomplete rollouts (H-04 deployed but not H-06 = IDOR still open).
+- **Phase 6 vs Phase 5 independence:** No hard dep, can parallel-deploy, but ship Phase 5 first per research recommendation (lower blast radius).
+- **Phase 7 vs Phase 8 split rationale:** Phase 7 has 3 DB migrations (additive view + new table + RPC v2), Phase 8 is pure code/config. Different deploy paths + different test gates → keep separate even though both low risk.
+- **DEV-01 mapped to Phase 6:** `nextDueDate` TS removal is auto-resolved by RACE-01 RPC refactor. Snapshot/parity test ditulis sebagai bagian dari verifikasi Phase 6, bukan Phase 8.
+- **UX-01 + UX-02 mapped to Phase 7:** UI-facing fixes (localStorage key + View-As CSV gate) — both small, low-risk, koheren dengan tema "UI/Data Consistency".
+- **Migration numbering:** v1.0 ended at 0016. v1.1 starts at 0017 (Phase 5). No collision risk because Phase 5 ships first (`0017`), Phase 6 ships next (`0018`-`0020`), Phase 7 ships last with DB migrations (`0021`-`0023`).
+- **Granularity:** No `granularity` field di config.json. Default = standard (5-8 phases). 4 phases for v1.1 = below standard floor, justified karena scope sempit (16 hardening items, no new features).
+
 ### Pending Todos
 
 None.
 
 ### Blockers/Concerns
 
-- (none — v1.1 baru mulai)
+- (none — v1.1 ready to plan)
 
 ## Deferred Items (carried from v1.0 — review for v1.1 inclusion)
 
 | Category | Item | Status | Severity | Deferred At | Source |
 |----------|------|--------|----------|-------------|--------|
-| bug | createRecurringTemplate missing user_id → RLS 403 (pre-existing) | **considering for v1.1** | HIGH | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #1 |
+| bug | createRecurringTemplate missing user_id → RLS 403 (pre-existing) | candidate-for-Phase-6 | HIGH | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #1 |
 | test | Full psql regression `supabase/tests/04-mark-bill-paid.sql` not executed (Docker absent) | blocked-by-environment | MEDIUM | 2026-04-25 | 04-VERIFICATION.md |
-| ux | UpcomingBillsPanel AlertDialog body shows only nama bill, missing nominal+tanggal | open | cosmetic | 2026-04-25 | 04-UAT.md |
-| ux | Net Worth card no auto-refresh post mark-as-paid (by-design) — needs tooltip/helper text | open | cosmetic | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
-| test | useMarkBillPaid does not invalidate `['net-worth-snapshots']` query | open | INFO | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
-| test | `mapSupabaseError` unit test for plain-object errors not added | open | LOW | 2026-04-25 | 04-UAT.md |
+| ux | UpcomingBillsPanel AlertDialog body shows only nama bill, missing nominal+tanggal | open (not in v1.1) | cosmetic | 2026-04-25 | 04-UAT.md |
+| ux | Net Worth card no auto-refresh post mark-as-paid (by-design) — needs tooltip/helper text | open (not in v1.1) | cosmetic | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
+| test | useMarkBillPaid does not invalidate `['net-worth-snapshots']` query | open (not in v1.1) | INFO | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
+| test | `mapSupabaseError` unit test for plain-object errors not added | open (not in v1.1) | LOW | 2026-04-25 | 04-UAT.md |
 
 ## Session Continuity
 
-Last session: 2026-04-27 — Milestone v1.1 started
-Stopped at: Defining requirements (research running)
-Resume file: None
+Last session: 2026-04-27 — Roadmap created
+Stopped at: Phase 5 (Security Hardening) ready to plan
+Resume command: `/gsd-plan-phase 5`
+Next file expected: `.planning/phases/05-PLAN.md` (or `.planning/phases/05-01-PLAN.md` jika multi-plan)

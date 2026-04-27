@@ -83,28 +83,39 @@ Plus item carried-over dari v1.0 deferred yang **tidak** ditackle di v1.1:
 
 ## Traceability
 
-(filled by roadmapper — maps each REQ-ID to the phase that delivers it)
+Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| SEC-01 | — | — | pending |
-| SEC-02 | — | — | pending |
-| SEC-03 | — | — | pending |
-| SEC-04 | — | — | pending |
-| RACE-01 | — | — | pending |
-| RACE-02 | — | — | pending |
-| RACE-03 | — | — | pending |
-| CONS-01 | — | — | pending |
-| CONS-02 | — | — | pending |
-| CONS-03 | — | — | pending |
-| UX-01 | — | — | pending |
-| UX-02 | — | — | pending |
-| DEV-01 | — | — | pending |
-| DEV-02 | — | — | pending |
-| DEV-03 | — | — | pending |
-| DEV-04 | — | — | pending |
+| SEC-01 | Phase 5 — Security Hardening | TBD | pending |
+| SEC-02 | Phase 5 — Security Hardening | TBD | pending |
+| SEC-03 | Phase 5 — Security Hardening | TBD | pending |
+| SEC-04 | Phase 5 — Security Hardening | TBD | pending |
+| RACE-01 | Phase 6 — Race & Atomicity | TBD | pending |
+| RACE-02 | Phase 6 — Race & Atomicity | TBD | pending |
+| RACE-03 | Phase 6 — Race & Atomicity | TBD | pending |
+| CONS-01 | Phase 7 — UI/Data Consistency | TBD | pending |
+| CONS-02 | Phase 7 — UI/Data Consistency | TBD | pending |
+| CONS-03 | Phase 7 — UI/Data Consistency | TBD | pending |
+| UX-01 | Phase 7 — UI/Data Consistency | TBD | pending |
+| UX-02 | Phase 7 — UI/Data Consistency | TBD | pending |
+| DEV-01 | Phase 6 — Race & Atomicity | TBD | pending |
+| DEV-02 | Phase 8 — Dev Hygiene | TBD | pending |
+| DEV-03 | Phase 8 — Dev Hygiene | TBD | pending |
+| DEV-04 | Phase 8 — Dev Hygiene | TBD | pending |
+
+### Phase ↔ Requirements Summary
+
+| Phase | Requirements | Count | Migrations |
+|-------|--------------|------:|-----------|
+| Phase 5 — Security Hardening | SEC-01, SEC-02, SEC-03, SEC-04 | 4 | `0017_tighten_rls.sql` |
+| Phase 6 — Race & Atomicity | RACE-01, RACE-02, RACE-03, DEV-01 | 4 | `0018_process_due_recurring.sql`, `0019_withdraw_from_goal.sql`, `0020_goal_investments_total_check.sql` |
+| Phase 7 — UI/Data Consistency | CONS-01, CONS-02, CONS-03, UX-01, UX-02 | 5 | `0021_user_seed_markers.sql` + `seed_rencana`, `0022_goals_with_progress.sql`, `0023_add_money_to_goal_v2.sql` |
+| Phase 8 — Dev Hygiene | DEV-02, DEV-03, DEV-04 | 3 | (none — pure code/config) |
+| **Total** | — | **16** | — |
 
 ---
 
 *Total: 16 requirements (4 SEC / 3 RACE / 3 CONS / 2 UX / 4 DEV)*
 *Created: 2026-04-27*
+*Roadmap mapped: 2026-04-27*
