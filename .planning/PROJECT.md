@@ -14,15 +14,15 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 **Production:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-04-25
 **Audit:** PASS-WITH-NOTES (15/15 requirements satisfied; 8 deferred items tracked in `.planning/STATE.md`)
 
-## Next Milestone Goals
+## Current Milestone: v1.1 Hardening & Consistency
 
-(no v1.1 scope decided yet — `/gsd-new-milestone` to start scoping)
+**Goal:** Tutup 16 finding security/race/data-integrity dari audit pasca-v1.0 (`.planning/codebase/REVIEW-2026-04-27.md`) — 3 Critical + 6 High + 7 Medium.
 
-**Likely candidates** (drawn from v1.0 deferred items + backlog):
-- Fix `createRecurringTemplate` RLS bug (HIGH — pre-existing, blocks UI seed of recurring templates)
-- Tooltip/helper untuk klarifikasi Net Worth-vs-cashflow (cosmetic UX dari v1.0 audit)
-- Budget/Anggaran per kategori (sebelumnya Out of Scope di v1.0)
-- Setup unit test infrastructure + add `mapSupabaseError` test (deferred from v1.0 fix)
+**Target areas:**
+- Security: Edge Function auth + CORS, RLS info-disclosure (profiles/allowed_emails), allowlist bootstrap protection, RPC IDOR (aggregate functions)
+- Race & data integrity: useProcessRecurring duplicate-transaction prevention, allocation_pct cross-row enforcement, seed atomicity
+- Consistency: timezone (UTC vs WIB), goal cash/investasi UX, withdraw RPC, csv view-as guard, nextDueDate parity (TS vs SQL)
+- Dev hygiene: missing seed.sql, pie-label cast, dashboard recentTx note
 
 ## Requirements
 
@@ -60,7 +60,7 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 
 ### Active
 
-(no active milestone — `/gsd-new-milestone` to add)
+(v1.1 requirements ditulis di `.planning/REQUIREMENTS.md` setelah research selesai)
 
 ### Out of Scope
 
@@ -123,4 +123,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-25 after v1.0 milestone (Financial Foundation)*
+*Last updated: 2026-04-27 — v1.1 milestone started (Hardening & Consistency)*
