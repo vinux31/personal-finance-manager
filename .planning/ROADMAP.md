@@ -41,7 +41,11 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   3. Setelah `TRUNCATE allowed_emails`, signup attempt via OAuth dengan email selain `rinoadi28@gmail.com` raise exception "Allowlist kosong — hanya admin awal yang dapat sign up"; signup `rinoadi28@gmail.com` tetap berhasil.
   4. User non-admin call `supabase.rpc('aggregate_by_period', { p_user_id: '<admin_uuid>' })` raise exception SQLSTATE `42501` "Akses ditolak"; admin call dengan UUID user lain returns aggregated data.
   5. Admin "View As" feature tetap berfungsi — admin dapat SELECT profiles, allowed_emails, dan call aggregate RPCs dengan UUID arbitrary tanpa error.
-**Plans**: TBD
+**Plans**: 4 plans
+  - [ ] 05-01-PLAN.md — Migration 0017_tighten_rls.sql (RLS profiles+allowed_emails, enforce_email_allowlist hardening, aggregate RPC IDOR guards) + mapSupabaseError SQLSTATE branches
+  - [ ] 05-02-PLAN.md — Edge function fetch-prices auth (Authorization Bearer + auth.getUser) + per-domain CORS + config.toml verify_jwt
+  - [ ] 05-03-PLAN.md — Test file supabase/tests/05-tighten-rls.sql (BEGIN/ROLLBACK + RAISE NOTICE PASS/FAIL convention, 14 assertions)
+  - [ ] 05-04-PLAN.md — Deploy gate: db push (with Studio fallback), functions deploy, run pgTAP, curl smokes, 5 browser-MCP UAT, write 05-VERIFICATION.md
 
 ### Phase 6: Race & Atomicity
 **Goal**: Eliminasi race conditions di tulis-paths utama (recurring transactions, withdraw goal, goal_investments allocation). Konvergensi ke pattern kanonis `mark_bill_paid` — 3 migration baru + refactor 2 hooks. Highest-blast-radius DB changes — isolate dari Phase 7/8 untuk rollback meaningful.
@@ -88,7 +92,7 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 | 2. Net Worth Tracker | v1.0 | 3/3 | ✅ Complete | 2026-04-23 |
 | 3. Bills Display | v1.0 | 2/2 | ✅ Complete | 2026-04-24 |
 | 4. Mark-as-Paid | v1.0 | 6/6 | ✅ Complete | 2026-04-25 |
-| 5. Security Hardening | v1.1 | 0/TBD | Not started | - |
+| 5. Security Hardening | v1.1 | 0/4 | Not started | - |
 | 6. Race & Atomicity | v1.1 | 0/TBD | Not started | - |
 | 7. UI/Data Consistency | v1.1 | 0/TBD | Not started | - |
 | 8. Dev Hygiene | v1.1 | 0/TBD | Not started | - |
