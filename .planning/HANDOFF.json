@@ -1,0 +1,85 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-04-27T02:22:39.744Z",
+  "phase": "05",
+  "phase_name": "security-hardening",
+  "phase_dir": ".planning/phases/05-security-hardening",
+  "milestone": "v1.1",
+  "wave": 1,
+  "total_waves": 2,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "context": "phase",
+  "execution_mode": "parallel-worktree",
+  "expected_base_commit": "8f57a0b1a3b02e04366a1a9db254ea5c2c42601e",
+  "wave_1_dispatched": [
+    {
+      "plan": "05-01",
+      "objective": "Migration 0017_tighten_rls.sql + errors.ts SQLSTATE branches",
+      "agent_id": "a80be2a3b6e74ed25",
+      "worktree": ".claude/worktrees/agent-a80be2a3b6e74ed25",
+      "branch": "worktree-agent-a80be2a3b6e74ed25",
+      "status_at_pause": "in_progress",
+      "progress_at_pause": "Created supabase/migrations/0017_tighten_rls.sql (untracked, not yet committed). Task 1 of 2.",
+      "summary_committed": false
+    },
+    {
+      "plan": "05-02",
+      "objective": "fetch-prices auth + per-domain CORS + supabase/config.toml",
+      "agent_id": "add712fd023ffc394",
+      "worktree": ".claude/worktrees/agent-add712fd023ffc394",
+      "branch": "worktree-agent-add712fd023ffc394",
+      "status_at_pause": "in_progress",
+      "progress_at_pause": "Worktree clean — agent reading files, no edits yet. Task 1 of 2.",
+      "summary_committed": false
+    },
+    {
+      "plan": "05-03",
+      "objective": "Integration test supabase/tests/05-tighten-rls.sql",
+      "agent_id": "ada51d1ba21c6d1f2",
+      "worktree": ".claude/worktrees/agent-ada51d1ba21c6d1f2",
+      "branch": "worktree-agent-ada51d1ba21c6d1f2",
+      "status_at_pause": "in_progress",
+      "progress_at_pause": "Worktree clean — agent reading files, no edits yet. Task 1 of 1.",
+      "summary_committed": false
+    }
+  ],
+  "wave_2_pending": [
+    {
+      "plan": "05-04",
+      "objective": "Deploy-and-verify pipeline (db push, functions deploy, curl smoke tests, browser-MCP UAT, write 05-VERIFICATION.md)",
+      "autonomous": false,
+      "checkpoints": ["supabase db push --linked", "supabase functions deploy fetch-prices", "curl smoke tests", "browser-MCP UAT scenarios 1-5"],
+      "depends_on": ["05-01", "05-02", "05-03"]
+    }
+  ],
+  "completed_tasks": [
+    {"id": "phase-bootstrap", "name": "STATE.md begin-phase tracking commit", "status": "done", "commit": "8f57a0b"}
+  ],
+  "remaining_tasks": [
+    {"id": "wave-1-merge", "name": "Wait for Wave 1 agents → merge worktrees → run pre-commit hooks → npm test smoke gate → update tracking", "status": "blocked_on_wave_1"},
+    {"id": "wave-2-execute", "name": "Execute 05-04 deploy-and-verify with checkpoints", "status": "not_started"},
+    {"id": "phase-verify", "name": "code_review_gate → regression_gate → schema_drift_gate → verify_phase_goal → close phase in ROADMAP/STATE", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "3 background executor agents may still be running in worktrees — their state at resume time is unknown", "type": "external", "workaround": "On resume: inspect each worktree's SUMMARY.md and git log; if agents completed, run merge step; if not, abort + restart Wave 1"}
+  ],
+  "human_actions_pending": [
+    {"action": "Confirm whether to wait for in-flight agents or abort and restart Wave 1", "context": "Agents were dispatched in background mode immediately before pause", "blocking": true},
+    {"action": "Wave 2 (05-04) requires user interaction for deploy steps + browser-MCP UAT", "context": "supabase db push, functions deploy, and 5 UAT scenarios are not autonomous", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "Use parallel worktree execution for Wave 1", "rationale": "config parallelization=true, no files_modified overlap across 05-01/02/03, cleaner isolation than sequential", "phase": "05"},
+    {"decision": "Cleaned 5 stale worktree directories from .claude/worktrees/ before dispatch", "rationale": "EEXIST mkdir error blocked first dispatch; stale worktrees were leftovers from earlier sessions (Apr 24-25). Safe to remove — git worktree prune confirmed gitdir files were already gone.", "phase": "05"}
+  ],
+  "uncommitted_files": [
+    {"path": ".claude/worktrees/agent-a80be2a3b6e74ed25/supabase/migrations/0017_tighten_rls.sql", "status": "untracked in worktree (agent-only)"}
+  ],
+  "next_action": "On resume: 1) Run `git worktree list` and check each worktree for SUMMARY.md commits. 2) If all 3 SUMMARY.md files exist with --no-verify commits → continue from Wave-1 merge step (read execute-phase.md step 5.5 onwards). 3) If any worktree is incomplete → `git worktree remove --force` all three, delete temp branches, then re-run `/gsd-execute-phase 5` from scratch (idempotent — all 3 plans use file-create or full-rewrite operations).",
+  "context_notes": "Phase 5 = milestone v1.1 first phase, security hardening. 4 plans across 2 waves. EXPECTED_BASE captured at 8f57a0b before dispatch. Plan files contain verbatim SQL/TS that executors copy-paste — tasks are deterministic. No checkpoints in Wave 1; Wave 2 (05-04) is the deploy gate with user-facing steps.",
+  "anti_patterns": [
+    {"pattern": "Stale worktree dirs from prior sessions block new dispatches", "severity": "advisory", "manifestation": "EEXIST mkdir on first agent dispatch; resolved by `rm -rf .claude/worktrees/agent-*` and `git worktree prune`", "prevention": "Pre-flight check: list & clean .claude/worktrees/ before dispatching parallel agents"}
+  ]
+}
