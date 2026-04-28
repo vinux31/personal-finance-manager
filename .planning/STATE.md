@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
-status: Phase 5 verdict PASS-WITH-NOTES; live cloud DB hardened (RLS profiles + allowed_emails, IDOR aggregate guards, allowlist fail-closed, edge fn auth-protected); 0018 in-flight patch dropped legacy 3-arg `sql` aggregates.
+status: executing
 stopped_at: Phase 6 context gathered
-last_updated: "2026-04-28T09:49:06.563Z"
-last_activity: 2026-04-28 -- 05-04 deploy+UAT executed inline (Studio fallback for migrations 0017+0018, supabase functions deploy fetch-prices v4 ACTIVE, 14 PASS pgTAP, 2×401+1×200 curl, 5 browser-MCP UAT pass)
+last_updated: "2026-04-28T10:45:45.476Z"
+last_activity: 2026-04-28 -- Phase 6 planning complete
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 4
+  total_plans: 9
   completed_plans: 4
-  percent: 100
+  percent: 44
 ---
 
 # Project State
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 
 Phase: 05 (security-hardening) — COMPLETE
 Plan: 4 of 4 — all done
-Status: Phase 5 verdict PASS-WITH-NOTES; live cloud DB hardened (RLS profiles + allowed_emails, IDOR aggregate guards, allowlist fail-closed, edge fn auth-protected); 0018 in-flight patch dropped legacy 3-arg `sql` aggregates.
-Last activity: 2026-04-28 -- 05-04 deploy+UAT executed inline (Studio fallback for migrations 0017+0018, supabase functions deploy fetch-prices v4 ACTIVE, 14 PASS pgTAP, 2×401+1×200 curl, 5 browser-MCP UAT pass)
+Status: Ready to execute
+Last activity: 2026-04-28 -- Phase 6 planning complete
 
 ## v1.1 Phase Summary
 
