@@ -57,7 +57,12 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   3. User klik "Tarik Dana" Rp 50.000 dari goal dengan `current_amount = 100.000` dari 2 tab simultan → satu sukses (final balance 50.000), satu raise "Saldo kas tidak cukup (tersedia Rp 50.000)" dengan SQLSTATE eksplisit. Status goal `completed` → `active` jika balance turun di bawah target.
   4. TS function `nextDueDate` di `src/db/recurringTransactions.ts` tidak lagi dipanggil dari `useProcessRecurring` (hot path). Snapshot test atau parity test memastikan output TS `nextDueDate` (jika masih ada untuk preview) konsisten dengan PG `next_due_date_sql` untuk minimal 8 case (termasuk 31 Jan → 28/29 Feb, leap year).
   5. Income templates (Gaji) tetap diproses oleh RPC `process_due_recurring` baru — manual UAT login → buka Transaksi tab → assert Gaji untuk bulan ini muncul satu kali.
-**Plans**: TBD
+**Plans**: 5 plans
+  - [ ] 06-01-PLAN.md — RACE-01 + DEV-01: process_due_recurring RPC + useProcessRecurring rewrite + delete TS nextDueDate + pgTAP test
+  - [ ] 06-02-PLAN.md — RACE-02: goal_investments BEFORE INSERT/UPDATE trigger SUM check + index + pgTAP test
+  - [ ] 06-03-PLAN.md — RACE-03: withdraw_from_goal RPC + TS callsite refactor (db/queries/AddMoneyDialog) + pgTAP test
+  - [ ] 06-04-PLAN.md — Cross-cutting: errors.ts SQLSTATE 23514 + P0001 branches
+  - [ ] 06-05-PLAN.md — Wave 2 deploy + UAT gate (Studio paste 0019/0020/0021 with D-16 pre-deploy check, pgTAP suite, 5 Browser-MCP UAT, write 06-VERIFICATION.md)
 
 ### Phase 7: UI/Data Consistency
 **Goal**: Bridge gap antara UI representation dan DB source-of-truth (Goals total cash+investasi), atomic seed via DB function, timezone discipline via ESLint, dan 2 UX bug user-facing (Reset Seed Rencana key, View-As CSV gate). Additive — VIEW + ESLint config + UI gates, low risk.
@@ -93,6 +98,6 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 | 3. Bills Display | v1.0 | 2/2 | ✅ Complete | 2026-04-24 |
 | 4. Mark-as-Paid | v1.0 | 6/6 | ✅ Complete | 2026-04-25 |
 | 5. Security Hardening | v1.1 | 0/4 | Not started | - |
-| 6. Race & Atomicity | v1.1 | 0/TBD | Not started | - |
+| 6. Race & Atomicity | v1.1 | 0/5 | Not started | - |
 | 7. UI/Data Consistency | v1.1 | 0/TBD | Not started | - |
 | 8. Dev Hygiene | v1.1 | 0/TBD | Not started | - |
