@@ -1,10 +1,28 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// ---------- CORS allowlist ----------
+// Per-domain CORS. Vercel preview deploys are NOT in this list — test edge functions
+// only via `supabase functions serve` locally OR via production. (Per research integration risk note.)
+const ALLOWED_ORIGINS = new Set<string>([
+  'https://kantongpintar.app',
+  'https://www.kantongpintar.app',
+])
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get('Origin') ?? ''
+  const allowed = ALLOWED_ORIGINS.has(origin) ? origin : 'https://kantongpintar.app'
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    // Critical: prevents CDN cross-origin cache poisoning when the response is cached for Origin A
+    // and served to Origin B.
+    'Vary': 'Origin',
+  }
 }
 
+// ---------- Types ----------
 interface InvestmentInput {
   id: number
   asset_type: string
@@ -27,11 +45,43 @@ interface FetchPricesResponse {
   errors: PriceError[]
 }
 
-serve(async (req) => {
+// ---------- Handler ----------
+Deno.serve(async (req) => {
+  const cors = corsFor(req)
+
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: cors })
   }
 
+  // Defense-in-depth: even though `verify_jwt = true` in config.toml causes the platform
+  // to reject missing/invalid JWTs before reaching this handler, we still extract the user
+  // identity for two reasons:
+  //   1. Cover the 2026 API-key-migration corner case (--no-verify-jwt fallback)
+  //   2. Make the user object available for future per-user rate limiting / ownership checks
+  // Use SUPABASE_ANON_KEY (NOT service role) — service role would bypass RLS and turn any
+  // post-auth bug into privilege escalation.
+  const authHeader = req.headers.get('Authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+    })
+  }
+  const token = authHeader.slice('Bearer '.length)
+
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+  )
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(token)
+  if (authErr || !user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+    })
+  }
+
+  // ---------- Existing business logic (unchanged) ----------
   try {
     const { investments }: { investments: InvestmentInput[] } = await req.json()
 
@@ -49,7 +99,7 @@ serve(async (req) => {
         } catch (e) {
           errors.push({ id: inv.id, asset_name: inv.asset_name, reason: String(e) })
         }
-      })
+      }),
     )
 
     if (emas.length > 0) {
@@ -67,16 +117,17 @@ serve(async (req) => {
 
     const response: FetchPricesResponse = { results, errors }
     return new Response(JSON.stringify(response), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...cors, 'Content-Type': 'application/json' },
     })
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...cors, 'Content-Type': 'application/json' },
     })
   }
 })
 
+// ---------- Helpers (unchanged) ----------
 function extractTicker(assetName: string): string {
   // Cari kode IDX: 4-6 huruf kapital (contoh: BBCA, BMRI, TLKM)
   const match = assetName.match(/\b([A-Z]{4,6})\b/)
