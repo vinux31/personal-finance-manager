@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
 status: executing
-stopped_at: Phase 5 (Security Hardening) ready to plan
-last_updated: "2026-04-27T02:19:05.871Z"
-last_activity: 2026-04-27 -- Phase 05 execution started
+stopped_at: Phase 5 Wave 1 merged to master — Wave 2 (05-04 deploy+UAT) pending user
+last_updated: "2026-04-28T00:00:00.000Z"
+last_activity: 2026-04-28 -- Phase 05 Wave 1 merged (3/4 plans complete)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
-  percent: 0
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -26,15 +26,15 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 ## Current Position
 
 Phase: 05 (security-hardening) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 05
-Last activity: 2026-04-27 -- Phase 05 execution started
+Plan: 4 of 4 (Wave 2 — 05-04 deploy & UAT) pending user
+Status: Wave 1 (05-01/02/03) merged to master, smoke gate pass
+Last activity: 2026-04-28 -- Phase 05 Wave 1 merged (3 worktree branches → master, build PASS, lint clean for Wave 1 files)
 
 ## v1.1 Phase Summary
 
 | Phase | Name | Requirements | Migrations | Status |
 |-------|------|--------------|-----------|--------|
-| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql` | Not started |
+| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql` | Wave 1 done (3/4) — 05-04 deploy+UAT pending |
 | 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0018_process_due_recurring.sql`, `0019_withdraw_from_goal.sql`, `0020_goal_investments_total_check.sql` | Not started |
 | 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0021_user_seed_markers.sql` + seed_rencana, `0022_goals_with_progress.sql`, `0023_add_money_to_goal_v2.sql` | Not started |
 | 8 | Dev Hygiene | DEV-02..04 | (none) | Not started |
@@ -73,7 +73,8 @@ None.
 
 ### Blockers/Concerns
 
-- (none — v1.1 ready to plan)
+- **Phase 05 Wave 2 (05-04) requires user interaction** — `supabase db push --linked` (atau SQL Editor fallback per `project_supabase_migration_workflow`), `supabase functions deploy fetch-prices`, 3 curl smoke tests, dan 5 browser-MCP UAT scenarios. Tidak autonomous.
+- 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) — defer ke Phase 8 Dev Hygiene.
 
 ## Deferred Items (carried from v1.0 — review for v1.1 inclusion)
 
@@ -88,7 +89,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-27 — Roadmap created
-Stopped at: Phase 5 (Security Hardening) ready to plan
-Resume command: `/gsd-plan-phase 5`
-Next file expected: `.planning/phases/05-PLAN.md` (or `.planning/phases/05-01-PLAN.md` jika multi-plan)
+Last session: 2026-04-28 — Phase 05 Wave 1 finalized (worktree merge + smoke gate)
+Stopped at: Wave 2 (05-04 deploy & UAT) — pending user, requires interactive checkpoints
+Resume command: `/gsd-execute-phase 5` (akan masuk ke Wave 2 / 05-04)
+Next file expected: `.planning/phases/05-security-hardening/05-04-SUMMARY.md` + `.planning/phases/05-security-hardening/05-VERIFICATION.md`
+Wave 1 commits di master: `4692dc4` (05-01) → `4cf5129` (05-02) → `d7a0521` (05-03)

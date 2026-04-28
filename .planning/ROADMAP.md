@@ -42,9 +42,9 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   4. User non-admin call `supabase.rpc('aggregate_by_period', { p_user_id: '<admin_uuid>' })` raise exception SQLSTATE `42501` "Akses ditolak"; admin call dengan UUID user lain returns aggregated data.
   5. Admin "View As" feature tetap berfungsi — admin dapat SELECT profiles, allowed_emails, dan call aggregate RPCs dengan UUID arbitrary tanpa error.
 **Plans**: 4 plans
-  - [ ] 05-01-PLAN.md — Migration 0017_tighten_rls.sql (RLS profiles+allowed_emails, enforce_email_allowlist hardening, aggregate RPC IDOR guards) + mapSupabaseError SQLSTATE branches
-  - [ ] 05-02-PLAN.md — Edge function fetch-prices auth (Authorization Bearer + auth.getUser) + per-domain CORS + config.toml verify_jwt
-  - [ ] 05-03-PLAN.md — Test file supabase/tests/05-tighten-rls.sql (BEGIN/ROLLBACK + RAISE NOTICE PASS/FAIL convention, 14 assertions)
+  - [x] 05-01-PLAN.md — Migration 0017_tighten_rls.sql (RLS profiles+allowed_emails, enforce_email_allowlist hardening, aggregate RPC IDOR guards) + mapSupabaseError SQLSTATE branches
+  - [x] 05-02-PLAN.md — Edge function fetch-prices auth (Authorization Bearer + auth.getUser) + per-domain CORS + config.toml verify_jwt
+  - [x] 05-03-PLAN.md — Test file supabase/tests/05-tighten-rls.sql (BEGIN/ROLLBACK + RAISE NOTICE PASS/FAIL convention, 14 assertions)
   - [ ] 05-04-PLAN.md — Deploy gate: db push (with Studio fallback), functions deploy, run pgTAP, curl smokes, 5 browser-MCP UAT, write 05-VERIFICATION.md
 
 ### Phase 6: Race & Atomicity
