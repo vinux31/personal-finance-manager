@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
-status: idle
-stopped_at: Phase 5 complete — verdict PASS-WITH-NOTES, ready for Phase 6 planning
-last_updated: "2026-04-28T08:30:00.000Z"
-last_activity: 2026-04-28 -- Phase 05 complete (4/4 plans, in-flight 0018 patch authored, verdict file written)
+status: Phase 5 verdict PASS-WITH-NOTES; live cloud DB hardened (RLS profiles + allowed_emails, IDOR aggregate guards, allowlist fail-closed, edge fn auth-protected); 0018 in-flight patch dropped legacy 3-arg `sql` aggregates.
+stopped_at: Phase 6 context gathered
+last_updated: "2026-04-28T09:49:06.563Z"
+last_activity: 2026-04-28 -- 05-04 deploy+UAT executed inline (Studio fallback for migrations 0017+0018, supabase functions deploy fetch-prices v4 ACTIVE, 14 PASS pgTAP, 2×401+1×200 curl, 5 browser-MCP UAT pass)
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 4
   completed_plans: 4
-  percent: 25
+  percent: 100
 ---
 
 # Project State
@@ -102,8 +102,8 @@ None active. Phase 5 cleared all in-flight blockers.
 
 ## Session Continuity
 
-Last session: 2026-04-28 — Phase 05 complete (Wave 1 + Wave 2 + in-flight 0018 patch + verdict file)
-Stopped at: Phase 5 complete; ready to start Phase 6 planning
+Last session: 2026-04-28T09:49:06.554Z
+Stopped at: Phase 6 context gathered
 Resume command: `/gsd-discuss-phase 6` (next), or `/gsd-progress` to confirm route
 Next file expected: `.planning/phases/06-race-and-atomicity/06-CONTEXT.md` (after discuss-phase)
 Phase 5 commits to push next: this session's 05-04 artifacts + 0018 migration + STATE/ROADMAP updates (single commit). Wave 1 commits already on master via earlier push (`4692dc4` → `4cf5129` → `d7a0521`).
