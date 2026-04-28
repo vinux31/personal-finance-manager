@@ -1,0 +1,11 @@
+Total messages: 4 (Errors: 4, Warnings: 0)
+
+[ERROR] Failed to load resource: the server responded with a status of 400 () @ https://rqotdjrlswpizgpnznfn.supabase.co/auth/v1/token?grant_type=refresh_token:0
+[ERROR] AuthApiError: Invalid Refresh Token: Refresh Token Not Found
+    at py (https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:85:8233)
+    at async gy (https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:85:9072)
+    at async hy (https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:85:8726)
+    at async r (https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:88:18788)
+    at async https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:85:3776 @ https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:87
+[ERROR] Failed to load resource: the server responded with a status of 403 () @ https://rqotdjrlswpizgpnznfn.supabase.co/rest/v1/net_worth_snapshots?on_conflict=user_id%2Csnapshot_month:0
+[ERROR] snapshot insert failed {code: 42501, details: null, hint: null, message: new row violates row-level security policy for table "net_worth_snapshots"} @ https://kantongpintar.vercel.app/assets/index-CY8TMNvn.js:124

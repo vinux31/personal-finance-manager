@@ -1,0 +1,26 @@
+================================================================
+UAT REST suite — non-admin (rinoadi38, uid 4a54608d-00a5-4260-99d1-c46893c8f956)
+Run timestamp: 2026-04-28T08:07:35Z
+================================================================
+
+--- UAT-1: non-admin GET /profiles?select=* — expect 1 row (only own) ---
+[{"id":"4a54608d-00a5-4260-99d1-c46893c8f956","is_admin":false,"display_name":"Rino Adi"}]
+row_count=1 (expect 1)
+
+--- UAT-2: non-admin GET /allowed_emails?select=* — expect empty [] ---
+[]
+row_count=0 (expect 0)
+
+--- UAT-3a: non-admin RPC aggregate_by_period(p_user_id := admin) — expect 42501 ---
+{"code":"42501","details":null,"hint":null,"message":"Akses ditolak"}
+expect: code=42501, message=Akses ditolak
+
+--- UAT-3b: non-admin RPC aggregate_by_period(NO p_user_id, default to self) — expect 200 ---
+[]
+expect: array (own data, possibly empty)
+
+--- UAT-3c: non-admin RPC aggregate_by_category(p_user_id := admin) — expect 42501 ---
+{"code":"42501","details":null,"hint":null,"message":"Akses ditolak"}
+expect: code=42501, message=Akses ditolak
+
+================================================================

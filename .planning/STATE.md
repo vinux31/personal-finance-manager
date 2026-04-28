@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
-status: executing
-stopped_at: Phase 5 Wave 1 merged to master — Wave 2 (05-04 deploy+UAT) pending user
-last_updated: "2026-04-28T00:00:00.000Z"
-last_activity: 2026-04-28 -- Phase 05 Wave 1 merged (3/4 plans complete)
+status: idle
+stopped_at: Phase 5 complete — verdict PASS-WITH-NOTES, ready for Phase 6 planning
+last_updated: "2026-04-28T08:30:00.000Z"
+last_activity: 2026-04-28 -- Phase 05 complete (4/4 plans, in-flight 0018 patch authored, verdict file written)
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 25
 ---
 
 # Project State
@@ -21,23 +21,25 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 05 — security-hardening
+**Current focus:** Phase 06 — Race & Atomicity (next)
 
 ## Current Position
 
-Phase: 05 (security-hardening) — EXECUTING
-Plan: 4 of 4 (Wave 2 — 05-04 deploy & UAT) pending user
-Status: Wave 1 (05-01/02/03) merged to master, smoke gate pass
-Last activity: 2026-04-28 -- Phase 05 Wave 1 merged (3 worktree branches → master, build PASS, lint clean for Wave 1 files)
+Phase: 05 (security-hardening) — COMPLETE
+Plan: 4 of 4 — all done
+Status: Phase 5 verdict PASS-WITH-NOTES; live cloud DB hardened (RLS profiles + allowed_emails, IDOR aggregate guards, allowlist fail-closed, edge fn auth-protected); 0018 in-flight patch dropped legacy 3-arg `sql` aggregates.
+Last activity: 2026-04-28 -- 05-04 deploy+UAT executed inline (Studio fallback for migrations 0017+0018, supabase functions deploy fetch-prices v4 ACTIVE, 14 PASS pgTAP, 2×401+1×200 curl, 5 browser-MCP UAT pass)
 
 ## v1.1 Phase Summary
 
 | Phase | Name | Requirements | Migrations | Status |
 |-------|------|--------------|-----------|--------|
-| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql` | Wave 1 done (3/4) — 05-04 deploy+UAT pending |
-| 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0018_process_due_recurring.sql`, `0019_withdraw_from_goal.sql`, `0020_goal_investments_total_check.sql` | Not started |
-| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0021_user_seed_markers.sql` + seed_rencana, `0022_goals_with_progress.sql`, `0023_add_money_to_goal_v2.sql` | Not started |
+| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql`, `0018_drop_legacy_aggregates.sql` (in-flight patch) | **Complete (PASS-WITH-NOTES)** |
+| 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0019_process_due_recurring.sql`, `0020_withdraw_from_goal.sql`, `0021_goal_investments_total_check.sql` | Not started |
+| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0022_user_seed_markers.sql` + seed_rencana, `0023_goals_with_progress.sql`, `0024_add_money_to_goal_v2.sql` | Not started |
 | 8 | Dev Hygiene | DEV-02..04 | (none) | Not started |
+
+> ⚠ **Migration numbering shifted by +1 starting Phase 6** — Phase 5 consumed migration slots 0017 (planned) + 0018 (unplanned in-flight patch). Phase 6's `0018_process_due_recurring.sql` etc. need to be renumbered to 0019/0020/0021. Confirm during /gsd-plan-phase 6.
 
 ## Accumulated Context
 
@@ -64,8 +66,16 @@ Last activity: 2026-04-28 -- Phase 05 Wave 1 merged (3 worktree branches → mas
 - **Phase 7 vs Phase 8 split rationale:** Phase 7 has 3 DB migrations (additive view + new table + RPC v2), Phase 8 is pure code/config. Different deploy paths + different test gates → keep separate even though both low risk.
 - **DEV-01 mapped to Phase 6:** `nextDueDate` TS removal is auto-resolved by RACE-01 RPC refactor. Snapshot/parity test ditulis sebagai bagian dari verifikasi Phase 6, bukan Phase 8.
 - **UX-01 + UX-02 mapped to Phase 7:** UI-facing fixes (localStorage key + View-As CSV gate) — both small, low-risk, koheren dengan tema "UI/Data Consistency".
-- **Migration numbering:** v1.0 ended at 0016. v1.1 starts at 0017 (Phase 5). No collision risk because Phase 5 ships first (`0017`), Phase 6 ships next (`0018`-`0020`), Phase 7 ships last with DB migrations (`0021`-`0023`).
-- **Granularity:** No `granularity` field di config.json. Default = standard (5-8 phases). 4 phases for v1.1 = below standard floor, justified karena scope sempit (16 hardening items, no new features).
+- **Migration numbering (initial):** v1.0 ended at 0016. v1.1 starts at 0017 (Phase 5).
+
+### Decisions (v1.1 execution-time, post-Phase-5)
+
+- **Phase 5 PASS-WITH-NOTES.** All 5 ROADMAP success criteria evidenced; SC #3 verified DB-side only (TRUNCATE+signup destructive variant intentionally not run against production).
+- **In-flight patch 0018.** Migration 0017 used `CREATE OR REPLACE FUNCTION` to "swap" `aggregate_by_period`/`aggregate_by_category` from sql→plpgsql while adding `p_user_id UUID DEFAULT NULL` arg. PostgreSQL keys function identity on signature → new 4-arg plpgsql versions created alongside (not replacing) legacy 3-arg `sql` versions. Legacy versions had `SECURITY DEFINER` + no user filter → reachable info-disclosure via direct PostgREST 3-arg call. Patched with `0018_drop_legacy_aggregates.sql` during 05-04 verification. **Lesson:** planner must require explicit `DROP FUNCTION` whenever a function signature changes.
+- **Migration numbering shift +1 from Phase 6.** Phase 5 consumed slots 0017 (planned) + 0018 (in-flight patch). Phase 6's planned 0018-0020 must be renumbered to 0019-0021. Phase 7's planned 0021-0023 → 0022-0024. Confirm and update during /gsd-plan-phase 6.
+- **Studio fallback is the de-facto migration channel.** Per memory `project_supabase_migration_workflow.md`, `supabase db push` fails with history mismatch and `migration repair` is broken. All migrations from 0014 onward have been applied via Studio SQL Editor manual paste. `supabase migration list --linked` will show 0014..0018 as Local-only — this is acceptable for now; reconciling history is a separate hygiene task (filed below).
+- **Edge function runtime gate stronger than handler gate.** `verify_jwt = true` in config.toml causes Supabase runtime to reject pre-handler with body `{"code":"UNAUTHORIZED_NO_AUTH_HEADER"...}` instead of the handler's `{"error":"Unauthorized"}`. This is acceptable defense-in-depth; plan-stated body wording is informational only.
+- **REST/RPC HTTP testing > DevTools console for RLS UAT.** UAT-1/2/3 in Plan 05-04 originally specified DevTools console assertions (`window.__sb`); we used direct REST/RPC calls with the non-admin JWT instead. Reproducible from CI/shell, captures verbatim JSON evidence, and matches the actual threat model (any token-holder can hit PostgREST directly).
 
 ### Pending Todos
 
@@ -73,10 +83,9 @@ None.
 
 ### Blockers/Concerns
 
-- **Phase 05 Wave 2 (05-04) requires user interaction** — `supabase db push --linked` (atau SQL Editor fallback per `project_supabase_migration_workflow`), `supabase functions deploy fetch-prices`, 3 curl smoke tests, dan 5 browser-MCP UAT scenarios. Tidak autonomous.
-- 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) — defer ke Phase 8 Dev Hygiene.
+None active. Phase 5 cleared all in-flight blockers.
 
-## Deferred Items (carried from v1.0 — review for v1.1 inclusion)
+## Deferred Items (carried + new from Phase 5)
 
 | Category | Item | Status | Severity | Deferred At | Source |
 |----------|------|--------|----------|-------------|--------|
@@ -86,11 +95,15 @@ None.
 | ux | Net Worth card no auto-refresh post mark-as-paid (by-design) — needs tooltip/helper text | open (not in v1.1) | cosmetic | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
 | test | useMarkBillPaid does not invalidate `['net-worth-snapshots']` query | open (not in v1.1) | INFO | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
 | test | `mapSupabaseError` unit test for plain-object errors not added | open (not in v1.1) | LOW | 2026-04-25 | 04-UAT.md |
+| bug | net_worth_snapshots auto-insert fails with 42501 when View-As is active — frontend should skip the snapshot job in View-As mode | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md / uat-05-04-console-errors.txt |
+| test | SC #3 destructive variant (TRUNCATE allowed_emails + signup) — needs staging mirror to upgrade from PASS-WITH-NOTES (DB-side only) → clean PASS | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md |
+| infra | Migration history reconciliation — `supabase migration list --linked` shows 0014..0018 as Local-only because `db push` is broken in this project; revisit when staging mirror exists | open | LOW | 2026-04-28 | 05-VERIFICATION.md |
+| code | 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) | candidate-for-Phase-8 | LOW | 2026-04-25 | 05-handoff |
 
 ## Session Continuity
 
-Last session: 2026-04-28 — Phase 05 Wave 1 finalized (worktree merge + smoke gate)
-Stopped at: Wave 2 (05-04 deploy & UAT) — pending user, requires interactive checkpoints
-Resume command: `/gsd-execute-phase 5` (akan masuk ke Wave 2 / 05-04)
-Next file expected: `.planning/phases/05-security-hardening/05-04-SUMMARY.md` + `.planning/phases/05-security-hardening/05-VERIFICATION.md`
-Wave 1 commits di master: `4692dc4` (05-01) → `4cf5129` (05-02) → `d7a0521` (05-03)
+Last session: 2026-04-28 — Phase 05 complete (Wave 1 + Wave 2 + in-flight 0018 patch + verdict file)
+Stopped at: Phase 5 complete; ready to start Phase 6 planning
+Resume command: `/gsd-discuss-phase 6` (next), or `/gsd-progress` to confirm route
+Next file expected: `.planning/phases/06-race-and-atomicity/06-CONTEXT.md` (after discuss-phase)
+Phase 5 commits to push next: this session's 05-04 artifacts + 0018 migration + STATE/ROADMAP updates (single commit). Wave 1 commits already on master via earlier push (`4692dc4` → `4cf5129` → `d7a0521`).

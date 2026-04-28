@@ -45,7 +45,7 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   - [x] 05-01-PLAN.md — Migration 0017_tighten_rls.sql (RLS profiles+allowed_emails, enforce_email_allowlist hardening, aggregate RPC IDOR guards) + mapSupabaseError SQLSTATE branches
   - [x] 05-02-PLAN.md — Edge function fetch-prices auth (Authorization Bearer + auth.getUser) + per-domain CORS + config.toml verify_jwt
   - [x] 05-03-PLAN.md — Test file supabase/tests/05-tighten-rls.sql (BEGIN/ROLLBACK + RAISE NOTICE PASS/FAIL convention, 14 assertions)
-  - [ ] 05-04-PLAN.md — Deploy gate: db push (with Studio fallback), functions deploy, run pgTAP, curl smokes, 5 browser-MCP UAT, write 05-VERIFICATION.md
+  - [x] 05-04-PLAN.md — Deploy gate: db push (with Studio fallback), functions deploy, run pgTAP, curl smokes, 5 browser-MCP UAT, write 05-VERIFICATION.md
 
 ### Phase 6: Race & Atomicity
 **Goal**: Eliminasi race conditions di tulis-paths utama (recurring transactions, withdraw goal, goal_investments allocation). Konvergensi ke pattern kanonis `mark_bill_paid` — 3 migration baru + refactor 2 hooks. Highest-blast-radius DB changes — isolate dari Phase 7/8 untuk rollback meaningful.

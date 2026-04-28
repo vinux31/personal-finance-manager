@@ -1,0 +1,27 @@
+================================================================
+Smoke #1 — POST /fetch-prices WITHOUT Authorization header
+Expected: HTTP 401
+Run timestamp: 2026-04-28T07:08:47Z
+================================================================
+{"code":"UNAUTHORIZED_NO_AUTH_HEADER","message":"Missing authorization header"}
+HTTP_STATUS:401
+
+
+================================================================
+Smoke #2 — POST /fetch-prices WITH bogus Bearer token
+Expected: HTTP 401
+Run timestamp: 2026-04-28T07:08:48Z
+================================================================
+{"code":"UNAUTHORIZED_INVALID_JWT_FORMAT","message":"Invalid JWT"}
+HTTP_STATUS:401
+
+
+================================================================
+Smoke #3 — POST /fetch-prices WITH valid admin JWT
+Expected: HTTP 200 + JSON body with results[]/errors[]
+Run timestamp: 2026-04-28T07:11:36Z
+JWT subject: rinoadi28@gmail.com (admin) — exp=1777362072 (~60 min from issue)
+================================================================
+{"results":[],"errors":[]}
+HTTP_STATUS:200
+

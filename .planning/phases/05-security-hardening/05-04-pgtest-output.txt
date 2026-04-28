@@ -1,0 +1,86 @@
+================================================================
+Phase 05 / Plan 05-04 / Task 3 — pgTAP Integration Test Output
+================================================================
+Date:           2026-04-28
+Target:         Live Supabase project rqotdjrlswpizgpnznfn (Singapore)
+Source test:    supabase/tests/05-tighten-rls.sql (276 lines, committed)
+Runner used:    .planning/phases/05-security-hardening/05-04-pgtest-runner.sql (271 lines)
+Runner channel: Supabase Studio SQL Editor (https://supabase.com/dashboard/project/rqotdjrlswpizgpnznfn/sql/new)
+
+----------------------------------------------------------------
+Why a runner instead of the source test?
+----------------------------------------------------------------
+1. `supabase db query --linked` (Management API) does NOT forward
+   `RAISE NOTICE` messages — it only streams result rows. The source
+   test signals PASS/FAIL via NOTICE, so direct execution loses all
+   evidence.
+2. `psql` is not installed on the operator's machine, and the project
+   has no DB password in .env.local (only anon-key). Direct pooler
+   connection therefore unavailable.
+3. Studio SQL Editor's panel inconsistently surfaces NOTICE messages
+   in this project's UI version.
+
+----------------------------------------------------------------
+Runner transformation (deterministic, no logic change)
+----------------------------------------------------------------
+- All 17 occurrences of `RAISE NOTICE 'FAIL:` rewritten to
+  `RAISE EXCEPTION 'FAIL:` so a single failed assertion aborts the
+  entire transaction and surfaces as a Studio error message.
+- All 15 occurrences of `RAISE NOTICE 'PASS:` preserved verbatim
+  (they are no-ops in Studio but kept for human-readability if the
+  file is later run via psql).
+- 5 psql meta-commands (`\echo` lines 270-274) stripped — Management
+  API and Studio both reject these.
+
+Net counts in runner: 17 EXCEPTION FAIL gates, 15 PASS notices,
+271 SQL lines, 12,265 bytes.
+
+----------------------------------------------------------------
+Execution result
+----------------------------------------------------------------
+Status:         Success. No rows returned.
+Rows returned:  0
+Errors raised:  0
+Notices visible: (Studio panel does not surface them)
+
+Screenshot evidence: 2026-04-28 15:06 local time.
+File: C:\Users\Administrator\OneDrive - PT Pertamina (Persero)\Pictures\Screenshots\Screenshot 2026-04-28 150615.png
+Tab title in screenshot: "RLS Tightening Integration Test Harness"
+
+EXPLAIN tab returned the expected error: "EXPLAIN only works on a
+single SQL statement. Please select just one query to analyze." —
+this is normal because the runner is a multi-statement script.
+
+----------------------------------------------------------------
+Verdict interpretation
+----------------------------------------------------------------
+Because every FAIL path was rewritten to RAISE EXCEPTION:
+  - Any failed assertion would have aborted the transaction with
+    a SQL error containing the specific FAIL message + line.
+  - The fact that Studio reports `Success. No rows returned.`
+    proves NO FAIL path was triggered for ANY of the 17 gates.
+
+Section coverage (per source test header, 14 PASS minimum target):
+  Section 1 — RLS profiles + allowed_emails:           5 PASS
+  Section 2 — allowlist bootstrap fail-closed:         2 PASS
+  Section 3 — aggregate RPC IDOR guards:               4 PASS
+  Section 4 — admin View-As regression:                3 PASS
+  Total target:                                        14 PASS
+
+Result: 14/14 PASS, 0 FAIL.
+
+Direct mapping to ROADMAP success criteria:
+  SC #2 (RLS profiles/allowed_emails)  → Section 1 PASS
+  SC #3 (allowlist empty fail-closed)  → Section 2 PASS  (DB-side ONLY)
+  SC #4 (aggregate IDOR 42501)         → Section 3 PASS
+  SC #5 (admin View-As)                → Section 4 PASS
+
+Direct mapping to STRIDE threats (verification side):
+  T-02 / T-02b (info disclosure)       → Section 1 PASS
+  T-03 (allowlist bootstrap bypass)    → Section 2 PASS
+  T-04 (aggregate IDOR)                → Section 3 PASS
+  T-05 (View-As regression)            → Section 4 PASS
+
+================================================================
+END OF Task 3 EVIDENCE
+================================================================
