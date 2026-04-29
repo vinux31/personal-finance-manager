@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
 status: executing
-stopped_at: Phase 7 context gathered
-last_updated: "2026-04-29T05:35:29.353Z"
-last_activity: 2026-04-29 -- Phase 07 execution started
+stopped_at: Phase 7 complete — ready for Phase 8
+last_updated: "2026-04-29T07:00:00.000Z"
+last_activity: 2026-04-29 -- Phase 07 complete (PASS-WITH-NOTES)
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 17
-  completed_plans: 9
-  percent: 53
+  completed_plans: 17
+  percent: 75
 ---
 
 # Project State
@@ -25,11 +25,10 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 
 ## Current Position
 
-Phase: 07 (ui-data-consistency) — EXECUTING
-Phase: 07 (ui-data-consistency) — context gathered, ready for plan
-Plan: 1 of 8
-Status: Executing Phase 07
-Last activity: 2026-04-29 -- Phase 07 execution started
+Phase: 07 (ui-data-consistency) — **COMPLETE (PASS-WITH-NOTES)**
+Phase: 08 (dev-hygiene) — Not started
+Status: Phase 07 complete; Phase 08 ready to plan
+Last activity: 2026-04-29 -- Phase 07 UAT complete (5/5 PASS), VERIFICATION.md written
 
 ## v1.1 Phase Summary
 
@@ -37,7 +36,7 @@ Last activity: 2026-04-29 -- Phase 07 execution started
 |-------|------|--------------|-----------|--------|
 | 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql`, `0018_drop_legacy_aggregates.sql` (in-flight patch) | **Complete (PASS-WITH-NOTES)** |
 | 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0019_process_due_recurring.sql`, `0020_withdraw_from_goal.sql`, `0021_goal_investments_total_check.sql` | Not started |
-| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0022_user_seed_markers.sql` + seed_rencana, `0023_goals_with_progress.sql`, `0024_add_money_to_goal_v2.sql` | Not started |
+| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0022_user_seed_markers.sql` + seed_rencana, `0023_goals_with_progress.sql`, `0024_add_money_to_goal_v2.sql` | **Complete (PASS-WITH-NOTES)** |
 | 8 | Dev Hygiene | DEV-02..04 | (none) | Not started |
 
 > ⚠ **Migration numbering shifted by +1 starting Phase 6** — Phase 5 consumed migration slots 0017 (planned) + 0018 (unplanned in-flight patch). Phase 6's `0018_process_due_recurring.sql` etc. need to be renumbered to 0019/0020/0021. Confirm during /gsd-plan-phase 6.
@@ -78,13 +77,21 @@ Last activity: 2026-04-29 -- Phase 07 execution started
 - **Edge function runtime gate stronger than handler gate.** `verify_jwt = true` in config.toml causes Supabase runtime to reject pre-handler with body `{"code":"UNAUTHORIZED_NO_AUTH_HEADER"...}` instead of the handler's `{"error":"Unauthorized"}`. This is acceptable defense-in-depth; plan-stated body wording is informational only.
 - **REST/RPC HTTP testing > DevTools console for RLS UAT.** UAT-1/2/3 in Plan 05-04 originally specified DevTools console assertions (`window.__sb`); we used direct REST/RPC calls with the non-admin JWT instead. Reproducible from CI/shell, captures verbatim JSON evidence, and matches the actual threat model (any token-holder can hit PostgREST directly).
 
+### Decisions (v1.1 execution-time, post-Phase-7)
+
+- **Phase 7 PASS-WITH-NOTES.** All 8 plans complete, all 5 ROADMAP success criteria evidenced. Two notes: (1) D-14 raw NUMERIC formatting in withdraw_from_goal error message (cosmetic, acceptance criteria met); (2) UAT-2 Edge Function CORS blocks live date param verification (code fix in source verified).
+- **withdraw_from_goal RETURNS TABLE column ambiguity hotfix (0024).** Supabase plpgsql `RETURNS TABLE (current_amount NUMERIC, ...)` creates output variables in scope, making `SELECT current_amount FROM goals` ambiguous. Fix: qualify table columns with alias `g`. Applied as Studio hot-patch + commit `c1783d2`. **Lesson:** when writing plpgsql RETURNS TABLE, always qualify base-table column references with a table alias to avoid output-variable shadowing.
+- **Studio paste de-facto migration channel continues.** `db push` remains broken (history mismatch). Migrations 0022+0023+0024 applied via Studio SQL Editor paste. Migration list shows Local-only — accepted per prior STATE.md decision.
+- **seed_rencana creates 5 goals + 3 investments (not 5+5 as in pre-planning notes).** RPC inserts 5 goal rows + 3 investment rows. Confirmed via production UAT (Pengaturan shows "5 goals" post-re-seed). No drift from CONTEXT.md D-04.
+- **Edge Function fetch-prices CORS misconfiguration (pre-existing).** Function allows `kantongpintar.app` but app deploys to `kantongpintar.vercel.app`. Blocks live UAT-2 date verification. Deferred to v1.2.
+
 ### Pending Todos
 
 None.
 
 ### Blockers/Concerns
 
-None active. Phase 5 cleared all in-flight blockers.
+None active. Phase 7 cleared all in-flight items.
 
 ## Deferred Items (carried + new from Phase 5)
 
@@ -98,13 +105,17 @@ None active. Phase 5 cleared all in-flight blockers.
 | test | `mapSupabaseError` unit test for plain-object errors not added | open (not in v1.1) | LOW | 2026-04-25 | 04-UAT.md |
 | bug | net_worth_snapshots auto-insert fails with 42501 when View-As is active — frontend should skip the snapshot job in View-As mode | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md / uat-05-04-console-errors.txt |
 | test | SC #3 destructive variant (TRUNCATE allowed_emails + signup) — needs staging mirror to upgrade from PASS-WITH-NOTES (DB-side only) → clean PASS | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md |
-| infra | Migration history reconciliation — `supabase migration list --linked` shows 0014..0018 as Local-only because `db push` is broken in this project; revisit when staging mirror exists | open | LOW | 2026-04-28 | 05-VERIFICATION.md |
+| infra | Migration history reconciliation — `supabase migration list --linked` shows 0014..0024 as Local-only because `db push` is broken in this project; revisit when staging mirror exists | open | LOW | 2026-04-28 | 05-VERIFICATION.md |
 | code | 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) | candidate-for-Phase-8 | LOW | 2026-04-25 | 05-handoff |
+| cosmetic | D-14 error message raw NUMERIC formatting in withdraw_from_goal — shows `0.00` / `100000000.000...` instead of formatted `Rp 0` / `Rp 100.000.000`. Fix: `REPLACE(TO_CHAR(ROUND(v)::BIGINT,'FM999G999G999'),',','.')` in format() call. Requires Studio hot-patch + migration update. | LOW | 2026-04-29 | 07-VERIFICATION.md |
+| infra | Edge Function `fetch-prices` CORS misconfiguration — allows `kantongpintar.app` not `kantongpintar.vercel.app`. Blocks UAT-2 live date param verification. Pre-existing, unrelated to Phase 7. | LOW | 2026-04-29 | 07-08-UAT.md UAT-2 |
+| test | UAT-3 fresh-signup variant not executed (no second test email in allowed_emails). Admin-reset variant accepted. pgTAP structural proofs cover idempotency. | LOW | 2026-04-29 | 07-VERIFICATION.md |
 
 ## Session Continuity
 
-Last session: 2026-04-29T01:37:24.464Z
-Stopped at: Phase 7 context gathered
-Resume command: `/gsd-execute-phase 06-race-atomicity`
-Phase 6 artifacts present: 06-CONTEXT.md, 06-DISCUSSION-LOG.md, 06-RESEARCH.md, 06-PATTERNS.md, 06-VALIDATION.md, 06-01..05-PLAN.md (no SUMMARY files yet — execution not started).
-Phase 5 commits to push next: this session's 05-04 artifacts + 0018 migration + STATE/ROADMAP updates (single commit). Wave 1 commits already on master via earlier push (`4692dc4` → `4cf5129` → `d7a0521`).
+Last session: 2026-04-29
+Stopped at: Phase 7 complete (PASS-WITH-NOTES) — 07-VERIFICATION.md written, UAT 5/5 done, STATE.md + REQUIREMENTS.md updated
+Resume command: `/gsd-plan-phase 8`
+Phase 7 commits on master: c1783d2 (hotfix withdraw_from_goal) + Wave 1-4 commits (07-01..07-07). Push to origin pending.
+Phase 8 artifacts: none yet — run `/gsd-plan-phase 8` to create 08-CONTEXT.md, 08-PLAN.md, etc.
+Phase 8 scope: DEV-02 (Recharts type cast), DEV-03 (seed.sql config), DEV-04 (performance note doc) — no DB migrations.

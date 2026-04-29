@@ -26,14 +26,14 @@
 
 ### UI ↔ DB Consistency (CONS)
 
-- [ ] **CONS-01**: Card Goals dan dialog "Tarik Dana" konsisten dengan source-of-truth — VIEW `goals_with_progress` (`security_invoker = true`) jadi sumber tunggal `total_amount`, `add_money_to_goal` v2 mark `completed` berbasis `total_amount` (cash + investasi), pesan error withdraw eksplisit memisahkan saldo kas vs investasi. _Source: REVIEW C-02._
-- [ ] **CONS-02**: Semua tanggal yang ditulis ke DB pakai WIB-aware `todayISO()` — `useRefreshPrices` di `src/queries/investments.ts:111` di-fix; ESLint rule `no-restricted-syntax` melarang `new Date().toISOString().slice(0,10)` di seluruh codebase. _Source: REVIEW H-01._
-- [ ] **CONS-03**: Seed Rencana berjalan atomic — single SQL function `seed_rencana(p_uid)` dengan implicit transaction; flag `is_seeded BOOLEAN` di tabel `goals` (atau seed marker table) jadi sumber idempotency, bukan localStorage. _Source: REVIEW M-01._
+- [x] **CONS-01**: Card Goals dan dialog "Tarik Dana" konsisten dengan source-of-truth — VIEW `goals_with_progress` (`security_invoker = true`) jadi sumber tunggal `total_amount`, `add_money_to_goal` v2 mark `completed` berbasis `total_amount` (cash + investasi), pesan error withdraw eksplisit memisahkan saldo kas vs investasi. _Source: REVIEW C-02._ **Shipped Phase 7 (07-01, 07-03, 07-05).**
+- [x] **CONS-02**: Semua tanggal yang ditulis ke DB pakai WIB-aware `todayISO()` — `useRefreshPrices` di `src/queries/investments.ts:111` di-fix; ESLint rule `no-restricted-syntax` melarang `new Date().toISOString().slice(0,10)` di seluruh codebase. _Source: REVIEW H-01._ **Shipped Phase 7 (07-06).**
+- [x] **CONS-03**: Seed Rencana berjalan atomic — single SQL function `seed_rencana(p_uid)` dengan implicit transaction; `user_seed_markers` tabel jadi sumber idempotency, bukan localStorage. _Source: REVIEW M-01._ **Shipped Phase 7 (07-02, 07-05).**
 
 ### User-Facing Bug Fixes (UX)
 
-- [ ] **UX-01**: Tombol "Reset Seed Rencana" di SettingsTab benar-benar memungkinkan user re-seed — `localStorage.removeItem(\`rencana_seeded_${user.id}\`)` (key per-user, bukan key lama global). _Source: REVIEW H-02._
-- [ ] **UX-02**: Saat admin sedang "View As" user lain, tombol "Impor CSV" di TransactionsTab + InvestmentsTab disabled (UI Layer 1); CSV insert jalur server-side menerima `p_user_id` eksplisit dan validasi `is_admin()`. _Source: REVIEW M-03._
+- [x] **UX-01**: Tombol "Reset Seed Rencana" di SettingsTab benar-benar memungkinkan user re-seed — `localStorage.removeItem(\`rencana_seeded_${user.id}\`)` (key per-user, bukan key lama global). _Source: REVIEW H-02._ **Shipped Phase 7 (07-05).**
+- [x] **UX-02**: Saat admin sedang "View As" user lain, tombol "Impor CSV" di TransactionsTab + InvestmentsTab disabled (UI Layer 1 + Layer 1.5). _Source: REVIEW M-03._ **Shipped Phase 7 (07-07). Note: Layer 2 server-side RPC validation deferred to v1.2.**
 
 ### Developer Experience & Hygiene (DEV)
 
@@ -94,11 +94,11 @@ Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 | RACE-01 | Phase 6 — Race & Atomicity | TBD | pending |
 | RACE-02 | Phase 6 — Race & Atomicity | TBD | pending |
 | RACE-03 | Phase 6 — Race & Atomicity | TBD | pending |
-| CONS-01 | Phase 7 — UI/Data Consistency | TBD | pending |
-| CONS-02 | Phase 7 — UI/Data Consistency | TBD | pending |
-| CONS-03 | Phase 7 — UI/Data Consistency | TBD | pending |
-| UX-01 | Phase 7 — UI/Data Consistency | TBD | pending |
-| UX-02 | Phase 7 — UI/Data Consistency | TBD | pending |
+| CONS-01 | Phase 7 — UI/Data Consistency | 07-01, 07-03, 07-05 | shipped |
+| CONS-02 | Phase 7 — UI/Data Consistency | 07-06 | shipped |
+| CONS-03 | Phase 7 — UI/Data Consistency | 07-02, 07-05 | shipped |
+| UX-01 | Phase 7 — UI/Data Consistency | 07-05 | shipped |
+| UX-02 | Phase 7 — UI/Data Consistency | 07-07 | shipped |
 | DEV-01 | Phase 6 — Race & Atomicity | TBD | pending |
 | DEV-02 | Phase 8 — Dev Hygiene | TBD | pending |
 | DEV-03 | Phase 8 — Dev Hygiene | TBD | pending |
