@@ -25,6 +25,18 @@ export function mapSupabaseError(error: unknown): string {
     return 'Sesi habis. Silakan login ulang.'
   }
 
+  // SQLSTATE 23514 = check_violation — RACE-02 trigger raise (Total alokasi > 100%).
+  // User-facing summary; full RAISE detail tidak diforward untuk toast brevity.
+  if (code === '23514') {
+    return 'Total alokasi investasi melebihi 100%'
+  }
+  // SQLSTATE P0001 = raise_exception — RPC user-friendly Bahasa Indonesia message
+  // (e.g. RACE-03 'Saldo kas tidak cukup (tersedia Rp X)').
+  // Forward msg apa adanya — RPC sudah bertanggung jawab atas wording.
+  if (code === 'P0001') {
+    return msg
+  }
+
   if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
     return 'Tidak ada koneksi internet. Periksa jaringan Anda.'
   }
