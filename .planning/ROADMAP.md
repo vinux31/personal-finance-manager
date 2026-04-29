@@ -79,9 +79,9 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   - [x] 07-02-PLAN.md — Migration 0022_user_seed_markers.sql (table + seed_rencana + reset_rencana_marker RPCs + backfill) + pgTAP test (CONS-03, Wave 1)
   - [x] 07-03-PLAN.md — Migration 0024_add_money_to_goal_v2.sql (DROP v1 + CREATE v2 + status backfill + withdraw MESSAGE patch) + pgTAP test (CONS-01 write-side, Wave 2)
   - [x] 07-04-PLAN.md — [BLOCKING] Apply migrations 0022-0024 + tests via Supabase Studio SQL Editor (Wave 3, autonomous: false)
-  - [ ] 07-05-PLAN.md — Frontend wiring: useRencanaInit RPC + SettingsTab reset handler + AddMoneyDialog withdraw helper + GoalsTab VIEW (CONS-01, CONS-03, UX-01, Wave 4)
-  - [ ] 07-06-PLAN.md — ESLint no-restricted-syntax rule + fix investments.ts:111 todayISO() callsite (CONS-02, Wave 4)
-  - [ ] 07-07-PLAN.md — View-As CSV gate (TransactionsTab + InvestmentsTab disabled + handler guard) (UX-02, Wave 4)
+  - [x] 07-05-PLAN.md — Frontend wiring: useRencanaInit RPC + SettingsTab reset handler + AddMoneyDialog withdraw helper + GoalsTab VIEW (CONS-01, CONS-03, UX-01, Wave 4)
+  - [x] 07-06-PLAN.md — ESLint no-restricted-syntax rule + fix investments.ts:111 todayISO() callsite (CONS-02, Wave 4)
+  - [x] 07-07-PLAN.md — View-As CSV gate (TransactionsTab + InvestmentsTab disabled + handler guard) (UX-02, Wave 4)
   - [ ] 07-08-PLAN.md — [BLOCKING] Browser-MCP UAT (5 scenarios) + 07-VERIFICATION.md + STATE.md update (All, Wave 5, autonomous: false)
 
 ### Phase 8: Dev Hygiene
