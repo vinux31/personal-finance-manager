@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
+  type PieLabelRenderProps,
 } from 'recharts'
 import { Download } from 'lucide-react'
 import { Label } from '@/components/ui/label'
@@ -196,7 +197,7 @@ export default function ReportsTab() {
           {expenseByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={expenseByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { category?: string }).category ?? '')}>
+                <Pie data={expenseByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e: PieLabelRenderProps) => String(e.name ?? '')}>
                   {expenseByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
@@ -209,7 +210,7 @@ export default function ReportsTab() {
           {incomeByCat.length === 0 ? <EmptyChart /> : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={incomeByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e) => String((e as { category?: string }).category ?? '')}>
+                <Pie data={incomeByCat} dataKey="total" nameKey="category" outerRadius={100} label={(e: PieLabelRenderProps) => String(e.name ?? '')}>
                   {incomeByCat.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v) => formatRupiah(Number(v))} />
