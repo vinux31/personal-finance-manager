@@ -102,8 +102,8 @@ None active. Phase 5 cleared all in-flight blockers.
 
 ## Session Continuity
 
-Last session: 2026-04-28T09:49:06.554Z
-Stopped at: Phase 6 context gathered
-Resume command: `/gsd-discuss-phase 6` (next), or `/gsd-progress` to confirm route
-Next file expected: `.planning/phases/06-race-and-atomicity/06-CONTEXT.md` (after discuss-phase)
+Last session: 2026-04-29 — session resumed via /gsd-resume-work
+Stopped at: Phase 6 planning complete (5 plans across 2 waves), ready to execute
+Resume command: `/gsd-execute-phase 06-race-atomicity`
+Phase 6 artifacts present: 06-CONTEXT.md, 06-DISCUSSION-LOG.md, 06-RESEARCH.md, 06-PATTERNS.md, 06-VALIDATION.md, 06-01..05-PLAN.md (no SUMMARY files yet — execution not started).
 Phase 5 commits to push next: this session's 05-04 artifacts + 0018 migration + STATE/ROADMAP updates (single commit). Wave 1 commits already on master via earlier push (`4692dc4` → `4cf5129` → `d7a0521`).
