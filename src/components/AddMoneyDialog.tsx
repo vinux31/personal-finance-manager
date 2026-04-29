@@ -47,7 +47,7 @@ export default function AddMoneyDialog({ open, onOpenChange, goal }: Props) {
         const result = await addMoney.mutateAsync({ id: goal.id, amount })
         if (result?.status === 'completed') toast.success('Selamat! Goal tercapai 🎉')
       } else {
-        await withdraw.mutateAsync({ id: goal.id, amount, goal })
+        await withdraw.mutateAsync({ id: goal.id, amount })
       }
       onOpenChange(false)
     } catch {
