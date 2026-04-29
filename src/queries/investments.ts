@@ -19,6 +19,7 @@ import {
   type PriceHistoryEntry,
 } from '@/db/investments'
 import { mapSupabaseError } from '@/lib/errors'
+import { todayISO } from '@/lib/format'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { costBasis, currentValue, gainLoss, gainLossPercent }
@@ -108,7 +109,7 @@ export function useRefreshPrices() {
   return useMutation({
     mutationFn: async (investments: Investment[]) => {
       const { results, errors } = await fetchPrices(investments)
-      const today = new Date().toISOString().slice(0, 10)
+      const today = todayISO()
       await Promise.all(results.map(({ id, price }) => updatePrice(id, price, today)))
       return { updated: results.length, errors }
     },
