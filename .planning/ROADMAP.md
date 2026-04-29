@@ -58,10 +58,10 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   4. TS function `nextDueDate` di `src/db/recurringTransactions.ts` tidak lagi dipanggil dari `useProcessRecurring` (hot path). Snapshot test atau parity test memastikan output TS `nextDueDate` (jika masih ada untuk preview) konsisten dengan PG `next_due_date_sql` untuk minimal 8 case (termasuk 31 Jan → 28/29 Feb, leap year).
   5. Income templates (Gaji) tetap diproses oleh RPC `process_due_recurring` baru — manual UAT login → buka Transaksi tab → assert Gaji untuk bulan ini muncul satu kali.
 **Plans**: 5 plans
-  - [ ] 06-01-PLAN.md — RACE-01 + DEV-01: process_due_recurring RPC + useProcessRecurring rewrite + delete TS nextDueDate + pgTAP test
-  - [ ] 06-02-PLAN.md — RACE-02: goal_investments BEFORE INSERT/UPDATE trigger SUM check + index + pgTAP test
-  - [ ] 06-03-PLAN.md — RACE-03: withdraw_from_goal RPC + TS callsite refactor (db/queries/AddMoneyDialog) + pgTAP test
-  - [ ] 06-04-PLAN.md — Cross-cutting: errors.ts SQLSTATE 23514 + P0001 branches
+  - [x] 06-01-PLAN.md — RACE-01 + DEV-01: process_due_recurring RPC + useProcessRecurring rewrite + delete TS nextDueDate + pgTAP test
+  - [x] 06-02-PLAN.md — RACE-02: goal_investments BEFORE INSERT/UPDATE trigger SUM check + index + pgTAP test
+  - [x] 06-03-PLAN.md — RACE-03: withdraw_from_goal RPC + TS callsite refactor (db/queries/AddMoneyDialog) + pgTAP test
+  - [x] 06-04-PLAN.md — Cross-cutting: errors.ts SQLSTATE 23514 + P0001 branches
   - [ ] 06-05-PLAN.md — Wave 2 deploy + UAT gate (Studio paste 0019/0020/0021 with D-16 pre-deploy check, pgTAP suite, 5 Browser-MCP UAT, write 06-VERIFICATION.md)
 
 ### Phase 7: UI/Data Consistency
