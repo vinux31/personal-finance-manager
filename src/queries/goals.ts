@@ -79,8 +79,8 @@ export function useAddMoneyToGoal() {
 export function useWithdrawFromGoal() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, amount, goal }: { id: number; amount: number; goal: Goal }) =>
-      withdrawFromGoal(id, amount, goal),
+    mutationFn: ({ id, amount }: { id: number; amount: number }) =>
+      withdrawFromGoal(id, amount),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['goals'] })
       toast.success('Dana berhasil ditarik')
