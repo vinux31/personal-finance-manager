@@ -92,7 +92,9 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   1. `ReportsTab.tsx` pie chart label rendering pakai built-in `nameKey="category"` atau `PieLabelRenderProps` typed handler — tidak ada `as { category?: string }` cast. `tsc --noEmit` pass; visual regression: pie label tetap menampilkan nama kategori.
   2. `supabase db reset` lokal jalan tanpa warning "seed.sql not found" — file `supabase/seed.sql` exists (kosong dengan comment, atau dengan dev seed valid) ATAU baris `sql_paths = ["./seed.sql"]` di `supabase/config.toml:65` dihapus.
   3. PROJECT.md "Context" section punya entry baru yang dokumentasi: "Dashboard `recentTx` query pakai `useTransactions({ limit: 5 })` + index `transactions_date_idx` — sufficient untuk dataset < 10k rows; future trigger untuk migrasi materialized view jika dataset growth melebihi threshold."
-**Plans**: TBD
+**Plans**: 2 plans
+  - [ ] 08-01-PLAN.md — DEV-02: Recharts PieLabelRenderProps type fix di ReportsTab.tsx (Wave 1)
+  - [ ] 08-02-PLAN.md — DEV-03 + DEV-04: buat supabase/seed.sql + tambah Performance bullet ke PROJECT.md (Wave 1)
 
 ## Progress
 
@@ -108,4 +110,4 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 | 5. Security Hardening | v1.1 | 0/4 | Not started | - |
 | 6. Race & Atomicity | v1.1 | 0/5 | Not started | - |
 | 7. UI/Data Consistency | v1.1 | 0/8 | Not started | - |
-| 8. Dev Hygiene | v1.1 | 0/TBD | Not started | - |
+| 8. Dev Hygiene | v1.1 | 0/2 | Not started | - |
