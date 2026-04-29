@@ -30,6 +30,7 @@ import { toast } from 'sonner'
 import { downloadCsv, pickCsvFile } from '@/lib/csv'
 import { EmptyState } from '@/components/ui/empty-state'
 import { exportTransactionsCsv, importTransactionsCsv } from '@/db/csvTransactions'
+import { useViewAs } from '@/auth/useViewAs'
 
 const ALL = '__all__'
 
@@ -41,6 +42,8 @@ export default function TransactionsTab() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmId, setConfirmId] = useState<number | null>(null)
   const qc = useQueryClient()
+  const { viewingAs } = useViewAs()
+  const isViewAs = viewingAs !== null
 
   useProcessRecurring()
 
@@ -125,20 +128,32 @@ export default function TransactionsTab() {
             }}>
               <Download className="h-3 w-3" />Ekspor
             </Button>
-            <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={async () => {
-              const text = await pickCsvFile()
-              if (!text) return
-              try {
-                const r = await importTransactionsCsv(text)
-                if (r.inserted > 0) {
-                  await qc.invalidateQueries({ queryKey: ['transactions'] })
-                  toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]"
+              disabled={isViewAs}
+              title={isViewAs ? 'Tidak tersedia saat View-As' : ''}
+              onClick={async () => {
+                // D-24: handler-level early-return guard (defense in depth — keyboard tab+Enter, dev console)
+                if (viewingAs) {
+                  toast.error('Impor CSV tidak tersedia saat View-As')
+                  return
                 }
-                if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
-              } catch (err) {
-                toast.error(String(err instanceof Error ? err.message : err))
-              }
-            }}>
+                const text = await pickCsvFile()
+                if (!text) return
+                try {
+                  const r = await importTransactionsCsv(text)
+                  if (r.inserted > 0) {
+                    await qc.invalidateQueries({ queryKey: ['transactions'] })
+                    toast.success(`${r.inserted} transaksi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+                  }
+                  if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
+                } catch (err) {
+                  toast.error(String(err instanceof Error ? err.message : err))
+                }
+              }}
+            >
               <Upload className="h-3 w-3" />Impor
             </Button>
             <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={() => setRecurringOpen(true)}>
