@@ -74,7 +74,15 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   3. User baru login pertama kali → 5 goals + 5 investments seeded atomically; reload page 5x → tidak ada duplikat row, RPC `seed_rencana` returns `false` setelah call pertama. Tabel `user_seed_markers` punya 1 row dengan `rencana_seeded_at` filled. Mid-execution failure (simulated via raise) → seluruh transaction rollback, tidak ada partial seed.
   4. User klik "Reset Seed Rencana" di SettingsTab → `localStorage` key `rencana_seeded_${user.id}` dihapus (bukan key lama global `rencana_seeded`); reload Dashboard → `useRencanaInit` re-trigger `seed_rencana` RPC.
   5. Admin login → switch View-As ke user X → tab Transaksi + tab Investasi: tombol "Impor CSV" disabled dengan tooltip "Tidak tersedia saat View-As"; admin keluar dari View-As → tombol re-enable.
-**Plans**: TBD
+**Plans**: 8 plans
+  - [ ] 07-01-PLAN.md — Migration 0023_goals_with_progress.sql (VIEW + GRANT) + pgTAP test (CONS-01 read-side, Wave 1)
+  - [ ] 07-02-PLAN.md — Migration 0022_user_seed_markers.sql (table + seed_rencana + reset_rencana_marker RPCs + backfill) + pgTAP test (CONS-03, Wave 1)
+  - [ ] 07-03-PLAN.md — Migration 0024_add_money_to_goal_v2.sql (DROP v1 + CREATE v2 + status backfill + withdraw MESSAGE patch) + pgTAP test (CONS-01 write-side, Wave 2)
+  - [ ] 07-04-PLAN.md — [BLOCKING] Apply migrations 0022-0024 + tests via Supabase Studio SQL Editor (Wave 3, autonomous: false)
+  - [ ] 07-05-PLAN.md — Frontend wiring: useRencanaInit RPC + SettingsTab reset handler + AddMoneyDialog withdraw helper + GoalsTab VIEW (CONS-01, CONS-03, UX-01, Wave 4)
+  - [ ] 07-06-PLAN.md — ESLint no-restricted-syntax rule + fix investments.ts:111 todayISO() callsite (CONS-02, Wave 4)
+  - [ ] 07-07-PLAN.md — View-As CSV gate (TransactionsTab + InvestmentsTab disabled + handler guard) (UX-02, Wave 4)
+  - [ ] 07-08-PLAN.md — [BLOCKING] Browser-MCP UAT (5 scenarios) + 07-VERIFICATION.md + STATE.md update (All, Wave 5, autonomous: false)
 
 ### Phase 8: Dev Hygiene
 **Goal**: Pure code/config cleanup tanpa DB migration. Recharts label survive major upgrade, seed.sql ada/dihapus konsisten, performance note `recentTx` dashboard didokumentasikan untuk future-trigger materialized view migration.
@@ -99,5 +107,5 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 | 4. Mark-as-Paid | v1.0 | 6/6 | ✅ Complete | 2026-04-25 |
 | 5. Security Hardening | v1.1 | 0/4 | Not started | - |
 | 6. Race & Atomicity | v1.1 | 0/5 | Not started | - |
-| 7. UI/Data Consistency | v1.1 | 0/TBD | Not started | - |
+| 7. UI/Data Consistency | v1.1 | 0/8 | Not started | - |
 | 8. Dev Hygiene | v1.1 | 0/TBD | Not started | - |
