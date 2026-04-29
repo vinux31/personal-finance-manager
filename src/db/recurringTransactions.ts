@@ -25,28 +25,6 @@ export interface RecurringTemplateInput {
   is_active: boolean
 }
 
-export function nextDueDate(current: string, frequency: Frequency): string {
-  const [y, m, d] = current.split('-').map(Number)
-  const date = new Date(y, m - 1, d)
-  switch (frequency) {
-    case 'daily': date.setDate(date.getDate() + 1); break
-    case 'weekly': date.setDate(date.getDate() + 7); break
-    case 'monthly': {
-      const targetMonth = date.getMonth() + 1
-      date.setDate(1)
-      date.setMonth(targetMonth)
-      const lastDay = new Date(date.getFullYear(), targetMonth + 1, 0).getDate()
-      date.setDate(Math.min(d, lastDay))
-      break
-    }
-    case 'yearly': date.setFullYear(date.getFullYear() + 1); break
-  }
-  const ny = date.getFullYear()
-  const nm = String(date.getMonth() + 1).padStart(2, '0')
-  const nd = String(date.getDate()).padStart(2, '0')
-  return `${ny}-${nm}-${nd}`
-}
-
 export async function listRecurringTemplates(uid?: string): Promise<RecurringTemplate[]> {
   let query = supabase
     .from('recurring_templates')
