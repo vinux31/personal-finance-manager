@@ -19,5 +19,11 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      'no-restricted-syntax': ['error', {
+        selector: "CallExpression[callee.object.callee.object.callee.name='Date'][callee.property.name='slice']",
+        message: 'Pakai todayISO() dari @/lib/format — .toISOString().slice(0,10) returns UTC date, bukan WIB',
+      }],
+    },
   },
 ])
