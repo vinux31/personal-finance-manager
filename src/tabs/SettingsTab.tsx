@@ -17,6 +17,7 @@ import { listProfiles } from '@/db/profiles'
 import { RENCANA_GOAL_NAMES, RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
 import { formatRupiah } from '@/lib/format'
 import { mapSupabaseError } from '@/lib/errors'
+import { supabase } from '@/lib/supabase'
 import { Eye, HelpCircle, LogOut, Palette, Target, User, Users } from 'lucide-react'
 import TentangDialog from '@/components/TentangDialog'
 import PanduanWelcomeCard from '@/components/PanduanWelcomeCard'
@@ -115,12 +116,23 @@ export default function SettingsTab() {
         ...goalsToDelete.map((g) => deleteGoal(g.id)),
         ...invsToDelete.map((i) => deleteInvestment(i.id)),
       ])
+
+      // D-07.3: atomic DB marker reset via RPC (strict self-only — no admin override)
+      const { error: rpcErr } = await supabase.rpc('reset_rencana_marker')
+      if (rpcErr) throw rpcErr
+
+      // D-07.4 (fix UX-01): per-user localStorage key
+      if (user?.id) {
+        localStorage.removeItem(`rencana_seeded_${user.id}`)
+      }
+      // D-07.5: cleanup legacy global key (one-shot inline migration)
       localStorage.removeItem('rencana_seeded')
+
       qc.invalidateQueries({ queryKey: ['goals'] })
       qc.invalidateQueries({ queryKey: ['investments'] })
       toast.success('Seed direset. Buka Dashboard untuk inisialisasi ulang.')
-    } catch {
-      toast.error('Gagal mereset seed. Coba lagi.')
+    } catch (e) {
+      toast.error(mapSupabaseError(e))
     } finally {
       setResetting(false)
     }

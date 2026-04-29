@@ -113,17 +113,3 @@ export async function withdrawFromGoal(
   return data[0] as { current_amount: number; status: GoalStatus }
 }
 
-const RENCANA_GOALS: GoalInput[] = [
-  { name: RENCANA_GOAL_NAMES[0], target_amount: 100_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
-  { name: RENCANA_GOAL_NAMES[1], target_amount: 118_000_000, current_amount: 0, target_date: '2027-01-01', status: 'active' },
-  { name: RENCANA_GOAL_NAMES[2], target_amount: 10_000_000,  current_amount: 0, target_date: '2027-01-01', status: 'active' },
-  { name: RENCANA_GOAL_NAMES[3], target_amount: 24_000_000,  current_amount: 0, target_date: '2026-12-01', status: 'active' },
-  { name: RENCANA_GOAL_NAMES[4], target_amount: 5_000_000,   current_amount: 0, target_date: '2027-01-01', status: 'active' },
-]
-
-export async function seedRencanaGoals(): Promise<void> {
-  const existing = await listGoals()
-  const existingNames = new Set(existing.map((g) => g.name))
-  const toInsert = RENCANA_GOALS.filter((g) => !existingNames.has(g.name))
-  for (const g of toInsert) await createGoal(g)
-}

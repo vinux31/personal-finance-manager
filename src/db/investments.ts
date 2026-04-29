@@ -180,12 +180,6 @@ export function gainLossPercent(inv: Investment): number {
   return (gainLoss(inv) / cb) * 100
 }
 
-const RENCANA_INVESTMENTS: InvestmentInput[] = [
-  { asset_type: 'Reksadana', asset_name: RENCANA_INVESTMENT_NAMES[0], quantity: 1,      buy_price: 100_000_000, current_price: 100_000_000, buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-  { asset_type: 'Emas',      asset_name: RENCANA_INVESTMENT_NAMES[1], quantity: 5.5278, buy_price: 2_683_000,   current_price: 2_683_000,   buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-  { asset_type: 'Saham',     asset_name: RENCANA_INVESTMENT_NAMES[2], quantity: 1200,   buy_price: 5107.65,     current_price: 4620,        buy_date: '2026-04-01', note: 'Seeded dari rencana-keuangan-v2.html' },
-]
-
 export async function fetchPrices(investments: Pick<Investment, 'id' | 'asset_type' | 'asset_name'>[]): Promise<FetchPriceResult> {
   const toFetch = investments.filter((i) => i.asset_type === 'Saham' || i.asset_type === 'Emas')
   if (toFetch.length === 0) return { results: [], errors: [] }
@@ -196,11 +190,4 @@ export async function fetchPrices(investments: Pick<Investment, 'id' | 'asset_ty
 
   if (error) throw new Error(`Edge Function error: ${error.message}`)
   return data as FetchPriceResult
-}
-
-export async function seedRencanaInvestments(): Promise<void> {
-  const existing = await listInvestments()
-  const existingNames = new Set(existing.map((i) => i.asset_name))
-  const toInsert = RENCANA_INVESTMENTS.filter((i) => !existingNames.has(i.asset_name))
-  for (const inv of toInsert) await createInvestment(inv)
 }
