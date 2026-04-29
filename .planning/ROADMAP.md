@@ -62,7 +62,7 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   - [x] 06-02-PLAN.md — RACE-02: goal_investments BEFORE INSERT/UPDATE trigger SUM check + index + pgTAP test
   - [x] 06-03-PLAN.md — RACE-03: withdraw_from_goal RPC + TS callsite refactor (db/queries/AddMoneyDialog) + pgTAP test
   - [x] 06-04-PLAN.md — Cross-cutting: errors.ts SQLSTATE 23514 + P0001 branches
-  - [ ] 06-05-PLAN.md — Wave 2 deploy + UAT gate (Studio paste 0019/0020/0021 with D-16 pre-deploy check, pgTAP suite, 5 Browser-MCP UAT, write 06-VERIFICATION.md)
+  - [x] 06-05-PLAN.md — Wave 2 deploy + UAT gate (Studio paste 0019/0020/0021 with D-16 pre-deploy check, pgTAP suite, 5 Browser-MCP UAT, write 06-VERIFICATION.md)
 
 ### Phase 7: UI/Data Consistency
 **Goal**: Bridge gap antara UI representation dan DB source-of-truth (Goals total cash+investasi), atomic seed via DB function, timezone discipline via ESLint, dan 2 UX bug user-facing (Reset Seed Rencana key, View-As CSV gate). Additive — VIEW + ESLint config + UI gates, low risk.
