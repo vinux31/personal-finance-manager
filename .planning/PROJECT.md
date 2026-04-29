@@ -13,6 +13,7 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 **Latest milestone:** v1.0 Financial Foundation — shipped 2026-04-25 (3 days execution)
 **Production:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-04-25
 **Audit:** PASS-WITH-NOTES (15/15 requirements satisfied; 8 deferred items tracked in `.planning/STATE.md`)
+**Phase 8 complete (2026-04-29):** Dev hygiene — unsafe Recharts type cast fixed, seed.sql placeholder added, performance doc note added (DEV-02, DEV-03, DEV-04)
 
 ## Current Milestone: v1.1 Hardening & Consistency
 
