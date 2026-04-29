@@ -75,8 +75,8 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
   4. User klik "Reset Seed Rencana" di SettingsTab → `localStorage` key `rencana_seeded_${user.id}` dihapus (bukan key lama global `rencana_seeded`); reload Dashboard → `useRencanaInit` re-trigger `seed_rencana` RPC.
   5. Admin login → switch View-As ke user X → tab Transaksi + tab Investasi: tombol "Impor CSV" disabled dengan tooltip "Tidak tersedia saat View-As"; admin keluar dari View-As → tombol re-enable.
 **Plans**: 8 plans
-  - [ ] 07-01-PLAN.md — Migration 0023_goals_with_progress.sql (VIEW + GRANT) + pgTAP test (CONS-01 read-side, Wave 1)
-  - [ ] 07-02-PLAN.md — Migration 0022_user_seed_markers.sql (table + seed_rencana + reset_rencana_marker RPCs + backfill) + pgTAP test (CONS-03, Wave 1)
+  - [x] 07-01-PLAN.md — Migration 0023_goals_with_progress.sql (VIEW + GRANT) + pgTAP test (CONS-01 read-side, Wave 1)
+  - [x] 07-02-PLAN.md — Migration 0022_user_seed_markers.sql (table + seed_rencana + reset_rencana_marker RPCs + backfill) + pgTAP test (CONS-03, Wave 1)
   - [ ] 07-03-PLAN.md — Migration 0024_add_money_to_goal_v2.sql (DROP v1 + CREATE v2 + status backfill + withdraw MESSAGE patch) + pgTAP test (CONS-01 write-side, Wave 2)
   - [ ] 07-04-PLAN.md — [BLOCKING] Apply migrations 0022-0024 + tests via Supabase Studio SQL Editor (Wave 3, autonomous: false)
   - [ ] 07-05-PLAN.md — Frontend wiring: useRencanaInit RPC + SettingsTab reset handler + AddMoneyDialog withdraw helper + GoalsTab VIEW (CONS-01, CONS-03, UX-01, Wave 4)
