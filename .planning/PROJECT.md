@@ -79,6 +79,7 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - **Existing recurring data:** Tabel `recurring_templates` sudah ada — dipakai untuk Bills via `upcoming_bills_unpaid` view. **Audit table `bill_payments` sekarang mencatat BOTH expense AND income runs (D-04, sejak Phase 6)** — semantic note di migration 0019 menjelaskan nama tabel kept untuk back-compat dengan `mark_bill_paid` + view; rename ke `recurring_runs` adalah v1.2 backlog kalau dataset/ambiguity ganggu.
 - **Multi-user:** Admin bisa view-as user lain — fitur baru harus support ini juga
 - **Migrations:** 0001 → 0021 (21 migrations applied to cloud — v1.1 Phase 5 added 0017+0018, v1.1 Phase 6 added 0019+0020+0021)
+- **Performance:** Dashboard `recentTx` query pakai `useTransactions({ limit: 5 })` + index `transactions_date_idx` — sufficient untuk dataset < 50k rows; pertimbangkan migrasi ke materialized view jika dataset user aktif melewati threshold tersebut.
 
 ## Constraints
 
