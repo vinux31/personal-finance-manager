@@ -74,11 +74,11 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - **Stack:** React 19 + TypeScript + Vite + Supabase (PostgreSQL + RLS + Auth) + TailwindCSS 4 + shadcn/ui + Recharts + sonner toast + react-query
 - **Auth:** Google OAuth only, signup dibatasi via `allowed_emails` table
 - **DB:** Supabase dengan Row Level Security — setiap data terikat `user_id`. View `upcoming_bills_unpaid` (security_invoker) sejak v1.0
-- **RPC:** `mark_bill_paid` (atomic SECURITY DEFINER, FOR UPDATE race-safe), `next_due_date_sql` helper — sejak v1.0
+- **RPC:** `mark_bill_paid`, `process_due_recurring` (batch recurring → unified expense + income atomically; D-01), `withdraw_from_goal` (atomic withdraw, FOR UPDATE serialization, P0001 insufficient saldo) — semua SECURITY DEFINER FOR UPDATE race-safe. Helper `next_due_date_sql`. Trigger `goal_investments_total_check` BEFORE INSERT/UPDATE on `goal_investments` (RACE-02 cap enforcement). Sejak v1.1 Phase 6.
 - **Deployment:** Vercel auto-deploy dari `master` (build time ~15-30s)
-- **Existing recurring data:** Tabel `recurring_templates` sudah ada — dipakai untuk Bills via `upcoming_bills_unpaid` view
+- **Existing recurring data:** Tabel `recurring_templates` sudah ada — dipakai untuk Bills via `upcoming_bills_unpaid` view. **Audit table `bill_payments` sekarang mencatat BOTH expense AND income runs (D-04, sejak Phase 6)** — semantic note di migration 0019 menjelaskan nama tabel kept untuk back-compat dengan `mark_bill_paid` + view; rename ke `recurring_runs` adalah v1.2 backlog kalau dataset/ambiguity ganggu.
 - **Multi-user:** Admin bisa view-as user lain — fitur baru harus support ini juga
-- **Migrations:** 0001 → 0015 (15 migrations applied to cloud)
+- **Migrations:** 0001 → 0021 (21 migrations applied to cloud — v1.1 Phase 5 added 0017+0018, v1.1 Phase 6 added 0019+0020+0021)
 
 ## Constraints
 
@@ -104,6 +104,11 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 | Optimistic mutation + snapshot rollback (first di project) | UX instant; rollback aman jika RPC fail | ✓ Good — Test 4 UAT verified rollback works |
 | Production verify-before-close (Playwright + Supabase Cloud) | Local UAT bisa miss deploy gap (terbukti: prod ternyata di Phase 2 era saat verify-before-close dimulai) | ✓ Validated (catched 1 deploy gap, 1 toast bug) |
 | `mapSupabaseError` extract `.message` dari plain-object errors | Supabase RPC errors bukan Error instance, `String(error)` jatuh ke "[object Object]" | ✓ Shipped (v1.0 hot-fix commit a1f96eb) |
+| `bill_payments` table unified untuk expense + income (D-04, Phase 6) | Pattern parity dengan `mark_bill_paid` audit; menghindari rebuat tabel kedua untuk income runs; rename → `recurring_runs` ke v1.2 backlog | ✓ Shipped (v1.1 Phase 6 — migration 0019) |
+| `process_due_recurring` RPC batch (DATE, UUID, INT) — eliminasi client TS loop di `useProcessRecurring` | Race + IDOR mitigation: `FOR UPDATE` row lock per template + `IF EXISTS bill_payments` skip-on-duplicate. Drops TS `nextDueDate` from hot path (DEV-01). | ✓ Shipped (v1.1 Phase 6 — migration 0019 + hook rewrite) |
+| `goal_investments_total_check` trigger BEFORE INSERT/UPDATE FOR EACH ROW with `SUM ... FOR UPDATE` exclude-self | Race-safe cap enforcement at DB layer (RACE-02). SECURITY DEFINER for cross-row sum bypass RLS. Defense-in-depth pasangan client-side check di LinkInvestmentDialog. | ✓ Shipped (v1.1 Phase 6 — migration 0021) |
+| `withdraw_from_goal` RPC ganti optimistic lock client | Atomic withdraw, race-safe via `FOR UPDATE` row lock pada goals row. P0001 + Indonesian message dengan saldo eksplisit; status flip `completed` → `active` per D-11. | ✓ Shipped (v1.1 Phase 6 — migration 0020 + frontend refactor) |
+| Future signature changes Phase 6 functions WAJIB emit `DROP FUNCTION IF EXISTS sig` sebelum CREATE OR REPLACE | Phase 5 0017→0018 lesson: PG keys function identity on (name, arg_types). Tanpa explicit DROP, signature change → second overload, old version tetap callable via direct PostgREST → race + IDOR vector. | ✓ Documented (v1.1 Phase 6 VERIFICATION code-review checklist) |
 
 ## Evolution
 
