@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/supabase'
-import { RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
 import { todayISO } from '@/lib/format'
 
 export interface Investment {

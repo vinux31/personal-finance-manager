@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/supabase'
-import { RENCANA_GOAL_NAMES } from '@/lib/rencanaNames'
 
 export type GoalStatus = 'active' | 'completed' | 'paused'
 

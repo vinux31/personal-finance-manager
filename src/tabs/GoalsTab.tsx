@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useGoals, useDeleteGoal, type Goal, type GoalFilters, type GoalStatus } from '@/queries/goals'
+import { useGoalsWithProgress, useDeleteGoal, type GoalWithProgress, type Goal, type GoalFilters, type GoalStatus } from '@/queries/goals'
 import { useInvestments, currentValue } from '@/queries/investments'
 import { useGoalInvestments } from '@/queries/goalInvestments'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ import LinkInvestmentDialog from '@/components/LinkInvestmentDialog'
 export default function GoalsTab() {
   const [editing, setEditing] = useState<Goal | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [addMoneyFor, setAddMoneyFor] = useState<Goal | null>(null)
+  const [addMoneyFor, setAddMoneyFor] = useState<GoalWithProgress | null>(null)
   const [addMoneyOpen, setAddMoneyOpen] = useState(false)
   const [linkFor, setLinkFor] = useState<Goal | null>(null)
   const [linkOpen, setLinkOpen] = useState(false)
@@ -25,22 +25,20 @@ export default function GoalsTab() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmGoal, setConfirmGoal] = useState<Goal | null>(null)
 
-  const { data: goals = [], isLoading } = useGoals(filters)
+  const { data: goals = [], isLoading } = useGoalsWithProgress(filters)
   const { data: investments = [] } = useInvestments()
   const { data: allAllocs = [] } = useGoalInvestments()
   const deleteGoal = useDeleteGoal()
 
   const activeGoals = goals.filter((g) => g.status === 'active')
-  const totalCollected = activeGoals.reduce((sum, g) => {
-    const linked = allAllocs.filter((a) => a.goal_id === g.id)
-    const invested = linked.reduce((s, a) => {
-      const inv = investments.find((i) => i.id === a.investment_id)
-      return s + (inv ? currentValue(inv) * a.allocation_pct / 100 : 0)
-    }, 0)
-    return sum + g.current_amount + invested
-  }, 0)
+  const totalCollected = activeGoals.reduce((sum, g) => sum + g.total_amount, 0)
   const totalTarget = activeGoals.reduce((sum, g) => sum + g.target_amount, 0)
   const totalPct = totalTarget > 0 ? Math.min(100, (totalCollected / totalTarget) * 100) : 0
+
+  // investedValue from VIEW: total_amount - current_amount
+  const investedValue = addMoneyFor
+    ? Math.max(0, addMoneyFor.total_amount - addMoneyFor.current_amount)
+    : undefined
 
   function onDelete(g: Goal) {
     setConfirmGoal(g)
@@ -118,15 +116,14 @@ export default function GoalsTab() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {goals.map((g) => {
             const linkedAllocs = allAllocs.filter((a) => a.goal_id === g.id)
-            const investedAmount = linkedAllocs.reduce((sum, a) => {
-              const inv = investments.find((i) => i.id === a.investment_id)
-              return sum + (inv ? currentValue(inv) * a.allocation_pct / 100 : 0)
-            }, 0)
-            const totalCurrent = g.current_amount + investedAmount
+            // Use total_amount from VIEW for progress bar (CONS-01)
+            const totalCurrent = g.total_amount
             const pct = g.target_amount > 0
               ? Math.min(100, (totalCurrent / g.target_amount) * 100)
               : 0
             const remaining = Math.max(0, g.target_amount - totalCurrent)
+            // investedAmount for display breakdown (from VIEW)
+            const investedAmount = Math.max(0, g.total_amount - g.current_amount)
 
             return (
               <div key={g.id} className="rounded-xl border bg-card p-4" style={{ borderLeft: '4px solid var(--brand)' }}>
@@ -216,7 +213,12 @@ export default function GoalsTab() {
         onConfirm={() => { if (confirmGoal) deleteGoal.mutate(confirmGoal.id) }}
       />
       <GoalDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
-      <AddMoneyDialog open={addMoneyOpen} onOpenChange={setAddMoneyOpen} goal={addMoneyFor} />
+      <AddMoneyDialog
+        open={addMoneyOpen}
+        onOpenChange={setAddMoneyOpen}
+        goal={addMoneyFor}
+        investedValue={investedValue}
+      />
       <LinkInvestmentDialog open={linkOpen} onOpenChange={setLinkOpen} goal={linkFor} />
     </div>
   )

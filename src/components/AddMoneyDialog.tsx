@@ -19,9 +19,10 @@ interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   goal: Goal | null
+  investedValue?: number  // NEW (D-15): from goals_with_progress.total_amount - goals.current_amount
 }
 
-export default function AddMoneyDialog({ open, onOpenChange, goal }: Props) {
+export default function AddMoneyDialog({ open, onOpenChange, goal, investedValue }: Props) {
   const [amountStr, setAmountStr] = useState('')
   const [mode, setMode] = useState<'tambah' | 'tarik'>('tambah')
   const addMoney = useAddMoneyToGoal()
@@ -71,7 +72,11 @@ export default function AddMoneyDialog({ open, onOpenChange, goal }: Props) {
             <DialogDescription>
               {mode === 'tambah'
                 ? `Sisa yang perlu dikumpulkan: ${formatRupiah(remaining)}`
-                : `Saldo kas tersedia: ${formatRupiah(goal.current_amount)}`}
+                : `Saldo kas tersedia: ${formatRupiah(goal.current_amount)}${
+                    investedValue !== undefined && investedValue > 0
+                      ? ` (terpisah dari investasi ${formatRupiah(investedValue)})`
+                      : ''
+                  }`}
             </DialogDescription>
           </DialogHeader>
 

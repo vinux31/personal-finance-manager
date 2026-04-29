@@ -21,7 +21,7 @@ export function useRencanaInit() {
     const seedKey = `rencana_seeded_${user.id}`
     if (localStorage.getItem(seedKey)) return // fast-path cache (D-08)
 
-    supabase
+    void supabase
       .rpc('seed_rencana', { p_uid: null })
       .then(({ error }) => {
         if (error) {
@@ -32,6 +32,5 @@ export function useRencanaInit() {
         qc.invalidateQueries({ queryKey: ['goals'] })
         qc.invalidateQueries({ queryKey: ['investments'] })
       })
-      .catch((err) => console.error('seed_rencana threw:', err))
   }, [user?.id, qc])
 }
