@@ -16,6 +16,7 @@ import { toast } from 'sonner'
 import { downloadCsv, pickCsvFile } from '@/lib/csv'
 import { exportInvestmentsCsv, importInvestmentsCsv } from '@/db/csvInvestments'
 import { EmptyState } from '@/components/ui/empty-state'
+import { useViewAs } from '@/auth/useViewAs'
 
 export default function InvestmentsTab() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -26,6 +27,8 @@ export default function InvestmentsTab() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmInv, setConfirmInv] = useState<Investment | null>(null)
   const qc = useQueryClient()
+  const { viewingAs } = useViewAs()
+  const isViewAs = viewingAs !== null
 
   const { data: rows = [], isLoading } = useInvestments(filters)
   const { data: assetTypes = [] } = useAssetTypes()
@@ -61,21 +64,31 @@ export default function InvestmentsTab() {
         }}>
           <Download className="h-4 w-4" />Ekspor
         </Button>
-        <Button variant="outline" onClick={async () => {
-          const text = await pickCsvFile()
-          if (!text) return
-          try {
-            const r = await importInvestmentsCsv(text)
-            if (r.inserted > 0) {
-              await qc.invalidateQueries({ queryKey: ['investments'] })
-              await qc.invalidateQueries({ queryKey: ['asset-types'] })
-              toast.success(`${r.inserted} investasi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+        <Button
+          variant="outline"
+          disabled={isViewAs}
+          title={isViewAs ? 'Tidak tersedia saat View-As' : ''}
+          onClick={async () => {
+            // D-24: handler-level early-return guard (defense in depth)
+            if (viewingAs) {
+              toast.error('Impor CSV tidak tersedia saat View-As')
+              return
             }
-            if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
-          } catch (err) {
-            toast.error(String(err instanceof Error ? err.message : err))
-          }
-        }}>
+            const text = await pickCsvFile()
+            if (!text) return
+            try {
+              const r = await importInvestmentsCsv(text)
+              if (r.inserted > 0) {
+                await qc.invalidateQueries({ queryKey: ['investments'] })
+                await qc.invalidateQueries({ queryKey: ['asset-types'] })
+                toast.success(`${r.inserted} investasi diimpor${r.skipped ? `, ${r.skipped} dilewati` : ''}`)
+              }
+              if (r.errors.length > 0) toast.error(`${r.errors.length} baris bermasalah. Contoh: baris ${r.errors[0].line} — ${r.errors[0].message}`)
+            } catch (err) {
+              toast.error(String(err instanceof Error ? err.message : err))
+            }
+          }}
+        >
           <Upload className="h-4 w-4" />Impor
         </Button>
         <Button
