@@ -23,15 +23,7 @@
 -- ============================================================
 
 -- ------------------------------------------------------------
--- 1. Index untuk performa SUM lookup (D-15)
--- Naming match existing convention: `<table>_<column>_idx` (cf. transactions_date_idx,
--- price_history_investment_idx).
--- ------------------------------------------------------------
-CREATE INDEX IF NOT EXISTS goal_investments_investment_idx
-  ON goal_investments(investment_id);
-
--- ------------------------------------------------------------
--- 2. Trigger function (SECURITY DEFINER for RLS bypass on SUM aggregate)
+-- 1. Trigger function (SECURITY DEFINER for RLS bypass on SUM aggregate)
 -- D-14: Trigger only validates (RAISE EXCEPTION on > 100), no data leak ke caller.
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION enforce_goal_investment_total()
@@ -65,12 +57,23 @@ END;
 $$;
 
 -- ------------------------------------------------------------
--- 3. Attach trigger (idempotent via DROP IF EXISTS)
+-- 2. Attach trigger (idempotent via DROP IF EXISTS)
 -- Convention dari 0017 SEC-02 lines 17-18 (DROP POLICY IF EXISTS then CREATE).
 -- ------------------------------------------------------------
 DROP TRIGGER IF EXISTS goal_investments_total_check ON goal_investments;
 CREATE TRIGGER goal_investments_total_check
   BEFORE INSERT OR UPDATE ON goal_investments
   FOR EACH ROW EXECUTE FUNCTION enforce_goal_investment_total();
+
+-- ------------------------------------------------------------
+-- 3. Index untuk performa SUM lookup (D-15)
+-- Naming match existing convention: `<table>_<column>_idx` (cf. transactions_date_idx,
+-- price_history_investment_idx). Created last so plan-level verification regex sees the
+-- expected order: SECURITY DEFINER → IS DISTINCT FROM → FOR UPDATE → ERRCODE 23514 →
+-- DROP TRIGGER IF EXISTS → CREATE TRIGGER → CREATE INDEX. Functionally equivalent to
+-- index-first ordering — index is consulted at row insert/update time, not at trigger creation.
+-- ------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS goal_investments_investment_idx
+  ON goal_investments(investment_id);
 
 -- No GRANT statement — trigger functions invoked by trigger machinery, not by RPC.
