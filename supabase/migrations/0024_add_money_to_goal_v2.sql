@@ -142,10 +142,12 @@ BEGIN
     RAISE EXCEPTION 'Jumlah harus > 0';
   END IF;
 
-  SELECT id, current_amount, target_amount, status
+  -- FIX: qualify all columns with table alias to avoid RETURNS TABLE output
+  --      variable name clash with goals.current_amount / goals.status
+  SELECT g.id, g.current_amount, g.target_amount, g.status
   INTO v_goal
-  FROM goals
-  WHERE id = p_id AND user_id = v_uid
+  FROM goals g
+  WHERE g.id = p_id AND g.user_id = v_uid
   FOR UPDATE;
 
   IF NOT FOUND THEN
@@ -177,9 +179,9 @@ BEGIN
     ELSE v_goal.status
   END;
 
-  UPDATE goals
+  UPDATE goals g
   SET current_amount = v_new_cash, status = v_new_status
-  WHERE id = p_id AND user_id = v_uid;
+  WHERE g.id = p_id AND g.user_id = v_uid;
 
   RETURN QUERY SELECT v_new_cash, v_new_status;
 END;
