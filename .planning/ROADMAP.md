@@ -24,9 +24,9 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
 
 **Milestone Goal:** Tutup 16 finding security/race/data-integrity dari audit pasca-v1.0 (REVIEW-2026-04-27.md). Zero user-facing behavior change kecuali fix bug yang user pernah lapor (UX-01, CONS-01).
 
-- [ ] **Phase 5: Security Hardening** — Edge function auth + CORS, RLS info-disclosure, allowlist bootstrap, RPC IDOR (single migration 0017)
-- [ ] **Phase 6: Race & Atomicity** — Refactor recurring/withdraw ke RPC + cross-row allocation trigger (migrations 0018-0020)
-- [ ] **Phase 7: UI/Data Consistency** — Goals total view, atomic seed, timezone ESLint rule, UX-01 + UX-02 fixes (migrations 0021-0023)
+- [x] **Phase 5: Security Hardening** — Edge function auth + CORS, RLS info-disclosure, allowlist bootstrap, RPC IDOR (migrations 0017+0018) — shipped 2026-04-28 (PASS-WITH-NOTES)
+- [x] **Phase 6: Race & Atomicity** — Refactor recurring/withdraw ke RPC + cross-row allocation trigger (migrations 0019+0020+0021) — shipped 2026-04-29 (PASS-WITH-NOTES)
+- [ ] **Phase 7: UI/Data Consistency** — Goals total view, atomic seed, timezone ESLint rule, UX-01 + UX-02 fixes (migrations 0022-0024)
 - [ ] **Phase 8: Dev Hygiene** — Recharts type cleanup, seed.sql config, perf doc note (no DB changes)
 
 ## Phase Details
