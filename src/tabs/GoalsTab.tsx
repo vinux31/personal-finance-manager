@@ -86,12 +86,12 @@ export default function GoalsTab({ filters: filtersProp, onFiltersChange }: Goal
           <Input
             placeholder="Cari nama goal…"
             value={filters.search ?? ''}
-            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value || undefined }))}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value || undefined })}
             className="h-8 w-48"
           />
           <Select
             value={filters.status ?? '__all__'}
-            onValueChange={(v) => setFilters((f) => ({ ...f, status: v === '__all__' ? undefined : (v as GoalStatus) }))}
+            onValueChange={(v) => setFilters({ ...filters, status: v === '__all__' ? undefined : (v as GoalStatus) })}
           >
             <SelectTrigger className="h-8 w-36">
               <SelectValue placeholder="Semua status" />
