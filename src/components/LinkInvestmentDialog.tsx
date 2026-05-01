@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -109,6 +110,7 @@ export default function LinkInvestmentDialog({ open, onOpenChange, goal }: Props
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Hubungkan Investasi — {goal.name}</DialogTitle>
+          <DialogDescription>Hubungkan investasi ke goal ini dengan menentukan persentase alokasi.</DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
