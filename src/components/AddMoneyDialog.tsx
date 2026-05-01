@@ -59,7 +59,7 @@ export default function AddMoneyDialog({ open, onOpenChange, goal, investedValue
   if (!goal) return null
 
   const isPending = addMoney.isPending || withdraw.isPending
-  const remaining = Math.max(0, goal.target_amount - goal.current_amount)
+  const remaining = Math.max(0, goal.target_amount - goal.current_amount - (investedValue ?? 0))
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

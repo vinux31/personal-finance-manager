@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { type Session, type User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
 
 interface AuthContextValue {
   session: Session | null
@@ -32,7 +33,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        // Refresh token gagal saat startup (e.g. clock skew / "Refresh Token Not Found")
+        console.error('[AuthProvider] getSession error:', error)
+        toast.error('Sesi berakhir, silakan login kembali')
+        supabase.auth.signOut()
+        setSession(null)
+        setIsAdmin(false)
+        setLoading(false)
+        return
+      }
       setSession(data.session)
       if (data.session?.user) {
         upsertProfile(data.session.user.id, data.session.user.user_metadata)
@@ -40,7 +51,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // Token refresh failed → session becomes null (D-10, D-11)
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        console.error('[AuthProvider] Token refresh failed')
+        toast.error('Sesi berakhir, silakan login kembali')
+        supabase.auth.signOut()
+        setSession(null)
+        setIsAdmin(false)
+        return
+      }
       setSession(session)
       if (session?.user) {
         upsertProfile(session.user.id, session.user.user_metadata)

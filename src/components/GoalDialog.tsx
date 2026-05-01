@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -92,6 +93,7 @@ export default function GoalDialog({ open, onOpenChange, editing }: Props) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Goal' : 'Tambah Goal'}</DialogTitle>
+            <DialogDescription>Buat atau edit goal keuangan Anda.</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -107,8 +109,9 @@ export default function GoalDialog({ open, onOpenChange, editing }: Props) {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="g-current">Sudah Terkumpul (Rp)</Label>
+              <Label htmlFor="g-current">Dana Kas Terkumpul (Rp)</Label>
               <Input id="g-current" inputMode="numeric" placeholder="0" value={currentStr} onChange={(e) => setCurrentStr(e.target.value)} />
+              <p className="text-xs text-muted-foreground">Investasi terhubung dihitung otomatis dari portofolio</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

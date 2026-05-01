@@ -13,7 +13,7 @@ export default function FinansialTab() {
         <TabsContent value="kekayaan">
           <KekayaanTab />
         </TabsContent>
-        <TabsContent value="goals">
+        <TabsContent value="goals" forceMount>
           <GoalsTab />
         </TabsContent>
       </Tabs>
