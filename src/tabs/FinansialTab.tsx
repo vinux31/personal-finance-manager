@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import GoalsTab from '@/tabs/GoalsTab'
 import KekayaanTab from '@/tabs/KekayaanTab'
+import type { GoalFilters } from '@/queries/goals'
 
 export default function FinansialTab() {
+  const [goalFilters, setGoalFilters] = useState<GoalFilters>({})
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="kekayaan" className="w-full">
@@ -13,8 +17,8 @@ export default function FinansialTab() {
         <TabsContent value="kekayaan">
           <KekayaanTab />
         </TabsContent>
-        <TabsContent value="goals" forceMount>
-          <GoalsTab />
+        <TabsContent value="goals">
+          <GoalsTab filters={goalFilters} onFiltersChange={setGoalFilters} />
         </TabsContent>
       </Tabs>
     </div>
