@@ -120,7 +120,7 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 **Plans:** 4 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Create migration 0025_fix_goal_bugs.sql (Critical #1 trigger FOR UPDATE+aggregate fix + Critical #2 add_money_to_goal alias g.)
-- [ ] 09-02-PLAN.md — Frontend fixes 6 files (Bug #3 forceMount, #4 auth toast, #5 remaining calc, #6 label, #7 DialogDescription, #8 Ekspor PDF)
+- [x] 09-01-PLAN.md — Create migration 0025_fix_goal_bugs.sql (Critical #1 trigger FOR UPDATE+aggregate fix + Critical #2 add_money_to_goal alias g.)
+- [x] 09-02-PLAN.md — Frontend fixes 6 files (Bug #3 forceMount, #4 auth toast, #5 remaining calc, #6 label, #7 DialogDescription, #8 Ekspor PDF)
 - [ ] 09-03-PLAN.md — [BLOCKING] Studio paste 0025 to production Supabase
 - [ ] 09-04-PLAN.md — [BLOCKING] Verification + UAT + write 09-VERIFICATION.md + update STATE.md/ROADMAP.md
