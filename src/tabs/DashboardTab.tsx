@@ -11,6 +11,7 @@ import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
 import RencanaBar from '@/components/RencanaBar'
 import { useRencanaInit } from '@/lib/useRencanaInit'
 import UpcomingBillsPanel from '@/components/UpcomingBillsPanel'
+import { PayPeriodCard } from '@/components/PayPeriodCard'
 
 export default function DashboardTab() {
   const month = currentMonthRange()
@@ -115,6 +116,8 @@ export default function DashboardTab() {
       </div>
 
       {inv.totalNilai > 0 && <RencanaBar totalNilai={inv.totalNilai} goals={goals} />}
+
+      <PayPeriodCard />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Recent transactions */}
