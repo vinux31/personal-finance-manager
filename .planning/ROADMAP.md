@@ -28,6 +28,7 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
 - [x] **Phase 6: Race & Atomicity** — Refactor recurring/withdraw ke RPC + cross-row allocation trigger (migrations 0019+0020+0021) — shipped 2026-04-29 (PASS-WITH-NOTES)
 - [ ] **Phase 7: UI/Data Consistency** — Goals total view, atomic seed, timezone ESLint rule, UX-01 + UX-02 fixes (migrations 0022-0024)
 - [ ] **Phase 8: Dev Hygiene** — Recharts type cleanup, seed.sql config, perf doc note (no DB changes)
+- [ ] **Phase 10: Fix `fetch-prices` CORS Allowlist** — Tambah `kantongpintar.vercel.app` ke `ALLOWED_ORIGINS` edge function + redeploy + live UAT Refresh Harga (gap closure dari v1.1-MILESTONE-AUDIT.md)
 
 ## Phase Details
 
@@ -124,3 +125,21 @@ Plans:
 - [x] 09-02-PLAN.md — Frontend fixes 6 files (Bug #3 forceMount, #4 auth toast, #5 remaining calc, #6 label, #7 DialogDescription, #8 Ekspor PDF)
 - [x] 09-03-PLAN.md — [BLOCKING] Studio paste 0025 to production Supabase
 - [x] 09-04-PLAN.md — [BLOCKING] Verification + UAT + write 09-VERIFICATION.md + update STATE.md/ROADMAP.md
+
+### Phase 10: Fix `fetch-prices` CORS Allowlist
+
+**Goal**: Tutup gap integrasi + flow "Refresh Harga" yang teridentifikasi di `v1.1-MILESTONE-AUDIT.md`. Edge function `fetch-prices` menolak request browser dari `kantongpintar.vercel.app` (production domain) karena `ALLOWED_ORIGINS` hanya berisi `kantongpintar.app` / `www.kantongpintar.app`. Source-side code (Phase 5 SEC-01 JWT enforcement, Phase 7 CONS-02 todayISO write-path) sudah benar — fix purely infra/config.
+
+**Depends on:** Phase 5 (SEC-01 JWT enforcement), Phase 7 (CONS-02 todayISO + useRefreshPrices wiring)
+
+**Requirements:** SEC-01 (live verification re-confirm), CONS-02 (live verification un-block) — keduanya sudah satisfied di code, ini un-block production live UAT.
+
+**Success Criteria** (what must be TRUE):
+  1. `supabase/functions/fetch-prices/index.ts` `ALLOWED_ORIGINS` set berisi `https://kantongpintar.vercel.app` (next to existing `kantongpintar.app` + `www.kantongpintar.app`).
+  2. After `supabase functions deploy fetch-prices`, browser request dari `https://kantongpintar.vercel.app` tab Investasi → "Refresh Harga" returns HTTP 200 dengan response berisi prices array; tidak ada CORS rejection di Network tab.
+  3. Row baru di `price_history` table dengan `date = todayISO()` (WIB date), confirming CONS-02 todayISO write-path live.
+  4. JWT enforcement tetap intact — `curl -X POST https://<project>.functions.supabase.co/fetch-prices -H 'Origin: https://kantongpintar.vercel.app' -H 'Content-Type: application/json' -d '{"investments":[]}'` (tanpa Authorization) tetap return 401 (SEC-01 regression check).
+
+**Plans:** 2 plans
+- [ ] 10-01-PLAN.md — Update `ALLOWED_ORIGINS` di `supabase/functions/fetch-prices/index.ts` + commit
+- [ ] 10-02-PLAN.md — [BLOCKING] `supabase functions deploy fetch-prices` + live UAT Refresh Harga di `kantongpintar.vercel.app` + curl SEC-01 regression smoke + write 10-VERIFICATION.md

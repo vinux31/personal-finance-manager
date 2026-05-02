@@ -87,7 +87,7 @@ Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| SEC-01 | Phase 5 — Security Hardening | TBD | pending |
+| SEC-01 | Phase 5 — Security Hardening (+ Phase 10 CORS gap closure) | TBD | pending |
 | SEC-02 | Phase 5 — Security Hardening | TBD | pending |
 | SEC-03 | Phase 5 — Security Hardening | TBD | pending |
 | SEC-04 | Phase 5 — Security Hardening | TBD | pending |
@@ -95,7 +95,7 @@ Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 | RACE-02 | Phase 6 — Race & Atomicity | TBD | pending |
 | RACE-03 | Phase 6 — Race & Atomicity | TBD | pending |
 | CONS-01 | Phase 7 — UI/Data Consistency | 07-01, 07-03, 07-05 | shipped |
-| CONS-02 | Phase 7 — UI/Data Consistency | 07-06 | shipped |
+| CONS-02 | Phase 7 — UI/Data Consistency (+ Phase 10 CORS un-block live verify) | 07-06 | shipped |
 | CONS-03 | Phase 7 — UI/Data Consistency | 07-02, 07-05 | shipped |
 | UX-01 | Phase 7 — UI/Data Consistency | 07-05 | shipped |
 | UX-02 | Phase 7 — UI/Data Consistency | 07-07 | shipped |
@@ -112,7 +112,10 @@ Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 | Phase 6 — Race & Atomicity | RACE-01, RACE-02, RACE-03, DEV-01 | 4 | `0018_process_due_recurring.sql`, `0019_withdraw_from_goal.sql`, `0020_goal_investments_total_check.sql` |
 | Phase 7 — UI/Data Consistency | CONS-01, CONS-02, CONS-03, UX-01, UX-02 | 5 | `0021_user_seed_markers.sql` + `seed_rencana`, `0022_goals_with_progress.sql`, `0023_add_money_to_goal_v2.sql` |
 | Phase 8 — Dev Hygiene | DEV-02, DEV-03, DEV-04 | 3 | (none — pure code/config) |
+| Phase 10 — Fix `fetch-prices` CORS Allowlist | SEC-01 (re-verify), CONS-02 (un-block live) | — | (none — edge function config only) |
 | **Total** | — | **16** | — |
+
+> **Phase 10 note:** Gap-closure phase added 2026-05-02 dari `v1.1-MILESTONE-AUDIT.md` (verdict: tech_debt). Tidak menambah requirement baru — hanya un-block live verification SEC-01 + CONS-02 yang sebelumnya blocked oleh CORS allowlist mismatch (`kantongpintar.app` vs `kantongpintar.vercel.app`).
 
 ---
 
