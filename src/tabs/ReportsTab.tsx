@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { PayPeriodList } from '@/components/PayPeriodList'
 import {
@@ -22,6 +22,7 @@ import {
   generateIncomeCatInsight,
   generateInvestmentInsight,
 } from '@/lib/report-insights'
+import { useCurrentPayPeriod } from '@/queries/payPeriods'
 
 type PeriodPreset = 'today' | 'month' | 'year' | 'all' | 'custom'
 
@@ -35,6 +36,18 @@ export default function ReportsTab() {
   const [gran, setGran] = useState<PeriodGranularity>('day')
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+
+  const { data: activePeriod } = useCurrentPayPeriod()
+  const autoApplied = useRef(false)
+
+  useEffect(() => {
+    if (activePeriod && !autoApplied.current) {
+      autoApplied.current = true
+      setPreset('custom')
+      setFrom(activePeriod.start_date)
+      setTo(todayISO())
+    }
+  }, [activePeriod])
 
   const range = useMemo(() => resolvePreset(preset, from, to), [preset, from, to])
 
