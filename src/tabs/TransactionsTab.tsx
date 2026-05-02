@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTransactions, useDeleteTransaction, type TransactionFilters, type Transaction } from '@/queries/transactions'
 import { useCategories } from '@/queries/categories'
@@ -31,6 +31,7 @@ import { downloadCsv, pickCsvFile } from '@/lib/csv'
 import { EmptyState } from '@/components/ui/empty-state'
 import { exportTransactionsCsv, importTransactionsCsv } from '@/db/csvTransactions'
 import { useViewAs } from '@/auth/useViewAs'
+import { useCurrentPayPeriod } from '@/queries/payPeriods'
 
 const ALL = '__all__'
 
@@ -44,6 +45,16 @@ export default function TransactionsTab() {
   const qc = useQueryClient()
   const { viewingAs } = useViewAs()
   const isViewAs = viewingAs !== null
+
+  const { data: activePeriod } = useCurrentPayPeriod()
+  const autoApplied = useRef(false)
+
+  useEffect(() => {
+    if (activePeriod && !autoApplied.current) {
+      autoApplied.current = true
+      setFilters({ dateFrom: activePeriod.start_date, dateTo: todayISO() })
+    }
+  }, [activePeriod])
 
   useProcessRecurring()
 
