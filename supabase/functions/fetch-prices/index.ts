@@ -2,11 +2,13 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 // ---------- CORS allowlist ----------
-// Per-domain CORS. Vercel preview deploys are NOT in this list — test edge functions
-// only via `supabase functions serve` locally OR via production. (Per research integration risk note.)
+// Per-domain CORS. Production domain `kantongpintar.vercel.app` (Vercel) included.
+// Vercel preview deploys (e.g. `<branch>-<hash>.vercel.app`) are NOT in this list — test edge
+// functions only via `supabase functions serve` locally OR via production.
 const ALLOWED_ORIGINS = new Set<string>([
   'https://kantongpintar.app',
   'https://www.kantongpintar.app',
+  'https://kantongpintar.vercel.app',
 ])
 
 function corsFor(req: Request): Record<string, string> {
