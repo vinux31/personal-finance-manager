@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panduan Kantong Pintar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand: #6366f1; --brand-dark: #4f46e5; --brand-light: #e0e7ff;
+      --income: #10b981; --expense: #ef4444; --warning: #f59e0b;
+      --text: #1e293b; --text-muted: #64748b; --text-light: #94a3b8;
+      --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--brand); text-decoration: none; }
+
+    /* Layout */
+    #page-wrapper { display: flex; min-height: 100vh; }
+    #sidebar {
+      width: 260px; position: sticky; top: 0; height: 100vh;
+      overflow-y: auto; background: var(--card); border-right: 1px solid var(--border);
+      padding: 1.25rem 0.875rem; flex-shrink: 0; display: flex; flex-direction: column;
+    }
+    #main-content { flex: 1; padding: 2rem 3rem; max-width: 940px; }
+
+    /* Sidebar */
+    .sidebar-logo { display: flex; align-items: center; gap: 0.6rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+    .logo-icon { width: 34px; height: 34px; background: var(--brand); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
+    .logo-text { font-weight: 700; font-size: 0.875rem; line-height: 1.3; }
+    .logo-sub { font-size: 0.7rem; color: var(--text-light); }
+    .sidebar-section-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); padding: 0.75rem 0.5rem 0.2rem; }
+    .sidebar-link { display: block; padding: 0.4rem 0.75rem; border-radius: 8px; font-size: 0.83rem; color: var(--text-muted); text-decoration: none; transition: all 0.15s; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-link:hover { background: var(--brand-light); color: var(--brand-dark); }
+    .sidebar-link.active { background: var(--brand-light); color: var(--brand-dark); font-weight: 600; }
+    #doc-search { width: 100%; padding: 0.5rem 0.875rem; border: 1px solid var(--border); border-radius: 999px; font-size: 0.82rem; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; margin-bottom: 0.5rem; font-family: inherit; }
+    #doc-search:focus { border-color: var(--brand); }
+
+    /* Typography */
+    h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; }
+    h2 { font-size: 1.65rem; font-weight: 700; margin-bottom: 0.4rem; }
+    h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; }
+    h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+    p { color: var(--text-muted); margin-bottom: 0.875rem; }
+    ul, ol { padding-left: 1.25rem; color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.875rem; }
+    li { margin-bottom: 0.3rem; }
+    .section { padding: 3rem 0; border-bottom: 1px solid var(--border); scroll-margin-top: 1.5rem; }
+    .section:last-child { border-bottom: none; }
+    .section-header { display: flex; align-items: center; gap: 0.875rem; margin-bottom: 1.5rem; }
+    .section-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+
+    /* Cards */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; transition: all 0.2s; }
+    .feature-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--brand-light); }
+    .fc-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .fc-title { font-weight: 600; font-size: 0.875rem; color: var(--text); margin-bottom: 0.25rem; }
+    .fc-desc { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* Badges */
+    .badge { display: inline-flex; align-items: center; padding: 0.18rem 0.55rem; border-radius: 999px; font-size: 0.73rem; font-weight: 600; }
+    .badge-income { background: #d1fae5; color: #065f46; }
+    .badge-expense { background: #fee2e2; color: #991b1b; }
+    .badge-aktif { background: #e0e7ff; color: #3730a3; }
+    .badge-tercapai { background: #d1fae5; color: #065f46; }
+    .badge-jeda { background: #f1f5f9; color: #475569; }
+    .badge-brand { background: var(--brand-light); color: var(--brand-dark); }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 0.875rem; margin: 1rem 0; }
+    .step { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; }
+    .step-title { font-weight: 600; font-size: 0.875rem; color: var(--text); }
+    .step-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* Tabs */
+    .tabs { margin: 1rem 0; }
+    .tab-list { display: flex; gap: 0.2rem; border-bottom: 2px solid var(--border); margin-bottom: 1rem; flex-wrap: wrap; }
+    .tab-btn { padding: 0.45rem 1rem; font-size: 0.83rem; font-weight: 500; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; border-radius: 4px 4px 0 0; font-family: inherit; }
+    .tab-btn:hover { color: var(--brand); background: var(--brand-light); }
+    .tab-btn.active { color: var(--brand-dark); border-bottom-color: var(--brand); font-weight: 600; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Accordion */
+    .accordion { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 1rem 0; }
+    .accordion-item { border-bottom: 1px solid var(--border); }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.25rem; background: transparent; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 600; color: var(--text); text-align: left; transition: background 0.15s; font-family: inherit; }
+    .accordion-btn:hover { background: #f8fafc; }
+    .chevron { transition: transform 0.2s; font-size: 0.7rem; color: var(--text-muted); }
+    .accordion-btn.open .chevron { transform: rotate(180deg); }
+    .accordion-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .accordion-panel.open { max-height: 800px; }
+    .accordion-inner { padding: 0 1.25rem 1.25rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* Table */
+    .guide-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 1rem 0; }
+    .guide-table th { background: #f8fafc; padding: 0.55rem 1rem; text-align: left; font-weight: 600; font-size: 0.78rem; border-bottom: 2px solid var(--border); color: var(--text); }
+    .guide-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    .guide-table tr:last-child td { border-bottom: none; }
+    .guide-table tr:hover td { background: #f8fafc; }
+
+    /* Callout */
+    .callout { display: flex; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: 8px; margin: 1rem 0; }
+    .callout-info { background: #eff6ff; border-left: 3px solid #3b82f6; }
+    .callout-tip { background: #f0fdf4; border-left: 3px solid var(--income); }
+    .callout-warn { background: #fffbeb; border-left: 3px solid var(--warning); }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+    .callout-body { font-size: 0.83rem; color: var(--text-muted); }
+    .callout-body strong { color: var(--text); }
+
+    /* Hero */
+    #hero { padding: 3.5rem 0 2.5rem; text-align: center; }
+    .hero-logo { width: 68px; height: 68px; background: linear-gradient(135deg, var(--brand), #8b5cf6); border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; animation: float 3s ease-in-out infinite; box-shadow: 0 8px 24px rgba(99,102,241,.35); }
+    #hero h1 { margin-bottom: 0.75rem; background: linear-gradient(135deg, var(--brand), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .subtitle { font-size: 1.05rem; color: var(--text-muted); max-width: 520px; margin: 0 auto 2rem; }
+    .stats-row { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; padding: 1.5rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); max-width: 500px; margin: 0 auto; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--brand); display: block; line-height: 1; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; display: block; }
+
+    /* Metric demo cards */
+    .metric-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .metric-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
+    .metric-value { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .metric-sub { font-size: 0.72rem; margin-top: 0.25rem; }
+    .trend-up { color: var(--income); }
+    .trend-down { color: var(--expense); }
+
+    /* Progress bar */
+    .progress-wrap { background: var(--border); border-radius: 999px; height: 8px; overflow: hidden; margin: 0.4rem 0; }
+    .progress-fill { height: 100%; border-radius: 999px; background: var(--brand); width: 0; transition: width 1.2s ease; }
+
+    /* Formula */
+    .formula-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.83rem; color: var(--text); margin: 0.5rem 0; white-space: pre; }
+
+    /* Two-col */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+
+    /* Misc */
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    code { font-family: monospace; font-size: 0.82rem; background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; color: var(--brand-dark); }
+
+    /* Animations */
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    .animate-fade-up { opacity: 0; animation: fadeUp 0.55s ease forwards; }
+    .stagger-1 { animation-delay: 0.12s; }
+    .stagger-2 { animation-delay: 0.25s; }
+    .anim-scroll { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .anim-scroll.visible { opacity: 1; transform: none; }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      #page-wrapper { flex-direction: column; }
+      #sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; gap: 0.25rem; padding: 0.75rem; }
+      .sidebar-section-label { display: none; }
+      #doc-search { width: 100%; order: -1; }
+      .sidebar-logo { display: none; }
+      #main-content { padding: 1.25rem; }
+      .two-col { grid-template-columns: 1fr; }
+      h1 { font-size: 1.9rem; }
+    }
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .metric-row { grid-template-columns: 1fr 1fr; }
+      .stats-row { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="page-wrapper">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">&#8369;</div>
+      <div>
+        <div class="logo-text">Kantong Pintar</div>
+        <div class="logo-sub">Panduan Pengguna</div>
+      </div>
+    </div>
+
+    <input id="doc-search" type="search" placeholder="&#128269; Cari panduan&hellip;" autocomplete="off" />
+
+    <div class="sidebar-section-label">Mulai Di Sini</div>
+    <a class="sidebar-link" href="#hero">&#127968; Beranda</a>
+    <a class="sidebar-link" href="#overview">&#128203; Ringkasan Fitur</a>
+
+    <div class="sidebar-section-label">Fitur Utama</div>
+    <a class="sidebar-link" href="#dashboard">&#128202; Dashboard</a>
+    <a class="sidebar-link" href="#transaksi">&#128179; Transaksi</a>
+    <a class="sidebar-link" href="#investasi">&#128200; Investasi</a>
+    <a class="sidebar-link" href="#finansial">&#127919; Finansial</a>
+    <a class="sidebar-link" href="#pensiun">&#127958; Pensiun</a>
+    <a class="sidebar-link" href="#laporan">&#128201; Laporan</a>
+    <a class="sidebar-link" href="#catatan">&#128221; Catatan</a>
+    <a class="sidebar-link" href="#pengaturan">&#9881;&#65039; Pengaturan</a>
+
+    <div class="sidebar-section-label">Referensi</div>
+    <a class="sidebar-link" href="#tips">&#128161; Tips &amp; Trik</a>
+    <a class="sidebar-link" href="#faq">&#10067; FAQ</a>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+
+    <!-- HERO -->
+    <div id="hero">
+      <div class="hero-logo">&#8369;</div>
+      <h1 class="animate-fade-up">Kantong Pintar</h1>
+      <p class="subtitle animate-fade-up stagger-1">
+        Panduan lengkap semua fitur aplikasi manajemen keuangan pribadi.<br>
+        Kelola uang, investasi, goals, dan masa pensiun di satu tempat.
+      </p>
+      <div class="stats-row animate-fade-up stagger-2">
+        <div>
+          <span class="stat-num" data-count="8">0</span>
+          <span class="stat-label">Modul Utama</span>
+        </div>
+        <div>
+          <span class="stat-num" data-count="13">0</span>
+          <span class="stat-label">Form Dialog</span>
+        </div>
+        <div>
+          <span class="stat-num" data-count="5">0</span>
+          <span class="stat-label">Jenis Grafik</span>
+        </div>
+        <div>
+          <span class="stat-num" data-count="100">0</span>
+          <span class="stat-label">% Gratis</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#ede9fe">&#128203;</div>
+        <div>
+          <h2>Ringkasan Fitur</h2>
+          <p style="margin:0;font-size:.875rem">8 modul terintegrasi untuk keuangan pribadi yang lengkap</p>
+        </div>
+      </div>
+      <div class="card-grid">
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#128202;</div>
+          <div class="fc-title">Dashboard</div>
+          <div class="fc-desc">5 metrik utama, transaksi terbaru, goals aktif, dan tagihan mendatang</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#128179;</div>
+          <div class="fc-title">Transaksi</div>
+          <div class="fc-desc">Catat pemasukan &amp; pengeluaran, filter canggih, import/export CSV, transaksi rutin</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#128200;</div>
+          <div class="fc-title">Investasi</div>
+          <div class="fc-desc">Kelola portofolio saham/reksadana/emas/kripto, update harga, hitung gain/loss</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#127919;</div>
+          <div class="fc-title">Finansial</div>
+          <div class="fc-desc">Goals keuangan + Net Worth (aset &amp; liabilitas) dengan tren 6 bulan</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#127958;</div>
+          <div class="fc-title">Pensiun</div>
+          <div class="fc-desc">Simulasi investasi pensiun, alokasi aset, proyeksi dana cukup berapa tahun</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#128201;</div>
+          <div class="fc-title">Laporan</div>
+          <div class="fc-desc">4 jenis grafik analitik, filter periode kustom, ekspor PDF lengkap</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#128221;</div>
+          <div class="fc-title">Catatan</div>
+          <div class="fc-desc">Tulis memo keuangan, link ke transaksi tertentu, cari &amp; filter</div>
+        </div>
+        <div class="feature-card anim-scroll">
+          <div class="fc-icon">&#9881;&#65039;</div>
+          <div class="fc-title">Pengaturan</div>
+          <div class="fc-desc">Tema terang/gelap, manajemen goals rencana, profil akun, manajemen user (admin)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#dbeafe">&#128202;</div>
+        <div>
+          <h2>Dashboard</h2>
+          <p style="margin:0;font-size:.875rem">Ringkasan kondisi keuangan Anda setiap bulan</p>
+        </div>
+      </div>
+      <p>Dashboard adalah halaman pertama yang Anda lihat setelah login. Semua angka di sini mengacu pada <strong>bulan berjalan</strong> kecuali jika disebutkan lain.</p>
+
+      <h3>5 Kartu Metrik Utama</h3>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Pemasukan</div>
+          <div class="metric-value" style="color:var(--income)">Rp 8.500.000</div>
+          <div class="metric-sub trend-up">&#8593; 12% vs bln lalu</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Pengeluaran</div>
+          <div class="metric-value" style="color:var(--expense)">Rp 4.200.000</div>
+          <div class="metric-sub trend-down">&#8593; 5% vs bln lalu</div>
+        </div>
+        <div class="metric-card" style="border-color:var(--brand-light)">
+          <div class="metric-label">Net Bulan Ini</div>
+          <div class="metric-value">Rp 4.300.000</div>
+          <div class="metric-sub" style="color:var(--text-light)">Surplus bulan ini</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Nilai Investasi</div>
+          <div class="metric-value" style="color:var(--brand)">Rp 52.000.000</div>
+          <div class="metric-sub trend-up">&#8593; 7,4% gain</div>
+        </div>
+        <div class="metric-card" style="border-color:var(--brand-light)">
+          <div class="metric-label">Net Worth</div>
+          <div class="metric-value">Rp 125.000.000</div>
+          <div class="metric-sub trend-up">&#8593; 3% vs bln lalu</div>
+        </div>
+      </div>
+      <p style="font-size:.8rem;margin-top:.25rem">Tanda <span class="trend-up">&#8593;</span> hijau pada Pemasukan &amp; Net Worth = baik. Tanda <span class="trend-down">&#8593;</span> merah pada Pengeluaran = pengeluaran naik.</p>
+
+      <h3 style="margin-top:1.5rem">Panel Tambahan</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>Transaksi Terakhir</h4>
+          <p style="font-size:.82rem;margin-bottom:.5rem">5 transaksi terbaru dari seluruh periode. Klik <strong>Lihat Semua</strong> untuk ke tab Transaksi.</p>
+          <p style="font-size:.82rem">Setiap baris menampilkan: tanggal, ikon jenis, kategori, dan jumlah.</p>
+        </div>
+        <div class="card">
+          <h4>Goals Aktif</h4>
+          <p style="font-size:.82rem;margin-bottom:.5rem">4 goals teratas berdasarkan persentase tercapai. Progress bar menunjukkan kemajuan.</p>
+          <p style="font-size:.82rem">Klik nama goal untuk langsung ke tab Finansial &rarr; Goals.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h4>Tagihan Bulan Ini (Transaksi Rutin)</h4>
+        <p style="font-size:.82rem;margin-bottom:.5rem">Menampilkan transaksi rutin yang jatuh tempo bulan ini beserta status:</p>
+        <ul style="font-size:.82rem">
+          <li><span style="color:var(--expense)">&#9679; Merah</span> &mdash; sudah lewat jatuh tempo</li>
+          <li><span style="color:var(--warning)">&#9679; Kuning</span> &mdash; jatuh tempo dalam 7 hari</li>
+          <li><span style="color:var(--text-light)">&#9679; Abu</span> &mdash; jatuh tempo lebih dari 7 hari</li>
+        </ul>
+        <p style="font-size:.82rem;margin-top:.5rem">Di bawah daftar tagihan: <strong>Sisa Aman Bulan Ini</strong> = Total Pemasukan &minus; Pengeluaran &minus; Total Tagihan mendatang.</p>
+      </div>
+      <div class="callout callout-info" style="margin-top:1rem">
+        <div class="callout-icon">&#8505;&#65039;</div>
+        <div class="callout-body"><strong>RencanaBar</strong> &mdash; Bar panjang di bagian bawah dashboard menunjukkan total dana goal aktif vs target Rencana keseluruhan. Default target Rp 257 juta per Januari 2027.</div>
+      </div>
+    </section>
+
+    <!-- TRANSAKSI -->
+    <section id="transaksi" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fce7f3">&#128179;</div>
+        <div>
+          <h2>Transaksi</h2>
+          <p style="margin:0;font-size:.875rem">Catat setiap pemasukan dan pengeluaran Anda</p>
+        </div>
+      </div>
+
+      <h3>Cara Tambah Transaksi</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><div class="step-title">Klik tombol &ldquo;Tambah Transaksi&rdquo;</div><div class="step-desc">Tombol biru di kanan atas halaman Transaksi.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><div class="step-title">Pilih Jenis</div><div class="step-desc">Pilih <span class="badge badge-expense">Pengeluaran</span> atau <span class="badge badge-income">Pemasukan</span>. Daftar Kategori akan menyesuaikan otomatis.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><div class="step-title">Isi Tanggal</div><div class="step-desc">Default hari ini. Klik field tanggal untuk memilih tanggal lain.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div><div class="step-title">Pilih Kategori</div><div class="step-desc">Pengeluaran: Makanan, Transport, Utilitas, Hiburan, Cicilan, Asuransi, Lain-lain. Pemasukan: Gaji, Bonus, Bisnis, Investasi, Lain-lain.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div><div class="step-title">Masukkan Jumlah</div><div class="step-desc">Ketik angka tanpa titik/koma. Preview format Rupiah muncul otomatis di bawah field.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div><div class="step-title">Klik Simpan</div><div class="step-desc">Catatan (opsional) bisa diisi sebelum simpan. Transaksi langsung muncul di tabel.</div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1.5rem">Filter &amp; Pencarian</h3>
+      <table class="guide-table">
+        <thead><tr><th>Filter</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dari / Sampai</strong></td><td>Filter rentang tanggal. Kosongkan untuk tampilkan semua periode.</td></tr>
+          <tr><td><strong>Jenis</strong></td><td>Semua / Pemasukan / Pengeluaran</td></tr>
+          <tr><td><strong>Kategori</strong></td><td>Muncul setelah Jenis dipilih. Berisi kategori sesuai jenis yang dipilih.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tabs" id="tabs-transaksi">
+        <div class="tab-list">
+          <button class="tab-btn active">Import / Export CSV</button>
+          <button class="tab-btn">Transaksi Rutin</button>
+        </div>
+        <div class="tab-panel active">
+          <h4>Export CSV</h4>
+          <p>Klik tombol <strong>Ekspor</strong> di kanan atas. File CSV diunduh otomatis berisi semua transaksi sesuai filter aktif.</p>
+          <h4>Import CSV</h4>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">Klik tombol Impor</div><div class="step-desc">Buka dialog pilih file.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">Upload file CSV</div><div class="step-desc">Format kolom harus: <code>date, type, category, amount, note</code>. Tipe: <code>pemasukan</code> atau <code>pengeluaran</code>.</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Review hasil</div><div class="step-desc">Aplikasi menampilkan jumlah baris berhasil diimpor dan baris yang dilewati (error format).</div></div></div>
+          </div>
+          <div class="callout callout-warn"><div class="callout-icon">&#9888;&#65039;</div><div class="callout-body"><strong>Import dinonaktifkan</strong> saat admin sedang melihat data pengguna lain (mode View-As).</div></div>
+        </div>
+        <div class="tab-panel">
+          <p>Transaksi Rutin memungkinkan Anda menjadwalkan pemasukan/pengeluaran yang berulang (gaji, cicilan, langganan, dll).</p>
+          <h4>Cara Buat Template Rutin</h4>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">Klik tombol Rutin</div><div class="step-desc">Buka dialog daftar transaksi rutin.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">Klik Tambah Template</div><div class="step-desc">Isi Nama, Jenis, Kategori, Jumlah, Frekuensi, dan Jatuh Tempo Pertama.</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Simpan</div><div class="step-desc">Template aktif otomatis memproses transaksi ketika tanggal jatuh tempo tiba.</div></div></div>
+          </div>
+          <table class="guide-table">
+            <thead><tr><th>Frekuensi</th><th>Interval</th></tr></thead>
+            <tbody>
+              <tr><td>Harian</td><td>Setiap 1 hari</td></tr>
+              <tr><td>Mingguan</td><td>Setiap 7 hari</td></tr>
+              <tr><td>Bulanan</td><td>Setiap 1 bulan (tanggal sama)</td></tr>
+              <tr><td>Tahunan</td><td>Setiap 1 tahun</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVESTASI -->
+    <section id="investasi" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#d1fae5">&#128200;</div>
+        <div>
+          <h2>Investasi</h2>
+          <p style="margin:0;font-size:.875rem">Pantau portofolio investasi dan hitung gain/loss secara real-time</p>
+        </div>
+      </div>
+
+      <h3>Cara Tambah Investasi</h3>
+      <table class="guide-table">
+        <thead><tr><th>Field</th><th>Keterangan</th><th>Wajib?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Jenis Aset</strong></td><td>Saham, Reksadana, Emas, Kripto, Obligasi, atau jenis kustom</td><td>&#10003;</td></tr>
+          <tr><td><strong>Nama Aset</strong></td><td>Contoh: BMRI, Manulife Saham, Emas Antam</td><td>&#10003;</td></tr>
+          <tr><td><strong>Kuantitas</strong></td><td>Jumlah unit/lembar/gram. Mendukung desimal (contoh: 0,5)</td><td>&#10003;</td></tr>
+          <tr><td><strong>Tanggal Beli</strong></td><td>Tanggal pembelian aset</td><td>&#10003;</td></tr>
+          <tr><td><strong>Harga Beli / unit</strong></td><td>Harga per unit saat beli (Rp). Total Modal = Qty &times; H.Beli dihitung otomatis</td><td>&#10003;</td></tr>
+          <tr><td><strong>Harga Saat Ini / unit</strong></td><td>Harga terkini per unit (Rp). Kosongkan jika belum diketahui</td><td>Tidak</td></tr>
+          <tr><td><strong>Catatan</strong></td><td>Memo opsional</td><td>Tidak</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top:1.5rem">Kalkulasi Gain / Loss</h3>
+      <div class="formula-box">Modal      = Kuantitas &times; Harga Beli
+Nilai Kini = Kuantitas &times; Harga Saat Ini
+G/L        = Nilai Kini &minus; Modal
+G/L %      = (G/L &divide; Modal) &times; 100</div>
+      <p style="font-size:.82rem">Nilai G/L ditampilkan hijau jika untung, merah jika rugi.</p>
+
+      <h3 style="margin-top:1.5rem">Update Harga</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div><div class="step-title">Update satu aset</div><div class="step-desc">Klik ikon panah naik di baris aset &rarr; masukkan harga terkini &rarr; Simpan.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div><div class="step-title">Refresh semua harga</div><div class="step-desc">Klik tombol <strong>Refresh Harga</strong> di kanan atas untuk memperbarui semua aset sekaligus.</div></div></div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>Tip:</strong> Di layar mobile tampilan beralih ke kartu per-aset yang lebih ringkas. Di desktop tampil sebagai tabel lengkap 10 kolom.</div>
+      </div>
+    </section>
+
+    <!-- FINANSIAL -->
+    <section id="finansial" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef3c7">&#127919;</div>
+        <div>
+          <h2>Finansial</h2>
+          <p style="margin:0;font-size:.875rem">Kekayaan bersih dan goals finansial Anda</p>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs-finansial">
+        <div class="tab-list">
+          <button class="tab-btn active">Kekayaan (Net Worth)</button>
+          <button class="tab-btn">Goals</button>
+        </div>
+
+        <div class="tab-panel active">
+          <p>Tab Kekayaan menampilkan total aset dikurangi liabilitas (utang) Anda beserta tren 6 bulan terakhir.</p>
+          <div class="formula-box">Net Worth = Total Aset + Nilai Investasi &minus; Total Liabilitas</div>
+
+          <h4 style="margin-top:1rem">Jenis Aset (Rekening)</h4>
+          <table class="guide-table">
+            <thead><tr><th>Jenis</th><th>Contoh</th></tr></thead>
+            <tbody>
+              <tr><td>Tabungan</td><td>BCA Tabungan, BRI Simpedes</td></tr>
+              <tr><td>Giro</td><td>BNI Giro, Mandiri Giro</td></tr>
+              <tr><td>Cash</td><td>Uang tunai di dompet</td></tr>
+              <tr><td>Deposito</td><td>Deposito berjangka 3 bulan</td></tr>
+              <tr><td>Dompet Digital</td><td>GoPay, OVO, Dana, ShopeePay</td></tr>
+              <tr><td>Properti</td><td>Rumah, apartemen, tanah</td></tr>
+              <tr><td>Kendaraan</td><td>Mobil, motor</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.82rem">Baris <strong>Nilai Investasi</strong> dihitung otomatis dari tab Investasi &mdash; tidak bisa diedit manual.</p>
+
+          <h4 style="margin-top:1rem">Jenis Liabilitas (Utang)</h4>
+          <table class="guide-table">
+            <thead><tr><th>Jenis</th><th>Contoh</th></tr></thead>
+            <tbody>
+              <tr><td>KPR</td><td>Cicilan rumah 30 tahun</td></tr>
+              <tr><td>Cicilan Kendaraan</td><td>Kredit motor/mobil</td></tr>
+              <tr><td>Kartu Kredit</td><td>Tagihan kartu kredit belum lunas</td></tr>
+              <tr><td>PayLater</td><td>GoPay Later, Shopee PayLater</td></tr>
+              <tr><td>KTA</td><td>Pinjaman personal tanpa agunan</td></tr>
+            </tbody>
+          </table>
+
+          <h4 style="margin-top:1rem">Tren Net Worth</h4>
+          <p>Grafik area di bagian bawah menampilkan snapshot net worth 6 bulan terakhir. Snapshot diambil otomatis pada kunjungan pertama setiap bulan.</p>
+        </div>
+
+        <div class="tab-panel">
+          <p>Goals adalah target keuangan spesifik Anda, seperti Dana Darurat, DP Rumah, Dana Pernikahan, dll.</p>
+
+          <h4>Cara Buat Goal Baru</h4>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">Klik &ldquo;Tambah Goal&rdquo;</div><div class="step-desc">Buka form dialog goal.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">Isi Nama &amp; Target</div><div class="step-desc">Nama goal dan jumlah target dalam Rupiah.</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Isi Dana Kas (opsional)</div><div class="step-desc">Dana tunai yang sudah terkumpul. Nilai investasi yang di-link dihitung terpisah otomatis.</div></div></div>
+            <div class="step"><div class="step-num">4</div><div><div class="step-title">Pilih Status &amp; Deadline</div><div class="step-desc">Status: <span class="badge badge-aktif">Aktif</span> <span class="badge badge-jeda">Jeda</span> <span class="badge badge-tercapai">Tercapai</span>. Deadline opsional.</div></div></div>
+          </div>
+
+          <h4 style="margin-top:1rem">Menambah Dana ke Goal</h4>
+          <div class="two-col" style="margin-top:.5rem">
+            <div class="card" style="padding:.875rem">
+              <h4>Tambah Uang Kas</h4>
+              <p style="font-size:.8rem">Klik tombol <strong>Tambah Uang</strong> di kartu goal &rarr; pilih Tambah/Tarik &rarr; masukkan jumlah &rarr; Simpan.</p>
+            </div>
+            <div class="card" style="padding:.875rem">
+              <h4>Link Investasi</h4>
+              <p style="font-size:.8rem">Klik tombol <strong>Investasi</strong> di kartu goal &rarr; pilih aset &rarr; atur % alokasi (1&ndash;100%) &rarr; Simpan. Nilai investasi &times; % alokasi otomatis masuk ke goal.</p>
+            </div>
+          </div>
+          <div class="callout callout-info" style="margin-top:1rem">
+            <div class="callout-icon">&#8505;&#65039;</div>
+            <div class="callout-body">Total dana goal = <strong>Dana Kas + Nilai Investasi &times; % Alokasi</strong>. Satu investasi bisa dialokasikan ke beberapa goal selama total alokasi &le; 100%.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PENSIUN -->
+    <section id="pensiun" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fce7f3">&#127958;</div>
+        <div>
+          <h2>Pensiun</h2>
+          <p style="margin:0;font-size:.875rem">Hitung dan simulasikan kebutuhan dana pensiun Anda</p>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs-pensiun">
+        <div class="tab-list">
+          <button class="tab-btn active">Profil Pensiun</button>
+          <button class="tab-btn">Simulasi Investasi</button>
+          <button class="tab-btn">Hitung Total</button>
+        </div>
+
+        <div class="tab-panel active">
+          <p>Isi profil pensiun Anda untuk mengkalibrasi semua kalkulasi di modul ini. Data disimpan otomatis.</p>
+          <table class="guide-table">
+            <thead><tr><th>Field</th><th>Range</th><th>Keterangan</th></tr></thead>
+            <tbody>
+              <tr><td>Usia Saat Ini</td><td>18&ndash;65 thn</td><td>Usia Anda sekarang</td></tr>
+              <tr><td>Usia Pensiun</td><td>45&ndash;65 thn</td><td>Target usia berhenti bekerja</td></tr>
+              <tr><td>Gaji Pokok</td><td>Rp</td><td>Gaji bulanan sebelum tunjangan</td></tr>
+              <tr><td>Masa Kerja</td><td>0&ndash;40 thn</td><td>Sudah bekerja berapa tahun</td></tr>
+              <tr><td>Target/bulan saat pensiun</td><td>Rp</td><td>Pengeluaran per bulan yang diinginkan saat pensiun</td></tr>
+            </tbody>
+          </table>
+          <div class="callout callout-tip"><div class="callout-icon">&#128161;</div><div class="callout-body">Perubahan profil tersimpan otomatis dalam 1,5 detik. Indikator <strong>&#10003; Tersimpan</strong> muncul di pojok form.</div></div>
+        </div>
+
+        <div class="tab-panel">
+          <p>Masukkan parameter investasi dan alokasi aset untuk melihat proyeksi dana pensiun.</p>
+          <h4>Parameter Investasi</h4>
+          <table class="guide-table">
+            <thead><tr><th>Parameter</th><th>Keterangan</th></tr></thead>
+            <tbody>
+              <tr><td>Investasi per bulan</td><td>Nominal yang diinvestasikan tiap bulan (Rp)</td></tr>
+              <tr><td>Kenaikan investasi/tahun</td><td>Persentase kenaikan investasi tahunan (%)</td></tr>
+              <tr><td>Asumsi inflasi</td><td>Estimasi inflasi per tahun (%)</td></tr>
+            </tbody>
+          </table>
+          <h4>Alokasi Aset</h4>
+          <p style="font-size:.82rem">Atur slider alokasi untuk <strong>Emas</strong> (return 10%/thn), <strong>Saham</strong> (15%/thn), dan <strong>Reksadana</strong> (5&ndash;14%/thn tergantung jenis). Total alokasi otomatis dinormalisasi ke 100%.</p>
+          <h4>Hasil Simulasi</h4>
+          <p style="font-size:.82rem">Menampilkan: Total dana terkumpul, dana cukup untuk berapa tahun, grafik proyeksi per-aset, dan breakdown nilai tiap instrumen investasi.</p>
+        </div>
+
+        <div class="tab-panel">
+          <p>Panel Hitung Total membantu Anda menghitung total kebutuhan dana pensiun berdasarkan profil yang sudah diisi, dengan breakdown biaya hidup dan proyeksi inflasi.</p>
+          <div class="callout callout-info"><div class="callout-icon">&#8505;&#65039;</div><div class="callout-body">Gunakan hasil dari Hitung Total sebagai patokan nilai investasi per bulan di Simulasi Investasi untuk mencapai target.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAPORAN -->
+    <section id="laporan" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#dbeafe">&#128201;</div>
+        <div>
+          <h2>Laporan</h2>
+          <p style="margin:0;font-size:.875rem">Analisa keuangan dengan grafik dan wawasan otomatis</p>
+        </div>
+      </div>
+
+      <h3>Filter Periode</h3>
+      <table class="guide-table">
+        <thead><tr><th>Opsi</th><th>Rentang Data</th></tr></thead>
+        <tbody>
+          <tr><td>Hari ini</td><td>Hanya transaksi hari ini</td></tr>
+          <tr><td>Bulan ini</td><td>Tanggal 1 s.d. hari ini bulan berjalan</td></tr>
+          <tr><td>Tahun ini</td><td>1 Januari s.d. hari ini tahun berjalan</td></tr>
+          <tr><td>Semua</td><td>Seluruh riwayat transaksi</td></tr>
+          <tr><td>Kustom</td><td>Pilih tanggal mulai dan selesai secara bebas</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Granularity</strong> mengubah sumbu X grafik: Hari / Minggu / Bulan / Tahun.</p>
+
+      <h3 style="margin-top:1.5rem">4 Jenis Grafik</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>&#128202; Pemasukan vs Pengeluaran</h4>
+          <p style="font-size:.82rem">Bar chart berkelompok. Batang hijau = pemasukan, batang merah = pengeluaran. Sumbu Y dalam format Rp singkat (mis. 5 jt).</p>
+        </div>
+        <div class="card">
+          <h4>&#129359; Pengeluaran per Kategori</h4>
+          <p style="font-size:.82rem">Pie chart dengan 10 warna kategori. Insights otomatis tentang kategori terbesar dan peluang penghematan.</p>
+        </div>
+        <div class="card">
+          <h4>&#129359; Pemasukan per Kategori</h4>
+          <p style="font-size:.82rem">Pie chart sumber pemasukan. Berguna untuk melihat diversifikasi pendapatan Anda.</p>
+        </div>
+        <div class="card">
+          <h4>&#128202; Kinerja Investasi</h4>
+          <p style="font-size:.82rem">Bar chart per aset. Batang abu = Modal (harga beli), batang biru = Nilai Kini. Selisih visual langsung terlihat.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1.5rem">Export PDF</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div><div class="step-title">Atur filter periode yang diinginkan</div><div class="step-desc">Semua grafik akan disertakan sesuai filter aktif.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div><div class="step-title">Klik tombol &ldquo;Export PDF&rdquo;</div><div class="step-desc">File PDF diunduh otomatis dengan nama format <code>YYYY-MM-laporan.pdf</code>.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div><div class="step-title">Isi PDF</div><div class="step-desc">Ringkasan periode, semua 4 grafik, insights per grafik, dan breakdown kategori.</div></div></div>
+      </div>
+    </section>
+
+    <!-- CATATAN -->
+    <section id="catatan" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f0fdf4">&#128221;</div>
+        <div>
+          <h2>Catatan</h2>
+          <p style="margin:0;font-size:.875rem">Tulis memo dan pengingat keuangan</p>
+        </div>
+      </div>
+
+      <p>Tab Catatan berfungsi seperti jurnal keuangan &mdash; catat pemikiran, rencana, atau pengingat terkait keuangan Anda. Setiap catatan bisa di-link ke transaksi tertentu.</p>
+
+      <h3>Cara Tambah Catatan</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div><div class="step-title">Klik &ldquo;Tambah Catatan&rdquo;</div><div class="step-desc">Buka form catatan baru.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div><div class="step-title">Isi Judul dan Konten</div><div class="step-desc">Judul wajib. Konten berupa teks bebas multi-baris.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div><div class="step-title">Pilih Tanggal</div><div class="step-desc">Default hari ini. Bisa diubah untuk catatan backdated.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div><div class="step-title">Link ke Transaksi (opsional)</div><div class="step-desc">Pilih transaksi dari dropdown untuk menghubungkan catatan ke transaksi tertentu. Kartu akan menampilkan info transaksi.</div></div></div>
+        <div class="step"><div class="step-num">5</div><div><div class="step-title">Simpan</div><div class="step-desc">Kartu catatan baru muncul di grid (3 kolom di desktop).</div></div></div>
+      </div>
+
+      <h3 style="margin-top:1.5rem">Cari &amp; Filter</h3>
+      <table class="guide-table">
+        <thead><tr><th>Kontrol</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td>Cari judul</td><td>Filter real-time berdasarkan judul catatan</td></tr>
+          <tr><td>Dari / Sampai</td><td>Filter berdasarkan tanggal catatan</td></tr>
+          <tr><td>Paginasi</td><td>20 catatan per halaman. Tombol Prev/Next di bawah grid</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PENGATURAN -->
+    <section id="pengaturan" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#f1f5f9">&#9881;&#65039;</div>
+        <div>
+          <h2>Pengaturan</h2>
+          <p style="margin:0;font-size:.875rem">Konfigurasi tampilan, akun, dan manajemen pengguna</p>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs-pengaturan">
+        <div class="tab-list">
+          <button class="tab-btn active">Tampilan</button>
+          <button class="tab-btn">Rencana</button>
+          <button class="tab-btn">Akun</button>
+          <button class="tab-btn">Admin</button>
+        </div>
+
+        <div class="tab-panel active">
+          <p>Pilih tema antarmuka aplikasi:</p>
+          <table class="guide-table">
+            <thead><tr><th>Opsi</th><th>Keterangan</th></tr></thead>
+            <tbody>
+              <tr><td>&#9728;&#65039; Terang</td><td>Background putih, cocok untuk siang hari</td></tr>
+              <tr><td>&#127769; Gelap</td><td>Background gelap, nyaman di malam hari</td></tr>
+              <tr><td>&#128187; Sistem</td><td>Mengikuti pengaturan tema OS/browser Anda</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tab-panel">
+          <p>Bagian Rencana menampilkan ringkasan goals aktif Anda: total target, deadline terpanjang, dan jumlah goals aktif.</p>
+          <div class="callout callout-warn">
+            <div class="callout-icon">&#9888;&#65039;</div>
+            <div class="callout-body"><strong>Reset Seed Rencana:</strong> Menghapus goals dan investasi bawaan (hasil seed demo). Gunakan jika ingin memulai dengan data kosong. <em>Tindakan ini tidak bisa dibatalkan.</em></div>
+          </div>
+        </div>
+
+        <div class="tab-panel">
+          <p>Menampilkan foto profil (atau inisial dengan gradien warna), nama lengkap, dan email Anda.</p>
+          <p>Tombol <strong style="color:var(--expense)">Keluar</strong> akan logout dari aplikasi setelah konfirmasi.</p>
+        </div>
+
+        <div class="tab-panel">
+          <div class="callout callout-warn" style="margin-bottom:1rem">
+            <div class="callout-icon">&#128274;</div>
+            <div class="callout-body"><strong>Fitur admin saja.</strong> Hanya muncul untuk akun yang memiliki hak admin.</div>
+          </div>
+          <h4>Whitelist Email</h4>
+          <p style="font-size:.82rem">Daftar email yang diizinkan login ke aplikasi. Admin bisa tambah atau hapus email. Email yang sedang login tidak bisa dihapus.</p>
+          <h4>Lihat Keuangan Pengguna Lain</h4>
+          <p style="font-size:.82rem">Admin bisa melihat data keuangan pengguna lain dengan klik <strong>Lihat Keuangan</strong> di samping nama user. Banner biru di atas menandai mode View-As aktif. Klik <strong>Kembali ke Data Saya</strong> untuk keluar dari mode ini.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPS -->
+    <section id="tips" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#fef9c3">&#128161;</div>
+        <div>
+          <h2>Tips &amp; Trik</h2>
+          <p style="margin:0;font-size:.875rem">Cara cerdas menggunakan Kantong Pintar</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128229; Gunakan Import CSV untuk entri massal <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Jika Anda punya riwayat transaksi dari bank atau aplikasi lain, ekspor sebagai CSV, sesuaikan kolomnya ke format Kantong Pintar (<code>date, type, category, amount, note</code>), lalu impor sekaligus. Jauh lebih cepat daripada input manual satu per satu.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128279; Link investasi ke goal untuk tracking otomatis <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Daripada hitung manual berapa porsi investasi yang &ldquo;milik&rdquo; goal tertentu, gunakan fitur Link Investasi di kartu goal. Atur persentase alokasi, dan nilai akan diperbarui otomatis setiap kali harga berubah.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128260; Manfaatkan Transaksi Rutin untuk cicilan &amp; langganan <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Set template rutin untuk semua pengeluaran tetap: gaji, cicilan KPR, listrik, Netflix, dll. Aplikasi memproses otomatis ketika tanggal jatuh tempo tiba. Dashboard akan menampilkan tagihan mendatang sehingga Anda tidak kehabisan uang tiba-tiba.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128248; Net Worth snapshot otomatis bulanan <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Setiap kunjungan pertama di bulan baru, aplikasi otomatis menyimpan snapshot net worth Anda. Tidak perlu melakukan apapun &mdash; grafik tren 6 bulan di tab Kekayaan akan terisi sendiri seiring waktu.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128270; Filter Laporan untuk analisa mendalam <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Gunakan filter Kustom di tab Laporan untuk melihat periode tertentu (misalnya Lebaran, liburan, atau saat gajian). Ubah granularity ke &ldquo;Hari&rdquo; untuk melihat pola pengeluaran harian yang detail.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128465;&#65039; Reset Seed saat ingin mulai fresh <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Saat pertama login, aplikasi mengisi beberapa goals dan investasi demo. Jika ingin mulai dengan data kosong, pergi ke Pengaturan &rarr; Rencana &rarr; Reset Seed Rencana. Ini hanya menghapus data seed, bukan data yang sudah Anda buat sendiri.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128247; Ekspor PDF untuk laporan bulanan <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Buat kebiasaan mengunduh laporan PDF setiap akhir bulan. File berisi semua grafik dan insights yang bisa Anda simpan sebagai arsip keuangan bulanan atau dibagikan ke pasangan untuk review bersama.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#128241; Tampilan mobile-friendly <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Di smartphone, tab Investasi berubah dari tabel menjadi kartu per-aset yang lebih mudah dibaca. Semua form dan filter tetap bisa diakses sepenuhnya di layar kecil.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#9997;&#65039; Catatan bisa di-link ke transaksi <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Setelah mencatat transaksi penting (pembayaran besar atau pendapatan tidak terduga), buat catatan dan link ke transaksi tersebut. Memudahkan audit di masa depan ketika Anda ingin tahu konteks di balik sebuah angka.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">&#127958; Mulai perencanaan pensiun lebih awal <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Modul Pensiun paling efektif jika digunakan mulai usia 20-an. Simulasi menunjukkan betapa besarnya perbedaan antara mulai investasi di usia 25 vs 35 berkat efek compound. Isi profil pensiun sekarang walau angkanya masih estimasi.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section anim-scroll">
+      <div class="section-header">
+        <div class="section-icon" style="background:#eff6ff">&#10067;</div>
+        <div>
+          <h2>Pertanyaan Umum (FAQ)</h2>
+          <p style="margin:0;font-size:.875rem">Jawaban untuk pertanyaan yang sering ditanyakan</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-btn">Bagaimana cara mengimpor transaksi dari bank? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Ekspor mutasi rekening dari mobile banking Anda (biasanya tersedia dalam format Excel atau CSV), kemudian konversi/rapikan kolomnya agar sesuai format yang diharapkan: <code>date</code>, <code>type</code> (pemasukan/pengeluaran), <code>category</code>, <code>amount</code>, <code>note</code>. Lalu upload melalui tombol Impor di tab Transaksi.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Apakah data saya aman dan privat? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Ya. Data tersimpan di Supabase (PostgreSQL terenkripsi) dan terisolasi per akun. Hanya Anda yang bisa mengakses data Anda. Akun admin hanya bisa diatur oleh pemilik aplikasi. Tidak ada analytics/telemetri yang mengumpulkan data finansial Anda.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Apa bedanya Aset dan Investasi? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner"><strong>Aset</strong> di tab Kekayaan adalah rekening dan properti fisik (tabungan, cash, rumah, kendaraan) yang nilainya Anda input manual. <strong>Investasi</strong> di tab Investasi adalah instrumen keuangan (saham, reksadana, emas) dengan kuantitas dan harga yang bisa diupdate. Nilai investasi otomatis masuk ke perhitungan Net Worth.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Kenapa Goal saya tidak 100% padahal uang sudah cukup? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Pastikan Anda sudah mengisi <strong>Dana Kas Terkumpul</strong> di dialog goal dan/atau <strong>link investasi</strong> ke goal tersebut. Nilai yang ditampilkan adalah Dana Kas + Nilai Investasi &times; % Alokasi. Jika investasi belum di-link, hanya dana kas yang terhitung.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Bagaimana cara mengubah status goal ke Tercapai? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Klik ikon edit (pensil) di kartu goal &rarr; ubah field <strong>Status</strong> menjadi Tercapai &rarr; Simpan. Kartu goal akan menampilkan badge hijau &ldquo;&#10003; Tercapai &#127881;&rdquo; dan teks konfirmasi di progress bar.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Apakah bisa digunakan offline? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Aplikasi menampilkan banner saat koneksi internet tidak tersedia. Data mungkin masih bisa ditampilkan dari cache browser, namun aksi yang membutuhkan koneksi (simpan transaksi, update harga, dll) tidak bisa dilakukan sampai koneksi kembali.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Mengapa halaman saya menampilkan data orang lain? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Ini adalah fitur <strong>View-As</strong> yang hanya tersedia untuk admin. Jika Anda admin dan tidak sengaja klik &ldquo;Lihat Keuangan&rdquo; pada user lain, klik banner biru di atas layar dan pilih <strong>Kembali ke Data Saya</strong>.</div></div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn">Bagaimana cara menghapus akun atau data saya? <span class="chevron">&#9660;</span></button>
+          <div class="accordion-panel"><div class="accordion-inner">Untuk menghapus data secara selektif, gunakan tombol hapus (ikon tempat sampah) di masing-masing item. Untuk menghapus akun sepenuhnya, hubungi admin aplikasi &mdash; saat ini tidak ada tombol hapus akun mandiri di UI.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div style="padding:2rem 0;text-align:center;color:var(--text-light);font-size:.8rem;border-top:1px solid var(--border);margin-top:1rem">
+      Kantong Pintar &nbsp;&middot;&nbsp; Panduan Pengguna &nbsp;&middot;&nbsp; Diperbarui Mei 2026
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Smooth scroll
+  document.querySelectorAll('.sidebar-link[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Active sidebar on scroll
+  var allSections = document.querySelectorAll('[id]');
+  var navLinks = document.querySelectorAll('.sidebar-link');
+  var sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        navLinks.forEach(function(l) { l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id); });
+      }
+    });
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  allSections.forEach(function(s) { sectionObserver.observe(s); });
+
+  // Scroll animations
+  var animObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { rootMargin: '0px 0px -60px 0px', threshold: 0.05 });
+  document.querySelectorAll('.anim-scroll').forEach(function(el) { animObs.observe(el); });
+
+  // Count-up
+  document.querySelectorAll('[data-count]').forEach(function(el) {
+    var target = parseInt(el.dataset.count, 10);
+    var n = 0;
+    var step = Math.max(1, Math.ceil(target / 20));
+    var timer = setInterval(function() {
+      n = Math.min(n + step, target);
+      el.textContent = n;
+      if (n >= target) clearInterval(timer);
+    }, 55);
+  });
+
+  // Tabs — each .tabs block is independent
+  document.querySelectorAll('.tabs').forEach(function(tabsEl) {
+    var btns = tabsEl.querySelectorAll('.tab-btn');
+    var panels = tabsEl.querySelectorAll('.tab-panel');
+    btns.forEach(function(btn, i) {
+      btn.addEventListener('click', function() {
+        btns.forEach(function(b) { b.classList.remove('active'); });
+        panels.forEach(function(p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        if (panels[i]) panels[i].classList.add('active');
+      });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var isOpen = btn.classList.contains('open');
+      btn.classList.toggle('open', !isOpen);
+      var panel = btn.nextElementSibling;
+      if (panel) panel.classList.toggle('open', !isOpen);
+    });
+  });
+
+  // Search — fade non-matching sections
+  document.getElementById('doc-search').addEventListener('input', function() {
+    var q = this.value.trim().toLowerCase();
+    document.querySelectorAll('section, #hero').forEach(function(sec) {
+      sec.style.opacity = (!q || sec.textContent.toLowerCase().includes(q)) ? '1' : '0.2';
+      sec.style.transition = 'opacity 0.25s';
+    });
+  });
+
+  // Progress bars animate on reveal
+  var progObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.progress-fill').forEach(function(f) {
+          f.style.width = f.dataset.width || '0%';
+        });
+      }
+    });
+  });
+  document.querySelectorAll('.progress-wrap').forEach(function(el) { progObs.observe(el); });
+</script>
+</body>
+</html>
