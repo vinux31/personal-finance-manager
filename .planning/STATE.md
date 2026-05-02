@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
-status: executing
-stopped_at: Phase 10 complete — fetch-prices CORS gap closed; v1.1 milestone fully verified including live SEC-01 + CONS-02
-last_updated: "2026-05-02T11:45:00.000Z"
-last_activity: 2026-05-02 -- Phase 10 complete, fetch-prices CORS allowlist updated + live UAT pass
+status: completed
+stopped_at: Phase 10 complete — v1.1 milestone fully verified including live SEC-01 + CONS-02
+last_updated: "2026-05-02T12:01:55.110Z"
+last_activity: 2026-05-02
 progress:
   total_phases: 6
   completed_phases: 6

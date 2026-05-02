@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.1 Hardening & Consistency (Shipped: 2026-05-02)
+
+**Phases completed:** 6 phases, 25 plans, 24 tasks
+
+**Key accomplishments:**
+
+- Defect.
+- Header (lines 1-23):
+- PASS-WITH-NOTES
+- Verdict:
+- File:
+- Critical #1 — enforce_goal_investment_total (FOR UPDATE+aggregate fix):
+- Tidak ada `git push` di Plan 10-01.
+
+---
+
 ## Completed
 
 ### v1.0 Financial Foundation (Shipped: 2026-04-25)
@@ -26,6 +42,7 @@
 **Known deferred items at close:** 8 (1 HIGH pre-existing bug, 1 MEDIUM blocked-by-env, 2 cosmetic UX, 4 LOW/DOC/INFO) — see `.planning/STATE.md ## Deferred Items`.
 
 **Archive files:**
+
 - `.planning/milestones/v1.0-ROADMAP.md`
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
 - `.planning/milestones/v1.0-MILESTONE-AUDIT.md`

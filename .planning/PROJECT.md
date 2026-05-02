@@ -10,20 +10,23 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 
 ## Current State
 
-**Latest milestone:** v1.0 Financial Foundation — shipped 2026-04-25 (3 days execution)
-**Production:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-04-25
-**Audit:** PASS-WITH-NOTES (15/15 requirements satisfied; 8 deferred items tracked in `.planning/STATE.md`)
-**Phase 8 complete (2026-04-29):** Dev hygiene — unsafe Recharts type cast fixed, seed.sql placeholder added, performance doc note added (DEV-02, DEV-03, DEV-04)
+**Latest milestone:** v1.1 Hardening & Consistency — shipped 2026-05-02 (6 phases, 25 plans, ~6 days execution)
+**Production:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-05-02 (Refresh Harga end-to-end)
+**Audit:** v1.1 closed clean — 16/16 requirements satisfied; tech_debt verdict (fetch-prices CORS) resolved by Phase 10
+**Tech stack stable:** React 19 + TS + Vite + Supabase (RLS + 25 migrations applied via Studio fallback) + TailwindCSS 4 + shadcn/ui
+**Codebase size:** ~32k LOC delta v1.0→v1.1 (231 files changed, +32k/-15k since v1.0)
 
-## Current Milestone: v1.1 Hardening & Consistency
+## Next Milestone: v1.2 (TBD)
 
-**Goal:** Tutup 16 finding security/race/data-integrity dari audit pasca-v1.0 (`.planning/codebase/REVIEW-2026-04-27.md`) — 3 Critical + 6 High + 7 Medium.
+Backlog kandidat per `project_v1_2_verification_backlog.md` + v1.1 audit `deferred_to_next_milestone`:
+- D-14 NUMERIC formatting in withdraw_from_goal MESSAGE (cosmetic LOW)
+- net_worth_snapshots auto-insert 42501 saat View-As aktif (LOW)
+- Phase 6 deferred UATs (5 items, MEDIUM-LOW) — perlu data state setup
+- AuthProvider .catch() gap (corrupt-localStorage path) — fresh UAT 2026-05-02
+- Migration history reconciliation (0014..0025 Local-only)
+- SEC-01 SC#3 destructive variant (perlu staging mirror)
 
-**Target areas:**
-- Security: Edge Function auth + CORS, RLS info-disclosure (profiles/allowed_emails), allowlist bootstrap protection, RPC IDOR (aggregate functions)
-- Race & data integrity: useProcessRecurring duplicate-transaction prevention, allocation_pct cross-row enforcement, seed atomicity
-- Consistency: timezone (UTC vs WIB), goal cash/investasi UX, withdraw RPC, csv view-as guard, nextDueDate parity (TS vs SQL)
-- Dev hygiene: missing seed.sql, pie-label cast, dashboard recentTx note
+Run `/gsd-new-milestone` untuk define v1.2 scope.
 
 ## Requirements
 
@@ -59,9 +62,29 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - ✓ Sisa Aman formula: pemasukan − pengeluaran − tagihan belum bayar (BILL-04) — v1.0 Phase 3+4
 - ✓ Dashboard metric card ke-5 Net Worth + widget Tagihan + mark-as-paid wiring (NAV-02) — v1.0 Phase 2+3+4
 
+<!-- v1.1 Hardening & Consistency — shipped 2026-05-02 -->
+
+- ✓ Edge function fetch-prices JWT enforcement (verify_jwt platform-layer + auth.getUser) + per-domain CORS allowlist (kantongpintar.app, www, vercel.app) — v1.1 Phase 5 + Phase 10 (SEC-01)
+- ✓ RLS profiles + allowed_emails: non-admin only sees own row; allowed_emails admin-only — v1.1 Phase 5 (SEC-02)
+- ✓ enforce_email_allowlist hardened with empty-table fallback (only initial admin can signup) — v1.1 Phase 5 (SEC-03)
+- ✓ aggregate_by_period + aggregate_by_category RPC IDOR guards (raise 42501 for cross-user access) — v1.1 Phase 5 (SEC-04)
+- ✓ process_due_recurring RPC: race-safe FOR UPDATE per template + bill_payments idempotency — v1.1 Phase 6 (RACE-01)
+- ✓ goal_investments_total_check trigger BEFORE INSERT/UPDATE FOR UPDATE — v1.1 Phase 6 (RACE-02)
+- ✓ withdraw_from_goal atomic RPC dengan FOR UPDATE row lock + status flip completed→active — v1.1 Phase 6 (RACE-03)
+- ✓ TS nextDueDate dihapus dari hot path (replaced by RPC); parity test dengan PG next_due_date_sql — v1.1 Phase 6 (DEV-01)
+- ✓ goals_with_progress VIEW (security_invoker) + add_money_to_goal_v2 considers cash + investasi totals — v1.1 Phase 7 (CONS-01)
+- ✓ todayISO() WIB-aware date utility + ESLint no-restricted-syntax rule (price_history live verified Phase 10) — v1.1 Phase 7 + Phase 10 (CONS-02)
+- ✓ seed_rencana atomic RPC + user_seed_markers (replaces localStorage) — v1.1 Phase 7 (CONS-03)
+- ✓ Reset Seed Rencana UX: localStorage key per-user — v1.1 Phase 7 (UX-01)
+- ✓ View-As CSV import gate (TransactionsTab + InvestmentsTab disabled) — v1.1 Phase 7 (UX-02)
+- ✓ Recharts pie label PieLabelRenderProps typed (no unsafe cast) — v1.1 Phase 8 (DEV-02)
+- ✓ supabase/seed.sql aligned dengan config.toml — v1.1 Phase 8 (DEV-03)
+- ✓ Performance note recentTx documented in PROJECT.md Context — v1.1 Phase 8 (DEV-04)
+- ✓ 8 QA bugs fixed (2 Critical DB triggers/RPC + 4 Medium frontend + 2 Low a11y/i18n) — v1.1 Phase 9 (QA-CRITICAL-1, QA-CRITICAL-2, QA-MEDIUM-3..6, QA-LOW-7..8)
+
 ### Active
 
-(v1.1 requirements ditulis di `.planning/REQUIREMENTS.md` setelah research selesai)
+(v1.2 requirements TBD — define via `/gsd-new-milestone`)
 
 ### Out of Scope
 
@@ -79,7 +102,8 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - **Deployment:** Vercel auto-deploy dari `master` (build time ~15-30s)
 - **Existing recurring data:** Tabel `recurring_templates` sudah ada — dipakai untuk Bills via `upcoming_bills_unpaid` view. **Audit table `bill_payments` sekarang mencatat BOTH expense AND income runs (D-04, sejak Phase 6)** — semantic note di migration 0019 menjelaskan nama tabel kept untuk back-compat dengan `mark_bill_paid` + view; rename ke `recurring_runs` adalah v1.2 backlog kalau dataset/ambiguity ganggu.
 - **Multi-user:** Admin bisa view-as user lain — fitur baru harus support ini juga
-- **Migrations:** 0001 → 0021 (21 migrations applied to cloud — v1.1 Phase 5 added 0017+0018, v1.1 Phase 6 added 0019+0020+0021)
+- **Migrations:** 0001 → 0025 (25 migrations applied to cloud — v1.1 Phase 5 added 0017+0018, Phase 6 added 0019+0020+0021, Phase 7 added 0022+0023+0024, Phase 9 added 0025_fix_goal_bugs.sql; Phase 10 was infra-only no DB)
+- **Edge Functions:** `fetch-prices` (JWT-enforced via verify_jwt=true; CORS allowlist 3 domains incl. kantongpintar.vercel.app since Phase 10)
 - **Performance:** Dashboard `recentTx` query pakai `useTransactions({ limit: 5 })` + index `transactions_date_idx` — sufficient untuk dataset < 50k rows; pertimbangkan migrasi ke materialized view jika dataset user aktif melewati threshold tersebut.
 
 ## Constraints
@@ -111,6 +135,10 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 | `goal_investments_total_check` trigger BEFORE INSERT/UPDATE FOR EACH ROW with `SUM ... FOR UPDATE` exclude-self | Race-safe cap enforcement at DB layer (RACE-02). SECURITY DEFINER for cross-row sum bypass RLS. Defense-in-depth pasangan client-side check di LinkInvestmentDialog. | ✓ Shipped (v1.1 Phase 6 — migration 0021) |
 | `withdraw_from_goal` RPC ganti optimistic lock client | Atomic withdraw, race-safe via `FOR UPDATE` row lock pada goals row. P0001 + Indonesian message dengan saldo eksplisit; status flip `completed` → `active` per D-11. | ✓ Shipped (v1.1 Phase 6 — migration 0020 + frontend refactor) |
 | Future signature changes Phase 6 functions WAJIB emit `DROP FUNCTION IF EXISTS sig` sebelum CREATE OR REPLACE | Phase 5 0017→0018 lesson: PG keys function identity on (name, arg_types). Tanpa explicit DROP, signature change → second overload, old version tetap callable via direct PostgREST → race + IDOR vector. | ✓ Documented (v1.1 Phase 6 VERIFICATION code-review checklist) |
+| RETURNS TABLE plpgsql output variables shadowing — qualify base-table refs dengan alias | withdraw_from_goal v1.1 Phase 7 hot-fix 0024: `RETURNS TABLE (current_amount NUMERIC, ...)` membuat output var conflict dengan column `goals.current_amount` → ambiguous `SELECT current_amount FROM goals`. Fix: gunakan alias `g.current_amount`. | ✓ Documented (v1.1 Phase 7 — migration 0024) |
+| Edge Function deploy via Supabase Dashboard sebagai workaround saat CLI tidak terinstall | Phase 10 lesson: dev machine tanpa `supabase` CLI tetap bisa deploy via Dashboard → Edge Functions → Code editor. Caveat: tidak ada git-source-of-truth verification (manual paste). Kandidat dev-onboarding doc v1.2. | ✓ Validated (v1.1 Phase 10) |
+| CORS allowlist drift saat domain baru — domain decision = ALLOWED_ORIGINS update di same plan/PR | Phase 10 lesson: deploy ke domain baru (kantongpintar.vercel.app) tanpa update edge function ALLOWED_ORIGINS → silent fail (OPTIONS pre-flight 200 tapi browser block POST karena Origin mismatch). Pattern: tightly couple domain change dengan CORS update. | ✓ Documented (v1.1 Phase 10) |
+| Gateway-layer JWT reject (verify_jwt=true) > handler-layer reject (defense-in-depth) | Phase 10 lesson: curl tanpa Authorization → gateway returns `{code:UNAUTHORIZED_NO_AUTH_HEADER}` dengan `Access-Control-Allow-Origin: *` (gateway, bukan handler). Handler tidak dieksekusi. CORS-echo-back assertion tidak applicable untuk request tanpa JWT. Functional auth gate intact via dual layer. | ✓ Validated (v1.1 Phase 5 + Phase 10) |
 
 ## Evolution
 
@@ -130,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 — v1.1 milestone started (Hardening & Consistency)*
+*Last updated: 2026-05-02 — v1.1 Hardening & Consistency milestone shipped (PASS, all 16 reqs satisfied)*
