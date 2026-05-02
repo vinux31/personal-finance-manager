@@ -63,7 +63,7 @@ Tabel `pay_periods` mengikuti pola RLS yang sama dengan tabel lain di project:
 
 **Catatan penting:**
 - Hanya kategori "Gaji" yang trigger dialog — insentif, bonus, dividen tidak trigger periode baru
-- Dialog muncul hanya sekali; user bisa batalkan tanpa membuat periode
+- Dialog muncul setiap kali ada transaksi Gaji baru (sekali per input event); user bisa batalkan tanpa membuat periode
 - `start_date` menggunakan tanggal transaksi (bukan `now()`) — mendukung backdating
 
 ### Contoh backdating
@@ -143,6 +143,8 @@ Hanya tambah dialog konfirmasi kecil setelah user simpan transaksi berkategori "
 | User input gaji dengan tanggal mundur (backdate) | `start_date = transaction.date`; pengeluaran yang sudah ada otomatis ter-assign ulang |
 | Belum ada `pay_period` sama sekali | Dashboard card disembunyikan; tab Periode Gaji tampilkan empty state |
 | User batalkan dialog konfirmasi | Transaksi tetap tersimpan; periode tidak dibuat |
+| Dua transaksi "Gaji" di tanggal yang sama | Validasi: jika sudah ada `pay_period` dengan `start_date` identik, dialog tidak muncul dan periode baru tidak dibuat |
+| Transaksi sebelum periode pertama dibuat | Tidak masuk ke tab Periode Gaji; tetap tampil normal di tab Transaksi. Tidak ada backfill otomatis |
 | Edit/hapus transaksi gaji setelah periode dibuat | Periode tetap ada; total pemasukan dihitung ulang dari query transaksi — otomatis akurat karena tidak ada nilai yang di-cache |
 
 ## Yang Tidak Termasuk Scope Ini
