@@ -3,9 +3,8 @@ import {
   listPayPeriods,
   createPayPeriod,
   payPeriodExistsOnDate,
-  PayPeriod,
-  PayPeriodSummary,
 } from '../db/payPeriods'
+import type { PayPeriod, PayPeriodSummary } from '../db/payPeriods'
 import { listTransactions } from '../db/transactions'
 
 export function usePayPeriods() {

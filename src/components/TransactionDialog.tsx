@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { PayPeriodConfirmDialog } from '@/components/PayPeriodConfirmDialog'
+import { payPeriodExistsOnDate } from '@/db/payPeriods'
 import {
   Dialog,
   DialogContent,
@@ -30,12 +32,23 @@ interface Props {
   editing?: Transaction | null
 }
 
+function suggestPeriodLabel(date: string): string {
+  const d = new Date(date + 'T00:00:00')
+  d.setMonth(d.getMonth() + 1)
+  const bulan = d.toLocaleString('id-ID', { month: 'long' })
+  const tahun = d.getFullYear()
+  return `Gaji ${bulan.charAt(0).toUpperCase() + bulan.slice(1)} ${tahun}`
+}
+
 export default function TransactionDialog({ open, onOpenChange, editing }: Props) {
   const [date, setDate] = useState(todayISO())
   const [type, setType] = useState<'income' | 'expense'>('expense')
   const [categoryId, setCategoryId] = useState<string>('')
   const [amountStr, setAmountStr] = useState('')
   const [note, setNote] = useState('')
+  const [showPeriodDialog, setShowPeriodDialog] = useState(false)
+  const [pendingGajiDate, setPendingGajiDate] = useState('')
+  const [suggestedPeriodLabel, setSuggestedPeriodLabel] = useState('')
 
   const { data: categories = [] } = useCategories(type)
   const create = useCreateTransaction()
@@ -84,12 +97,25 @@ export default function TransactionDialog({ open, onOpenChange, editing }: Props
         await create.mutateAsync(payload)
       }
       onOpenChange(false)
+
+      const selectedCat = categories.find((c) => c.id === Number(categoryId))
+      const isGaji =
+        selectedCat?.name === 'Gaji' && selectedCat?.type === 'income' && !editing
+      if (isGaji) {
+        const alreadyExists = await payPeriodExistsOnDate(date)
+        if (!alreadyExists) {
+          setPendingGajiDate(date)
+          setSuggestedPeriodLabel(suggestPeriodLabel(date))
+          setShowPeriodDialog(true)
+        }
+      }
     } catch {
       // error toast handled by mutation hook
     }
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
@@ -146,5 +172,12 @@ export default function TransactionDialog({ open, onOpenChange, editing }: Props
         </form>
       </DialogContent>
     </Dialog>
+    <PayPeriodConfirmDialog
+      open={showPeriodDialog}
+      onOpenChange={setShowPeriodDialog}
+      transactionDate={pendingGajiDate}
+      suggestedLabel={suggestedPeriodLabel}
+    />
+    </>
   )
 }
