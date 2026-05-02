@@ -140,6 +140,6 @@ Plans:
   3. Row baru di `price_history` table dengan `date = todayISO()` (WIB date), confirming CONS-02 todayISO write-path live.
   4. JWT enforcement tetap intact — `curl -X POST https://<project>.functions.supabase.co/fetch-prices -H 'Origin: https://kantongpintar.vercel.app' -H 'Content-Type: application/json' -d '{"investments":[]}'` (tanpa Authorization) tetap return 401 (SEC-01 regression check).
 
-**Plans:** 2 plans
-- [ ] 10-01-PLAN.md — Update `ALLOWED_ORIGINS` di `supabase/functions/fetch-prices/index.ts` + commit
+**Plans:** 1/2 plans executed
+- [x] 10-01-PLAN.md — Update `ALLOWED_ORIGINS` di `supabase/functions/fetch-prices/index.ts` + commit
 - [ ] 10-02-PLAN.md — [BLOCKING] `supabase functions deploy fetch-prices` + live UAT Refresh Harga di `kantongpintar.vercel.app` + curl SEC-01 regression smoke + write 10-VERIFICATION.md

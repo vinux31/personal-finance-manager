@@ -13,7 +13,7 @@
 
 ### Security & Access Control (SEC)
 
-- [ ] **SEC-01**: Edge function `fetch-prices` menolak request tanpa JWT valid (verify_jwt platform-layer + in-function `auth.getUser(token)`) dan CORS dibatasi per-domain (`Vary: Origin`). _Source: REVIEW C-03._
+- [x] **SEC-01**: Edge function `fetch-prices` menolak request tanpa JWT valid (verify_jwt platform-layer + in-function `auth.getUser(token)`) dan CORS dibatasi per-domain (`Vary: Origin`). _Source: REVIEW C-03._
 - [ ] **SEC-02**: User non-admin hanya bisa `SELECT` baris `profiles` miliknya sendiri; `allowed_emails` hanya readable oleh admin. RLS pakai `(SELECT auth.uid()) = id OR (SELECT public.is_admin())` pattern (statement-cached). _Source: REVIEW H-04._
 - [ ] **SEC-03**: `enforce_email_allowlist` fail-closed jika `allowed_emails` kosong — hardcoded fallback hanya admin pertama (`rinoadi28@gmail.com`) yang boleh signup, semua email lain ditolak. _Source: REVIEW H-05._
 - [ ] **SEC-04**: RPC `aggregate_by_period` & `aggregate_by_category` raise `42501` exception jika `p_user_id != auth.uid() AND NOT is_admin()`. _Source: REVIEW H-06._
