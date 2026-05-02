@@ -28,9 +28,11 @@ export async function createPayPeriod(input: {
   label: string
   start_date: string
 }): Promise<PayPeriod> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
   const { data, error } = await supabase
     .from('pay_periods')
-    .insert({ label: input.label, start_date: input.start_date })
+    .insert({ user_id: user.id, label: input.label, start_date: input.start_date })
     .select('id, user_id, label, start_date, created_at')
     .single()
   if (error) throw error
