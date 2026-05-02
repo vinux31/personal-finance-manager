@@ -36,9 +36,12 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 
 </details>
 
-### 📋 v1.2 (Planned)
+### 🚧 v1.2 (In Progress)
 
-Backlog kandidat (per `project_v1_2_verification_backlog.md` + audit `deferred_to_next_milestone`):
+**Shipped:**
+- [x] Phase 11: Periode Gaji — `pay_periods` table + PayPeriodCard Dashboard + tab Laporan Periode Gaji + PayPeriodConfirmDialog (migration 0026) — 2026-05-02 PASS
+
+**Backlog kandidat (per `project_v1_2_verification_backlog.md` + audit `deferred_to_next_milestone`):**
 
 - D-14 raw NUMERIC formatting di withdraw_from_goal MESSAGE (cosmetic LOW)
 - net_worth_snapshots auto-insert 42501 saat View-As aktif (LOW)
@@ -64,3 +67,4 @@ Define v1.2 scope dengan: `/gsd-new-milestone`
 | 8. Dev Hygiene | v1.1 | 2/2 | ✅ Complete | 2026-04-29 |
 | 9. QA Bug Fix | v1.1 | 4/4 | ✅ Complete | 2026-05-01 |
 | 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
+| 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
