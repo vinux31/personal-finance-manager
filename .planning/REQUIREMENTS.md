@@ -87,7 +87,7 @@ Mapped 2026-04-27 by gsd-roadmapper. Coverage: 16/16 requirements (100%).
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| SEC-01 | Phase 5 — Security Hardening (+ Phase 10 CORS gap closure) | TBD | pending |
+| SEC-01 | Phase 5 — Security Hardening (+ Phase 10 CORS gap closure) | 05-02, 10-01 | shipped (live-verified Phase 10) |
 | SEC-02 | Phase 5 — Security Hardening | TBD | pending |
 | SEC-03 | Phase 5 — Security Hardening | TBD | pending |
 | SEC-04 | Phase 5 — Security Hardening | TBD | pending |

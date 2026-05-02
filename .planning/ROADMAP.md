@@ -28,7 +28,7 @@ Audit verdict (PASS-WITH-NOTES): [milestones/v1.0-MILESTONE-AUDIT.md](milestones
 - [x] **Phase 6: Race & Atomicity** — Refactor recurring/withdraw ke RPC + cross-row allocation trigger (migrations 0019+0020+0021) — shipped 2026-04-29 (PASS-WITH-NOTES)
 - [ ] **Phase 7: UI/Data Consistency** — Goals total view, atomic seed, timezone ESLint rule, UX-01 + UX-02 fixes (migrations 0022-0024)
 - [ ] **Phase 8: Dev Hygiene** — Recharts type cleanup, seed.sql config, perf doc note (no DB changes)
-- [ ] **Phase 10: Fix `fetch-prices` CORS Allowlist** — Tambah `kantongpintar.vercel.app` ke `ALLOWED_ORIGINS` edge function + redeploy + live UAT Refresh Harga (gap closure dari v1.1-MILESTONE-AUDIT.md)
+- [x] **Phase 10: Fix `fetch-prices` CORS Allowlist** — Tambah `kantongpintar.vercel.app` ke `ALLOWED_ORIGINS` edge function + redeploy + live UAT Refresh Harga (gap closure dari v1.1-MILESTONE-AUDIT.md) — shipped 2026-05-02 (PASS)
 
 ## Phase Details
 
@@ -108,10 +108,12 @@ Phases execute in numeric order: 5 → 6 → 7 → 8 (Phase 5 first per blast-ra
 | 2. Net Worth Tracker | v1.0 | 3/3 | ✅ Complete | 2026-04-23 |
 | 3. Bills Display | v1.0 | 2/2 | ✅ Complete | 2026-04-24 |
 | 4. Mark-as-Paid | v1.0 | 6/6 | ✅ Complete | 2026-04-25 |
-| 5. Security Hardening | v1.1 | 0/4 | Not started | - |
-| 6. Race & Atomicity | v1.1 | 0/5 | Not started | - |
-| 7. UI/Data Consistency | v1.1 | 0/8 | Not started | - |
-| 8. Dev Hygiene | v1.1 | 0/2 | Not started | - |
+| 5. Security Hardening | v1.1 | 4/4 | ✅ Complete (PASS-WITH-NOTES) | 2026-04-28 |
+| 6. Race & Atomicity | v1.1 | 5/5 | ✅ Complete (PASS-WITH-NOTES) | 2026-04-29 |
+| 7. UI/Data Consistency | v1.1 | 8/8 | ✅ Complete (PASS-WITH-NOTES) | 2026-04-29 |
+| 8. Dev Hygiene | v1.1 | 0/2 | Deferred | - |
+| 9. QA Bug Fix | v1.1 | 4/4 | ✅ Complete | 2026-05-01 |
+| 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
 
 ### Phase 9: QA Bug Fix — Fix semua bug dari QA-FINDINGS.md
 
@@ -140,6 +142,6 @@ Plans:
   3. Row baru di `price_history` table dengan `date = todayISO()` (WIB date), confirming CONS-02 todayISO write-path live.
   4. JWT enforcement tetap intact — `curl -X POST https://<project>.functions.supabase.co/fetch-prices -H 'Origin: https://kantongpintar.vercel.app' -H 'Content-Type: application/json' -d '{"investments":[]}'` (tanpa Authorization) tetap return 401 (SEC-01 regression check).
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans executed — shipped 2026-05-02 (PASS)
 - [x] 10-01-PLAN.md — Update `ALLOWED_ORIGINS` di `supabase/functions/fetch-prices/index.ts` + commit
-- [ ] 10-02-PLAN.md — [BLOCKING] `supabase functions deploy fetch-prices` + live UAT Refresh Harga di `kantongpintar.vercel.app` + curl SEC-01 regression smoke + write 10-VERIFICATION.md
+- [x] 10-02-PLAN.md — [BLOCKING] Deploy fetch-prices via Supabase Dashboard + live UAT Refresh Harga di `kantongpintar.vercel.app` (Playwright-driven) + curl SEC-01 regression smoke + write 10-VERIFICATION.md

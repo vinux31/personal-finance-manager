@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Hardening & Consistency
 status: executing
-stopped_at: Plan 10-01 complete (cdc454f) — siap untuk Plan 10-02 deploy + live UAT
-last_updated: "2026-05-02T07:28:02.252Z"
-last_activity: 2026-05-02
+stopped_at: Phase 10 complete — fetch-prices CORS gap closed; v1.1 milestone fully verified including live SEC-01 + CONS-02
+last_updated: "2026-05-02T11:45:00.000Z"
+last_activity: 2026-05-02 -- Phase 10 complete, fetch-prices CORS allowlist updated + live UAT pass
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 25
-  completed_plans: 24
-  percent: 96
+  completed_plans: 25
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 10 — fetch-prices-cors-fix
+**Current focus:** v1.1 milestone close — all phases verified, fetch-prices CORS gap closed
 
 ## Current Position
 
-Phase: 10 (fetch-prices-cors-fix) — EXECUTING
-Plan: 2 of 2
+Phase: 10 (fetch-prices-cors-fix) — Complete (2026-05-02) PASS
+Plan: 2 of 2 complete
 Phase: 08 (dev-hygiene) — Deferred (low-priority cosmetic; no DB migrations; can ship anytime)
-Status: Ready to execute
+Status: v1.1 ready to close — `/gsd-complete-milestone v1.1`
 Last activity: 2026-05-02
 
 ## v1.1 Phase Summary
@@ -84,11 +84,20 @@ Last activity: 2026-05-02
 - **withdraw_from_goal RETURNS TABLE column ambiguity hotfix (0024).** Supabase plpgsql `RETURNS TABLE (current_amount NUMERIC, ...)` creates output variables in scope, making `SELECT current_amount FROM goals` ambiguous. Fix: qualify table columns with alias `g`. Applied as Studio hot-patch + commit `c1783d2`. **Lesson:** when writing plpgsql RETURNS TABLE, always qualify base-table column references with a table alias to avoid output-variable shadowing.
 - **Studio paste de-facto migration channel continues.** `db push` remains broken (history mismatch). Migrations 0022+0023+0024 applied via Studio SQL Editor paste. Migration list shows Local-only — accepted per prior STATE.md decision.
 - **seed_rencana creates 5 goals + 3 investments (not 5+5 as in pre-planning notes).** RPC inserts 5 goal rows + 3 investment rows. Confirmed via production UAT (Pengaturan shows "5 goals" post-re-seed). No drift from CONTEXT.md D-04.
-- **Edge Function fetch-prices CORS misconfiguration (pre-existing).** Function allows `kantongpintar.app` but app deploys to `kantongpintar.vercel.app`. Blocks live UAT-2 date verification. Deferred to v1.2.
+- **Edge Function fetch-prices CORS misconfiguration (pre-existing).** Function allows `kantongpintar.app` but app deploys to `kantongpintar.vercel.app`. Blocks live UAT-2 date verification. Deferred to v1.2 → **resolved Phase 10**.
+
+### Decisions (v1.1 execution-time, post-Phase-10)
+
+- **Phase 10 PASS.** ALLOWED_ORIGINS Set di edge function fetch-prices ditambahi `https://kantongpintar.vercel.app`; deployed via Supabase Dashboard (CLI tidak terinstall di dev machine — Dashboard editor dipakai sebagai workaround). Live UAT Refresh Harga di production browser pass via Playwright: POST /functions/v1/fetch-prices → 200, BMRI saham 4620→4390, Emas 2.683.000→2.573.515, toast "2 harga diperbarui", 0 console errors. SEC-01 regression curl smoke pass — JWT gate tetap 401 untuk request tanpa Authorization (gateway-layer reject via `verify_jwt = true`). 10-VERIFICATION.md tersedia di .planning/phases/10-fetch-prices-cors-fix/10-VERIFICATION.md.
+- **Lesson Phase 10 — CORS allowlist drift saat domain baru.** Saat memutuskan deploy app ke domain baru (Vercel default vs custom domain), edge function ALLOWED_ORIGINS harus di-update bersamaan, jika tidak browser flow yang bergantung pada edge function akan silent-fail (network 200 di OPTIONS pre-flight tapi browser block actual POST karena Origin mismatch). Pattern: domain decision → ALLOWED_ORIGINS update di same plan/PR.
+- **CONS-02 live un-blocked.** Phase 7 CONS-02 sebelumnya hanya verified static + pgTAP karena CORS block menghalangi live UAT. Phase 10 un-block live verification — row price_history id 30+31 untuk user 546627...59b3 dengan `date='2026-05-02'` (= WIB today) confirmed. CONS-02 status di REQUIREMENTS.md tetap `shipped` (Phase 7) — Phase 10 hanya menambah live evidence layer.
+- **Supabase Dashboard editor sebagai deploy fallback.** Saat dev machine tidak punya `supabase` CLI, Dashboard → Edge Functions → Code editor → Deploy adalah workaround valid. Caveat: tidak ada git-source-of-truth verification (harus disiplin paste full file dari git working tree). Kandidat doc untuk dev-onboarding di v1.2.
+- **Gateway-layer JWT reject vs handler-layer reject.** Curl POST tanpa Authorization mengembalikan `{"code":"UNAUTHORIZED_NO_AUTH_HEADER"}` dengan `Access-Control-Allow-Origin: *` — itu signature platform gateway, bukan handler `corsFor()`. Handler tidak dieksekusi karena `verify_jwt = true`. Lebih aman (defense-in-depth), tapi expectation Plan 10-02 ("CORS echo back") tidak applicable untuk request tanpa JWT — gateway tidak peduli Origin saat reject.
 
 ### Roadmap Evolution
 
 - Phase 9 added (2026-05-01): Phase 09 — QA Bug Fix: Fix semua bug dari QA-FINDINGS.md (2 Critical, 4 Medium, 2 Low). Triggered oleh full static + live audit semua 10 tab.
+- Phase 10 completed (2026-05-02): fetch-prices CORS allowlist fix — un-blocks live verification SEC-01 + CONS-02. PASS verdict.
 
 ### Pending Todos
 
@@ -113,16 +122,18 @@ None active. Phase 7 cleared all in-flight items.
 | infra | Migration history reconciliation — `supabase migration list --linked` shows 0014..0024 as Local-only because `db push` is broken in this project; revisit when staging mirror exists | open | LOW | 2026-04-28 | 05-VERIFICATION.md |
 | code | 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) | candidate-for-Phase-8 | LOW | 2026-04-25 | 05-handoff |
 | cosmetic | D-14 error message raw NUMERIC formatting in withdraw_from_goal — shows `0.00` / `100000000.000...` instead of formatted `Rp 0` / `Rp 100.000.000`. Fix: `REPLACE(TO_CHAR(ROUND(v)::BIGINT,'FM999G999G999'),',','.')` in format() call. Requires Studio hot-patch + migration update. | LOW | 2026-04-29 | 07-VERIFICATION.md |
-| infra | Edge Function `fetch-prices` CORS misconfiguration — allows `kantongpintar.app` not `kantongpintar.vercel.app`. Blocks UAT-2 live date param verification. Pre-existing, unrelated to Phase 7. | LOW | 2026-04-29 | 07-08-UAT.md UAT-2 |
+| infra | Edge Function `fetch-prices` CORS misconfiguration — allows `kantongpintar.app` not `kantongpintar.vercel.app`. Blocks UAT-2 live date param verification. Pre-existing, unrelated to Phase 7. | **resolved Phase 10** | LOW | 2026-04-29 | 07-08-UAT.md UAT-2 → 10-VERIFICATION.md |
 | test | UAT-3 fresh-signup variant not executed (no second test email in allowed_emails). Admin-reset variant accepted. pgTAP structural proofs cover idempotency. | LOW | 2026-04-29 | 07-VERIFICATION.md |
 
 ## Session Continuity
 
-Last session: 2026-05-02T07:28:02.242Z
-Stopped at: Plan 10-01 complete (cdc454f) — siap untuk Plan 10-02 deploy + live UAT
+Last session: 2026-05-02T11:45:00.000Z
+Stopped at: Phase 10 complete — v1.1 milestone fully verified including live SEC-01 + CONS-02
+Phase 10 head commit: pending Plan 10-02 close-out commit (this session)
 Phase 9 head commit: 7d648f2 (GoalsTab setFilters TS fix — triggered new Vercel bundle Dh7mdCsN)
 Resume options:
 
-  - Phase 8 (Dev Hygiene, deferred): `/gsd-plan-phase 8` — DEV-02 Recharts type, DEV-03 seed.sql, DEV-04 perf note — no DB
+  - **v1.1 close: `/gsd-complete-milestone v1.1`** — all phases verified, ready to archive ← recommended
   - v1.2 milestone: `/gsd-new-milestone` for next milestone planning
-  - No blockers. Production is stable and all 8 QA bugs fixed.
+  - Phase 8 (Dev Hygiene, deferred): `/gsd-plan-phase 8` — DEV-02 Recharts type, DEV-03 seed.sql, DEV-04 perf note — no DB
+  - No blockers. Production is stable, all 8 QA bugs fixed, fetch-prices CORS gap closed.
