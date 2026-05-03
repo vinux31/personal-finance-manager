@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw, Wallet } from 'lucide-react'
+import { Plus, Pencil, Trash2, ArrowDownCircle, ArrowUpCircle, Upload, Download, RefreshCw, Wallet, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { formatRupiah, formatDateID, todayISO, categoryLabel, currentMonthRange } from '@/lib/format'
 import TransactionDialog from '@/components/TransactionDialog'
 import RecurringListDialog from '@/components/RecurringListDialog'
@@ -42,6 +42,10 @@ export default function TransactionsTab() {
   const [recurringOpen, setRecurringOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmId, setConfirmId] = useState<number | null>(null)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
   const qc = useQueryClient()
   const { viewingAs } = useViewAs()
   const isViewAs = viewingAs !== null
@@ -56,20 +60,63 @@ export default function TransactionsTab() {
     }
   }, [activePeriod])
 
+  // Debounce search 300ms
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(t)
+  }, [search])
+
+  // Reset ke halaman 1 saat filter atau search berubah
+  useEffect(() => {
+    setPage(1)
+  }, [filters.dateFrom, filters.dateTo, filters.type, filters.categoryId, debouncedSearch])
+
+  // Ctrl+N → buka modal tambah transaksi
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.ctrlKey && e.key === 'n' && !dialogOpen && !recurringOpen && !confirmOpen) {
+        e.preventDefault()
+        setEditing(null)
+        setDialogOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [dialogOpen, recurringOpen, confirmOpen])
+
   useProcessRecurring()
 
-  const { data: rows = [], isLoading } = useTransactions(filters)
   const { data: categories = [] } = useCategories()
   const deleteTransaction = useDeleteTransaction()
 
+  // Resolve category ID yang cocok dengan search term (dari cache categories)
+  const searchCategoryIds = useMemo(() => {
+    if (!debouncedSearch || !categories.length) return []
+    const lower = debouncedSearch.toLowerCase()
+    return categories.filter((c) => c.name.toLowerCase().includes(lower)).map((c) => c.id)
+  }, [debouncedSearch, categories])
+
+  // Query 1: semua baris tanpa paginasi — untuk summary cards (income/expense/net)
+  const { data: allRows = [] } = useTransactions(filters)
+
+  // Query 2: baris terpaginasi + ter-search — untuk tabel
+  const txFilters: TransactionFilters = {
+    ...filters,
+    search: debouncedSearch || undefined,
+    searchCategoryIds: searchCategoryIds.length ? searchCategoryIds : undefined,
+    page,
+    pageSize,
+  }
+  const { data: rows = [], total, isLoading } = useTransactions(txFilters)
+
   const totals = useMemo(() => {
     let income = 0; let expense = 0
-    for (const r of rows) {
+    for (const r of allRows) {
       if (r.type === 'income') income += r.amount
       else expense += r.amount
     }
     return { income, expense, net: income - expense }
-  }, [rows])
+  }, [allRows])
 
   function onDelete(id: number) {
     setConfirmId(id)
@@ -83,6 +130,9 @@ export default function TransactionsTab() {
     [categories],
   )
 
+  const startItem = rows.length === 0 ? 0 : (page - 1) * pageSize + 1
+  const endItem = Math.min(page * pageSize, total)
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-3 gap-3">
@@ -91,7 +141,7 @@ export default function TransactionsTab() {
         <SummaryCard label="Net" value={formatRupiah(totals.net)} tone={totals.net >= 0 ? 'income' : 'expense'} />
       </div>
 
-      {/* Toolbar — filter baris 1, aksi baris 2 */}
+      {/* Toolbar — filter baris 1, aksi baris 2, search baris 3 */}
       <div className="rounded-xl border border-[#e0e7ff] bg-card p-3">
         {/* Baris 1: Filter */}
         <div className="flex flex-wrap items-end gap-2 mb-2">
@@ -130,7 +180,7 @@ export default function TransactionsTab() {
         </div>
 
         {/* Baris 2: Aksi */}
-        <div className="flex items-center justify-between gap-2 border-t border-[#e0e7ff] pt-2">
+        <div className="flex items-center justify-between gap-2 border-t border-[#e0e7ff] pt-2 mb-2">
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="h-7 text-xs text-[var(--brand)] border-[#e0e7ff]" onClick={async () => {
               const csv = await exportTransactionsCsv()
@@ -174,6 +224,17 @@ export default function TransactionsTab() {
           <Button size="sm" className="h-7 text-xs bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white" onClick={() => { setEditing(null); setDialogOpen(true) }}>
             <Plus className="h-3 w-3" />Tambah Transaksi
           </Button>
+        </div>
+
+        {/* Baris 3: Search */}
+        <div className="relative border-t border-[#e0e7ff] pt-2">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 mt-1 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            className="pl-9 h-8 text-sm"
+            placeholder="Cari catatan, kategori, jumlah..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
 
@@ -234,6 +295,36 @@ export default function TransactionsTab() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm text-muted-foreground">
+          {total === 0
+            ? 'Tidak ada transaksi'
+            : `Menampilkan ${startItem}–${endItem} dari ${total} transaksi`}
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Tampil</span>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(v) => { setPageSize(Number(v)); setPage(1) }}
+          >
+            <SelectTrigger className="h-7 w-16 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {[10, 20, 50].map((n) => (
+                <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-sm text-muted-foreground">/ hal</span>
+          <Button variant="outline" size="sm" className="h-7 text-xs" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+            <ChevronLeft className="h-4 w-4" />Prev
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 text-xs" disabled={endItem >= total} onClick={() => setPage((p) => p + 1)}>
+            Next<ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       <ConfirmDialog

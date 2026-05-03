@@ -6,7 +6,7 @@ import { parseCsv, toCsv } from '@/lib/csv'
 const HEADER = ['date', 'type', 'category', 'amount', 'note']
 
 export async function exportTransactionsCsv(): Promise<string> {
-  const rows = await listTransactions()
+  const { data: rows } = await listTransactions()
   const body = rows.map((r) => [
     r.date,
     r.type,

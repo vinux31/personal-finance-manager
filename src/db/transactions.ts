@@ -16,6 +16,10 @@ export interface TransactionFilters {
   type?: 'income' | 'expense' | ''
   categoryId?: number | null
   limit?: number
+  search?: string
+  searchCategoryIds?: number[]
+  page?: number
+  pageSize?: number
 }
 
 export interface TransactionInput {
@@ -30,10 +34,16 @@ type ListTransactionsRow = Omit<Transaction, 'category_name'> & {
   categories: { name: string } | null
 }
 
-export async function listTransactions(f: TransactionFilters = {}, uid?: string): Promise<Transaction[]> {
+export async function listTransactions(
+  f: TransactionFilters = {},
+  uid?: string,
+): Promise<{ data: Transaction[]; total: number }> {
   let query = supabase
     .from('transactions')
-    .select('id, date, type, category_id, amount, note, categories!transactions_category_id_fkey(name)')
+    .select(
+      'id, date, type, category_id, amount, note, categories!transactions_category_id_fkey(name)',
+      { count: 'exact' },
+    )
     .order('date', { ascending: false })
     .order('id', { ascending: false })
 
@@ -44,13 +54,32 @@ export async function listTransactions(f: TransactionFilters = {}, uid?: string)
   if (f.categoryId != null) query = query.eq('category_id', f.categoryId)
   if (f.limit) query = query.limit(f.limit)
 
-  const { data, error } = await query
+  if (f.search) {
+    const term = `%${f.search}%`
+    const parts = [`note.ilike.${term}`, `amount::text.ilike.${term}`]
+    if (f.searchCategoryIds?.length) {
+      parts.push(`category_id.in.(${f.searchCategoryIds.join(',')})`)
+    }
+    query = query.or(parts.join(','))
+  }
+
+  if (f.page != null) {
+    const ps = f.pageSize ?? 20
+    const offset = (f.page - 1) * ps
+    query = query.range(offset, offset + ps - 1)
+  }
+
+  const { data, error, count } = await query
   if (error) throw error
 
-  return ((data as unknown as ListTransactionsRow[]) ?? []).map(({ categories, ...rest }) => ({
-    ...rest,
-    category_name: categories?.name ?? '',
-  }))
+  const mapped = ((data as unknown as ListTransactionsRow[]) ?? []).map(
+    ({ categories, ...rest }) => ({
+      ...rest,
+      category_name: categories?.name ?? '',
+    }),
+  )
+
+  return { data: mapped, total: count ?? 0 }
 }
 
 export async function createTransaction(t: TransactionInput): Promise<number> {

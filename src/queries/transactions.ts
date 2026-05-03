@@ -16,11 +16,16 @@ export { type Transaction, type TransactionFilters, type TransactionInput }
 
 export function useTransactions(filters: TransactionFilters = {}) {
   const uid = useTargetUserId()
-  return useQuery({
+  const query = useQuery({
     queryKey: ['transactions', filters, uid],
     queryFn: () => listTransactions(filters, uid),
     enabled: !!uid,
   })
+  return {
+    ...query,
+    data: query.data?.data ?? ([] as Transaction[]),
+    total: query.data?.total ?? 0,
+  }
 }
 
 export function useCreateTransaction() {

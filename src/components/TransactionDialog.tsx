@@ -23,7 +23,7 @@ import {
 import { type Transaction } from '@/queries/transactions'
 import { useCreateTransaction, useUpdateTransaction } from '@/queries/transactions'
 import { useCategories } from '@/queries/categories'
-import { todayISO, parseRupiah, formatRupiah, categoryLabel } from '@/lib/format'
+import { todayISO, parseRupiah, formatRupiah } from '@/lib/format'
 import { toast } from 'sonner'
 
 interface Props {
@@ -147,7 +147,7 @@ export default function TransactionDialog({ open, onOpenChange, editing }: Props
                 <SelectTrigger id="tx-cat"><SelectValue placeholder="Pilih kategori" /></SelectTrigger>
                 <SelectContent>
                   {categories.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>{categoryLabel(c)}</SelectItem>
+                    <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

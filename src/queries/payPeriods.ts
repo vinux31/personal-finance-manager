@@ -31,7 +31,7 @@ export function usePayPeriodSummaries() {
 
   const txQuery = useQuery({
     queryKey: ['transactions', 'all'],
-    queryFn: () => listTransactions(),
+    queryFn: () => listTransactions().then((r) => r.data),
     enabled: (periodsQuery.data?.length ?? 0) > 0,
   })
 
@@ -82,7 +82,7 @@ export function usePayPeriodTransactions(
     queryKey: ['transactions', 'period', period?.id],
     queryFn: async () => {
       if (!period) return []
-      const all = await listTransactions({ dateFrom: period.start_date })
+      const { data: all } = await listTransactions({ dateFrom: period.start_date })
       return endDate ? all.filter((tx) => tx.date < endDate) : all
     },
     enabled: !!period,
