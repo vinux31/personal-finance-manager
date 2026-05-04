@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase'
 import { todayISO } from '@/lib/format'
 
+export type GoldSource = 'pegadaian' | 'spot' | 'manual'
+
 export interface Investment {
   id: number
   asset_type: string
@@ -10,6 +12,7 @@ export interface Investment {
   current_price: number | null
   buy_date: string
   note: string | null
+  gold_source: GoldSource | null
 }
 
 export interface InvestmentInput {
@@ -20,6 +23,7 @@ export interface InvestmentInput {
   current_price: number | null
   buy_date: string
   note: string | null
+  gold_source: GoldSource | null
 }
 
 export interface PriceHistoryEntry {
@@ -45,7 +49,7 @@ export async function listInvestments(f: InvestmentFilters | string = {}, uid?: 
   const resolvedUid = typeof f === 'string' ? f : uid
   let query = supabase
     .from('investments')
-    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note, gold_source')
     .gt('quantity', 0)
     .order('buy_date', { ascending: false })
     .order('id', { ascending: false })
@@ -60,7 +64,7 @@ export async function listInvestments(f: InvestmentFilters | string = {}, uid?: 
 export async function getInvestment(id: number): Promise<Investment | null> {
   const { data, error } = await supabase
     .from('investments')
-    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note')
+    .select('id, asset_type, asset_name, quantity, buy_price, current_price, buy_date, note, gold_source')
     .eq('id', id)
     .maybeSingle()
   if (error) throw error
@@ -81,6 +85,7 @@ export async function createInvestment(i: InvestmentInput): Promise<number> {
       current_price: i.current_price,
       buy_date: i.buy_date,
       note: i.note,
+      gold_source: i.gold_source,
     })
     .select('id')
     .single()
@@ -111,6 +116,7 @@ export async function updateInvestment(id: number, i: InvestmentInput): Promise<
       current_price: i.current_price,
       buy_date: i.buy_date,
       note: i.note,
+      gold_source: i.gold_source,
     })
     .eq('id', id)
   if (error) throw error
@@ -179,8 +185,14 @@ export function gainLossPercent(inv: Investment): number {
   return (gainLoss(inv) / cb) * 100
 }
 
-export async function fetchPrices(investments: Pick<Investment, 'id' | 'asset_type' | 'asset_name'>[]): Promise<FetchPriceResult> {
-  const toFetch = investments.filter((i) => i.asset_type === 'Saham' || i.asset_type === 'Emas')
+export async function fetchPrices(
+  investments: Pick<Investment, 'id' | 'asset_type' | 'asset_name' | 'gold_source'>[]
+): Promise<FetchPriceResult> {
+  // Skip emas dengan gold_source='manual' — user input sendiri, tidak perlu auto-fetch
+  const toFetch = investments.filter((i) =>
+    i.asset_type === 'Saham' ||
+    (i.asset_type === 'Emas' && i.gold_source !== 'manual')
+  )
   if (toFetch.length === 0) return { results: [], errors: [] }
 
   const { data, error } = await supabase.functions.invoke('fetch-prices', {

@@ -17,13 +17,14 @@ import {
   type InvestmentInput,
   type InvestmentFilters,
   type PriceHistoryEntry,
+  type GoldSource,
 } from '@/db/investments'
 import { mapSupabaseError } from '@/lib/errors'
 import { todayISO } from '@/lib/format'
 import { useTargetUserId } from '@/auth/useTargetUserId'
 
 export { costBasis, currentValue, gainLoss, gainLossPercent }
-export { type Investment, type InvestmentInput, type InvestmentFilters, type PriceHistoryEntry }
+export { type Investment, type InvestmentInput, type InvestmentFilters, type PriceHistoryEntry, type GoldSource }
 
 export function useInvestments(filters: InvestmentFilters = {}) {
   const uid = useTargetUserId()

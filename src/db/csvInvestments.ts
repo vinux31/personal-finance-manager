@@ -2,7 +2,7 @@ import { listInvestments } from './investments'
 import { supabase } from '@/lib/supabase'
 import { parseCsv, toCsv } from '@/lib/csv'
 
-const HEADER = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'current_price', 'buy_date', 'note']
+const HEADER = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'current_price', 'buy_date', 'note', 'gold_source']
 
 export async function exportInvestmentsCsv(): Promise<string> {
   const rows = await listInvestments()
@@ -14,6 +14,7 @@ export async function exportInvestmentsCsv(): Promise<string> {
     r.current_price != null ? String(r.current_price) : '',
     r.buy_date,
     r.note ?? '',
+    r.gold_source ?? '',
   ])
   return toCsv([HEADER, ...body])
 }
@@ -37,6 +38,7 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
     current_price: header.indexOf('current_price'),
     buy_date: header.indexOf('buy_date'),
     note: header.indexOf('note'),
+    gold_source: header.indexOf('gold_source'),
   }
   const required: Array<keyof typeof col> = ['asset_type', 'asset_name', 'quantity', 'buy_price', 'buy_date']
   for (const k of required) {
@@ -44,7 +46,7 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
   }
 
   const result: ImportResult = { inserted: 0, skipped: 0, errors: [] }
-  type ValidRow = { asset_type: string; asset_name: string; quantity: number; buy_price: number; current_price: number | null; buy_date: string; note: string | null }
+  type ValidRow = { asset_type: string; asset_name: string; quantity: number; buy_price: number; current_price: number | null; buy_date: string; note: string | null; gold_source: 'pegadaian' | 'spot' | 'manual' | null }
   const valid: ValidRow[] = []
 
   for (let i = 1; i < rows.length; i++) {
@@ -66,7 +68,14 @@ export async function importInvestmentsCsv(text: string): Promise<ImportResult> 
       if (!(buy_price > 0)) throw new Error('buy_price harus > 0')
       if (!/^\d{4}-\d{2}-\d{2}$/.test(buy_date)) throw new Error('buy_date harus YYYY-MM-DD')
 
-      valid.push({ asset_type, asset_name, quantity, buy_price, current_price, buy_date, note: note || null })
+      // Default behavior: emas tanpa kolom gold_source di CSV → 'manual'
+      // (paling aman; user bisa edit per row kalau mau switch ke pegadaian/spot)
+      const goldSourceRaw = col.gold_source >= 0 ? (r[col.gold_source] ?? '').trim().toLowerCase() : ''
+      const gold_source: 'pegadaian' | 'spot' | 'manual' | null = asset_type === 'Emas'
+        ? (['pegadaian', 'spot', 'manual'].includes(goldSourceRaw) ? (goldSourceRaw as 'pegadaian' | 'spot' | 'manual') : 'manual')
+        : null
+
+      valid.push({ asset_type, asset_name, quantity, buy_price, current_price, buy_date, note: note || null, gold_source })
     } catch (e) {
       result.skipped++
       result.errors.push({ line: i + 1, message: String(e instanceof Error ? e.message : e) })

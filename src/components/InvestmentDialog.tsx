@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { type Investment } from '@/queries/investments'
+import { type Investment, type InvestmentInput, type GoldSource } from '@/queries/investments'
 import { useCreateInvestment, useUpdateInvestment, useAssetTypes } from '@/queries/investments'
 import { todayISO, parseRupiah, formatRupiah } from '@/lib/format'
 import { toast } from 'sonner'
@@ -40,6 +40,7 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
   const [currentPriceStr, setCurrentPriceStr] = useState('')
   const [buyDate, setBuyDate] = useState(todayISO())
   const [note, setNote] = useState('')
+  const [goldSourceSel, setGoldSourceSel] = useState<GoldSource>('pegadaian')
 
   const { data: assetTypes = [] } = useAssetTypes()
   const create = useCreateInvestment()
@@ -57,6 +58,7 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       setCurrentPriceStr(editing.current_price != null ? String(editing.current_price) : '')
       setBuyDate(editing.buy_date)
       setNote(editing.note ?? '')
+      setGoldSourceSel(editing.gold_source ?? 'pegadaian')
     } else {
       setAssetTypeSel('Saham')
       setCustomType('')
@@ -66,6 +68,7 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       setCurrentPriceStr('')
       setBuyDate(todayISO())
       setNote('')
+      setGoldSourceSel('pegadaian')
     }
   }, [open, editing])
 
@@ -79,7 +82,11 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       toast.error('Lengkapi jenis, nama, tanggal, kuantitas (> 0), harga beli (> 0)')
       return
     }
-    const payload = {
+    if (finalType === 'Emas' && !['pegadaian', 'spot', 'manual'].includes(goldSourceSel)) {
+      toast.error('Pilih sumber harga emas')
+      return
+    }
+    const payload: InvestmentInput = {
       asset_type: finalType,
       asset_name: assetName.trim(),
       quantity: qty,
@@ -87,6 +94,7 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
       current_price: currentPrice,
       buy_date: buyDate,
       note: note.trim() || null,
+      gold_source: finalType === 'Emas' ? goldSourceSel : null,
     }
     try {
       if (editing) {
@@ -128,6 +136,25 @@ export default function InvestmentDialog({ open, onOpenChange, editing }: Props)
               <Label htmlFor="inv-name">Nama Aset</Label>
               <Input id="inv-name" placeholder="Contoh: BBCA, Reksadana ABC" value={assetName} onChange={(e) => setAssetName(e.target.value)} />
             </div>
+
+            {(assetTypeSel === 'Emas' || (assetTypeSel === CUSTOM && customType.trim() === 'Emas')) && (
+              <div className="grid gap-2">
+                <Label>Sumber Harga</Label>
+                <Select value={goldSourceSel} onValueChange={(v) => setGoldSourceSel(v as GoldSource)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pegadaian">Pegadaian Tabungan Emas (auto-refresh)</SelectItem>
+                    <SelectItem value="spot">Spot Internasional (auto-refresh)</SelectItem>
+                    <SelectItem value="manual">Manual (saya input sendiri)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {goldSourceSel === 'pegadaian' && 'Harga buyback Pegadaian — match dengan app Pegadaian Digital/Tring.'}
+                  {goldSourceSel === 'spot' && 'Harga emas dunia × kurs USD/IDR. Untuk emas non-Pegadaian (perkiraan).'}
+                  {goldSourceSel === 'manual' && 'Tombol Refresh Harga akan skip aset ini. Input manual via Edit atau Update Harga.'}
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-2">
