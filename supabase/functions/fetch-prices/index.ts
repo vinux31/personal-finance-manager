@@ -197,21 +197,22 @@ async function fetchEmasPrice(): Promise<number> {
 }
 
 async function fetchPegadaianBuyback(): Promise<number> {
-  const res = await fetch('https://sahabat.pegadaian.co.id/harga-emas', {
+  // API JSON resmi Pegadaian Tabungan Emas (ditemukan via inspect network di
+  // halaman sahabat.pegadaian.co.id/harga-emas — Nuxt SPA fetch dari endpoint ini).
+  // Response shape: { data: { hargaJual: "25920", hargaBeli: "27010", ... } }
+  // hargaJual = harga buyback per 0,01 gram → ×100 = per gram.
+  const res = await fetch('https://sahabat.pegadaian.co.id/gold/prices/savings', {
     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; KantongPintar/1.0)' },
   })
   if (!res.ok) throw new Error(`Pegadaian fetch error: ${res.status}`)
-  const html = await res.text()
+  const json = await res.json()
 
-  // Cari label "Buyback" lalu angka terdekat dalam format "Rp X.XXX / 0,01 gram".
-  // Bound 300 char: cegah false-match kalau Pegadaian ubah layout drastis.
-  const m = html.match(/Buyback[\s\S]{0,300}?Rp\s*([\d.]+)\s*\/\s*0[,.]01\s*gram/i)
-  if (!m) throw new Error('Harga buyback Pegadaian tidak ditemukan di halaman')
+  const hargaJual = json?.data?.hargaJual
+  if (!hargaJual) throw new Error('hargaJual tidak ditemukan di response Pegadaian')
 
-  // Format website: "Rp 25.920 / 0,01 gram" → 25920 → ×100 = 2.592.000 per gram
-  const pricePer001g = Number(m[1].replace(/\./g, ''))
+  const pricePer001g = Number(hargaJual)
   if (!Number.isFinite(pricePer001g) || pricePer001g <= 0) {
-    throw new Error(`Parse harga gagal: ${m[1]}`)
+    throw new Error(`Parse harga gagal: ${hargaJual}`)
   }
-  return pricePer001g * 100
+  return pricePer001g * 100  // → per gram
 }
