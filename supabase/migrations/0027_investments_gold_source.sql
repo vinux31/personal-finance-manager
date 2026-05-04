@@ -5,12 +5,13 @@
 --   spot      → metals.dev (logic existing, untuk emas non-Pegadaian)
 --   manual    → skip auto-fetch, user input current_price sendiri
 
-ALTER TABLE investments ADD COLUMN gold_source TEXT;
+-- Idempotent: aman dijalankan ulang
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS gold_source TEXT;
 
 -- Backfill DULU sebelum CHECK supaya constraint tidak fail di apply
 UPDATE investments
   SET gold_source = 'pegadaian'
-  WHERE asset_type = 'Emas' AND asset_name ILIKE '%pegadaian%';
+  WHERE asset_type = 'Emas' AND asset_name ILIKE '%pegadaian%' AND gold_source IS NULL;
 
 UPDATE investments
   SET gold_source = 'manual'
@@ -19,13 +20,18 @@ UPDATE investments
 -- CHECK loose: untuk non-emas bebas (NULL atau leftover), untuk emas WAJIB
 -- salah satu dari 3 value valid. App-level validation di InvestmentDialog
 -- harus pastikan dropdown terisi sebelum submit supaya error tidak bocor.
+ALTER TABLE investments DROP CONSTRAINT IF EXISTS gold_source_valid_for_emas;
 ALTER TABLE investments ADD CONSTRAINT gold_source_valid_for_emas CHECK (
   asset_type <> 'Emas' OR gold_source IN ('pegadaian', 'spot', 'manual')
 );
 
 -- Update seed function 0022: signup user baru harus dapat row Emas dengan
 -- gold_source='pegadaian', kalau tidak CHECK akan fail dan transaction rollback.
-CREATE OR REPLACE FUNCTION seed_rencana(p_user_id UUID)
+-- DROP dulu karena parameter name berubah dari existing (p_uid) ke p_user_id —
+-- CREATE OR REPLACE tidak izin rename parameter.
+DROP FUNCTION IF EXISTS seed_rencana(uuid);
+
+CREATE FUNCTION seed_rencana(p_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
