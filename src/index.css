@@ -88,6 +88,11 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    /* Sidebar — override ke warna brand */
+    --sidebar-accent: var(--brand-light);
+    --sidebar-accent-foreground: var(--brand-dark);
+    --sidebar-primary: var(--brand);
+    --sidebar-primary-foreground: oklch(1 0 0);
     /* Pension gold accent */
     --gold: #d97706;
     --gold-light: #f59e0b;
@@ -135,6 +140,11 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    /* Sidebar — override ke warna brand (dark) */
+    --sidebar-accent: oklch(0.488 0.243 264.376 / 0.18);
+    --sidebar-accent-foreground: var(--brand);
+    --sidebar-primary: var(--brand);
+    --sidebar-primary-foreground: oklch(1 0 0);
     /* Pension gold accent */
     --gold: #d4a437;
     --gold-light: #e6bb4a;
