@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useAggregateByPeriod } from '@/queries/reports'
 import { useInvestments, costBasis, currentValue } from '@/queries/investments'
 import { useNetWorthAccounts, useNetWorthLiabilities, useNetWorthSnapshots } from '@/queries/netWorth'
-import { useGoals, goalProgress } from '@/queries/goals'
+import { useGoalsWithProgress } from '@/queries/goals'
 import { useTransactions } from '@/queries/transactions'
 import { formatRupiah, formatDateID, shortRupiah, currentMonthRange, previousMonthRange } from '@/lib/format'
 import { Progress } from '@/components/ui/progress'
@@ -21,7 +21,7 @@ export default function DashboardTab() {
 
   const { data: periodData = [] } = useAggregateByPeriod('month', month.dateFrom, month.dateTo)
   const { data: invRows = [] } = useInvestments()
-  const { data: goals = [] } = useGoals()
+  const { data: goals = [] } = useGoalsWithProgress()
   const { data: recentTx = [] } = useTransactions({ limit: 5 })
   const { data: nwAccounts = [] } = useNetWorthAccounts()
   const { data: nwLiabilities = [] } = useNetWorthLiabilities()
@@ -53,10 +53,15 @@ export default function DashboardTab() {
     return { totalModal, totalNilai, gl, pct }
   }, [invRows])
 
-  const activeGoals = useMemo(() =>
+  const dashboardGoals = useMemo(() =>
     goals
-      .filter((g) => g.status === 'active')
-      .sort((a, b) => goalProgress(b) - goalProgress(a))
+      .filter((g) => g.status !== 'paused')
+      .sort((a, b) => {
+        if (a.status !== b.status) return a.status === 'active' ? -1 : 1
+        const pctA = a.target_amount > 0 ? a.total_amount / a.target_amount : 0
+        const pctB = b.target_amount > 0 ? b.total_amount / b.target_amount : 0
+        return pctB - pctA
+      })
       .slice(0, 4),
     [goals]
   )
@@ -149,15 +154,18 @@ export default function DashboardTab() {
           )}
         </Panel>
 
-        {/* Active goals */}
-        <Panel title="Goals Aktif">
-          {activeGoals.length === 0 ? (
-            <Empty text="Belum ada goal aktif." />
+        {/* Goals */}
+        <Panel title="Goals">
+          {dashboardGoals.length === 0 ? (
+            <Empty text="Belum ada goal." />
           ) : (
             <ul className="space-y-4">
-              {activeGoals.map((g) => {
-                const pct = goalProgress(g)
-                const remaining = Math.max(0, g.target_amount - g.current_amount)
+              {dashboardGoals.map((g) => {
+                const pct = g.target_amount > 0
+                  ? Math.min(100, (g.total_amount / g.target_amount) * 100)
+                  : 0
+                const remaining = Math.max(0, g.target_amount - g.total_amount)
+                const isAchieved = g.status === 'completed' || remaining === 0
                 return (
                   <li key={g.id}>
                     <div className="mb-1 flex items-center justify-between gap-2">
@@ -166,10 +174,10 @@ export default function DashboardTab() {
                     </div>
                     <Progress value={pct} className="h-2" />
                     <div className="mt-1 flex justify-between text-xs text-muted-foreground">
-                      <span>{formatRupiah(g.current_amount)}</span>
-                      {remaining > 0
-                        ? <span>Sisa {formatRupiah(remaining)}</span>
-                        : <span className="text-emerald-600 font-medium">Tercapai</span>}
+                      <span>{formatRupiah(g.total_amount)}</span>
+                      {isAchieved
+                        ? <span className="text-emerald-600 font-medium">Tercapai 🎉</span>
+                        : <span>Sisa {formatRupiah(remaining)}</span>}
                     </div>
                   </li>
                 )
