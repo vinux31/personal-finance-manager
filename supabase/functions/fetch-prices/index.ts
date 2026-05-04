@@ -29,6 +29,7 @@ interface InvestmentInput {
   id: number
   asset_type: string
   asset_name: string
+  gold_source: 'pegadaian' | 'spot' | 'manual' | null
 }
 
 interface PriceResult {
@@ -105,14 +106,31 @@ Deno.serve(async (req) => {
     )
 
     if (emas.length > 0) {
-      try {
-        const emasPrice = await fetchEmasPrice()
-        for (const inv of emas) {
-          results.push({ id: inv.id, price: emasPrice })
+      // Routing per gold_source. null → treat sebagai 'spot' (backwards-compat
+      // untuk frontend lama yang belum kirim field).
+      const needPegadaian = emas.filter((i) => i.gold_source === 'pegadaian')
+      const needSpot = emas.filter((i) => i.gold_source === 'spot' || i.gold_source == null)
+      // gold_source='manual' → skip (frontend juga sudah filter, defensive di sini)
+
+      if (needPegadaian.length > 0) {
+        try {
+          const price = await fetchPegadaianBuyback()
+          for (const inv of needPegadaian) results.push({ id: inv.id, price })
+        } catch (e) {
+          for (const inv of needPegadaian) {
+            errors.push({ id: inv.id, asset_name: inv.asset_name, reason: String(e) })
+          }
         }
-      } catch (e) {
-        for (const inv of emas) {
-          errors.push({ id: inv.id, asset_name: inv.asset_name, reason: String(e) })
+      }
+
+      if (needSpot.length > 0) {
+        try {
+          const price = await fetchEmasPrice()
+          for (const inv of needSpot) results.push({ id: inv.id, price })
+        } catch (e) {
+          for (const inv of needSpot) {
+            errors.push({ id: inv.id, asset_name: inv.asset_name, reason: String(e) })
+          }
         }
       }
     }
@@ -176,4 +194,24 @@ async function fetchEmasPrice(): Promise<number> {
   // USD per troy oz → IDR per gram
   const pricePerGram = (xauPerOz / 31.1035) * usdIdr
   return Math.round(pricePerGram)
+}
+
+async function fetchPegadaianBuyback(): Promise<number> {
+  const res = await fetch('https://sahabat.pegadaian.co.id/harga-emas', {
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; KantongPintar/1.0)' },
+  })
+  if (!res.ok) throw new Error(`Pegadaian fetch error: ${res.status}`)
+  const html = await res.text()
+
+  // Cari label "Buyback" lalu angka terdekat dalam format "Rp X.XXX / 0,01 gram".
+  // Bound 300 char: cegah false-match kalau Pegadaian ubah layout drastis.
+  const m = html.match(/Buyback[\s\S]{0,300}?Rp\s*([\d.]+)\s*\/\s*0[,.]01\s*gram/i)
+  if (!m) throw new Error('Harga buyback Pegadaian tidak ditemukan di halaman')
+
+  // Format website: "Rp 25.920 / 0,01 gram" → 25920 → ×100 = 2.592.000 per gram
+  const pricePer001g = Number(m[1].replace(/\./g, ''))
+  if (!Number.isFinite(pricePer001g) || pricePer001g <= 0) {
+    throw new Error(`Parse harga gagal: ${m[1]}`)
+  }
+  return pricePer001g * 100
 }
