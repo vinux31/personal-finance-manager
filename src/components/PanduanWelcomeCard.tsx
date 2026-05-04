@@ -1,9 +1,9 @@
 import { ArrowRight, BookOpen } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { usePanduanStore } from '@/lib/panduanStore'
 
 export default function PanduanWelcomeCard() {
-  const { openPanduan } = usePanduanStore()
+  const navigate = useNavigate()
 
   return (
     <div className="rounded-xl border border-[var(--brand-muted)] bg-card p-5">
@@ -22,7 +22,7 @@ export default function PanduanWelcomeCard() {
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button onClick={() => openPanduan()}>
+        <Button onClick={() => navigate('/panduan')}>
           Lihat Panduan Lengkap
           <ArrowRight className="h-4 w-4" />
         </Button>
