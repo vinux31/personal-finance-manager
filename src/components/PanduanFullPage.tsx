@@ -10,8 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { usePanduanStore } from '@/lib/panduanStore'
-import { useTabStore } from '@/lib/tabStore'
+import { useNavigate, useParams } from 'react-router-dom'
 import { PANDUAN_TOPICS, type PanduanTopic } from '@/content/panduan'
 
 const FITUR_TOPICS = PANDUAN_TOPICS.filter((t) => t.category === 'fitur')
@@ -26,20 +25,19 @@ function resolveActive(slug: string | null): PanduanTopic {
 }
 
 export default function PanduanFullPage() {
-  const { activeSlug, setActiveSlug, close } = usePanduanStore()
-  const { setActiveTab } = useTabStore()
+  const { slug: activeSlug = null } = useParams<{ slug?: string }>()
+  const navigate = useNavigate()
   const headingRef = useRef<HTMLHeadingElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
   const active = useMemo(() => resolveActive(activeSlug), [activeSlug])
 
   function handleBack() {
-    close()
-    setActiveTab('settings')
+    navigate('/pengaturan')
   }
 
   function handleSelectSlug(slug: string) {
-    setActiveSlug(slug)
+    navigate(`/panduan/${slug}`)
     contentRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }
 
