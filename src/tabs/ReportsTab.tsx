@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { PayPeriodList } from '@/components/PayPeriodList'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
@@ -130,15 +128,6 @@ export default function ReportsTab() {
   }
 
   return (
-    <Tabs defaultValue="laporan">
-      <TabsList className="mb-4">
-        <TabsTrigger value="laporan">Laporan</TabsTrigger>
-        <TabsTrigger value="periode-gaji">Periode Gaji</TabsTrigger>
-      </TabsList>
-      <TabsContent value="periode-gaji">
-        <PayPeriodList />
-      </TabsContent>
-      <TabsContent value="laporan">
     <div className="space-y-6">
       <div className="flex flex-wrap items-end gap-3">
         <div className="grid gap-1">
@@ -260,8 +249,6 @@ export default function ReportsTab() {
         )}
       </Panel>
     </div>
-      </TabsContent>
-    </Tabs>
   )
 }
 
