@@ -14,21 +14,14 @@ import { EmptyState } from '@/components/ui/empty-state'
 import AddMoneyDialog from '@/components/AddMoneyDialog'
 import LinkInvestmentDialog from '@/components/LinkInvestmentDialog'
 
-type GoalsTabProps = {
-  filters?: GoalFilters
-  onFiltersChange?: (f: GoalFilters) => void
-}
-
-export default function GoalsTab({ filters: filtersProp, onFiltersChange }: GoalsTabProps = {}) {
+export default function GoalsTab() {
   const [editing, setEditing] = useState<Goal | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [addMoneyFor, setAddMoneyFor] = useState<GoalWithProgress | null>(null)
   const [addMoneyOpen, setAddMoneyOpen] = useState(false)
   const [linkFor, setLinkFor] = useState<Goal | null>(null)
   const [linkOpen, setLinkOpen] = useState(false)
-  const [localFilters, setLocalFilters] = useState<GoalFilters>({})
-  const filters = filtersProp ?? localFilters
-  const setFilters = onFiltersChange ?? setLocalFilters
+  const [filters, setFilters] = useState<GoalFilters>({})
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmGoal, setConfirmGoal] = useState<Goal | null>(null)
 
