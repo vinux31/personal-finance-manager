@@ -12,17 +12,33 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { NAV_GROUPS } from './navConfig'
+import { NAV_GROUPS, type NavBadge } from './navConfig'
+import { useRecurringDueCount } from '@/queries/recurringDueCount'
+
+function BadgeValue({ badge }: { badge: NavBadge }) {
+  const recurringDue = useRecurringDueCount()
+  if (badge === 'recurring-due') {
+    if (recurringDue <= 0) return null
+    return (
+      <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground group-data-[collapsible=icon]:hidden">
+        {recurringDue > 99 ? '99+' : recurringDue}
+      </span>
+    )
+  }
+  return null
+}
 
 function SidebarNavItem({
   to,
   label,
   Icon,
+  badge,
   onNavigate,
 }: {
   to: string
   label: string
   Icon: LucideIcon
+  badge?: NavBadge
   onNavigate: () => void
 }) {
   const location = useLocation()
@@ -43,6 +59,7 @@ function SidebarNavItem({
         >
           <Icon />
           <span>{label}</span>
+          {badge && <BadgeValue badge={badge} />}
         </a>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -77,16 +94,20 @@ export default function AppSidebar() {
 
       <SidebarContent>
         {NAV_GROUPS.map((group, idx) => (
-          <SidebarGroup key={idx}>
+          <SidebarGroup
+            key={idx}
+            className={group.isFooter ? 'mt-auto border-t border-sidebar-border pt-2' : undefined}
+          >
             {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map(({ to, label, icon: Icon }) => (
+                {group.items.map(({ to, label, icon: Icon, badge }) => (
                   <SidebarNavItem
                     key={to}
                     to={to}
                     label={label}
                     Icon={Icon}
+                    badge={badge}
                     onNavigate={() => setOpenMobile(false)}
                   />
                 ))}
