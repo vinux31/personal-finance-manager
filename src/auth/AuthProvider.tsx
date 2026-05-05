@@ -49,6 +49,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         upsertProfile(data.session.user.id, data.session.user.user_metadata)
       }
       setLoading(false)
+    }).catch((err) => {
+      // Sync TypeError dari gotrue-js _recoverAndRefresh saat localStorage value bukan JSON valid
+      // (mis. corrupt sb-*-auth-token jadi raw string). Tidak ter-tangkap di .then({error}) karena
+      // dilempar sebelum Promise resolve.
+      console.error('[AuthProvider] getSession threw:', err)
+      toast.error('Sesi berakhir, silakan login kembali')
+      supabase.auth.signOut()
+      setSession(null)
+      setIsAdmin(false)
+      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
