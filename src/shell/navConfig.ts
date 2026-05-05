@@ -1,24 +1,31 @@
 import {
   LayoutDashboard,
   Wallet,
+  Calendar,
   BarChart3,
   StickyNote,
   TrendingUp,
-  PiggyBank,
+  Landmark,
   Target,
+  PiggyBank,
+  BookOpen,
   Settings as SettingsIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+
+export type NavBadge = 'recurring-due'
 
 export type NavItem = {
   to: string
   label: string
   icon: LucideIcon
+  badge?: NavBadge
 }
 
 export type NavGroup = {
   label?: string
   items: NavItem[]
+  isFooter?: boolean
 }
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -28,20 +35,31 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Keuangan',
     items: [
-      { to: '/transaksi', label: 'Transaksi', icon: Wallet },
+      { to: '/transaksi', label: 'Transaksi', icon: Wallet, badge: 'recurring-due' },
+      { to: '/periode-gaji', label: 'Periode Gaji', icon: Calendar },
       { to: '/laporan', label: 'Laporan', icon: BarChart3 },
       { to: '/catatan', label: 'Catatan', icon: StickyNote },
     ],
   },
   {
-    label: 'Kekayaan',
+    label: 'Aset',
     items: [
       { to: '/investasi', label: 'Investasi', icon: TrendingUp },
-      { to: '/pensiun', label: 'Pensiun', icon: PiggyBank },
-      { to: '/finansial', label: 'Finansial', icon: Target },
+      { to: '/kekayaan', label: 'Kekayaan', icon: Landmark },
     ],
   },
   {
-    items: [{ to: '/pengaturan', label: 'Pengaturan', icon: SettingsIcon }],
+    label: 'Tujuan',
+    items: [
+      { to: '/goals', label: 'Goals', icon: Target },
+      { to: '/pensiun', label: 'Pensiun', icon: PiggyBank },
+    ],
+  },
+  {
+    isFooter: true,
+    items: [
+      { to: '/panduan', label: 'Panduan', icon: BookOpen },
+      { to: '/pengaturan', label: 'Pengaturan', icon: SettingsIcon },
+    ],
   },
 ]
