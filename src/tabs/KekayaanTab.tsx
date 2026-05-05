@@ -38,6 +38,7 @@ import {
 import { insertSnapshotIfNeeded } from '@/db/netWorth'
 import { useInvestments, currentValue } from '@/queries/investments'
 import { useTargetUserId } from '@/auth/useTargetUserId'
+import { useViewAs } from '@/auth/useViewAs'
 import { formatRupiah, shortRupiah } from '@/lib/format'
 import NetWorthAccountDialog from '@/components/NetWorthAccountDialog'
 import NetWorthLiabilityDialog from '@/components/NetWorthLiabilityDialog'
@@ -91,6 +92,7 @@ export default function KekayaanTab() {
   } | null>(null)
 
   const uid = useTargetUserId()
+  const { viewingAs } = useViewAs()
   const { data: accounts = [], isLoading: accountsLoading } = useNetWorthAccounts()
   const { data: liabilities = [], isLoading: liabilitiesLoading } = useNetWorthLiabilities()
   const { data: investments = [] } = useInvestments()
@@ -113,15 +115,16 @@ export default function KekayaanTab() {
   const totalAset = totalAccounts + totalInvestments
   const netWorth = totalAset - totalLiabilities
 
-  // Auto-snapshot (NW-07) with loading guard (Pitfall 2)
+  // Auto-snapshot (NW-07) with loading guard (Pitfall 2).
+  // Skip saat View-As: insert ke net_worth_snapshots dengan target user_id ditolak RLS (42501).
   useEffect(() => {
-    if (!uid || accountsLoading || liabilitiesLoading) return
+    if (!uid || accountsLoading || liabilitiesLoading || viewingAs !== null) return
     const now = new Date()
     const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
     insertSnapshotIfNeeded(uid, monthKey, totalAccounts, totalInvestments, totalLiabilities).catch(
       (err) => console.error('snapshot insert failed', err),
     )
-  }, [uid, accountsLoading, liabilitiesLoading, totalAccounts, totalInvestments, totalLiabilities])
+  }, [uid, viewingAs, accountsLoading, liabilitiesLoading, totalAccounts, totalInvestments, totalLiabilities])
 
   // Chart data: last 6 snapshots sorted ASC
   const chartData = useMemo(
