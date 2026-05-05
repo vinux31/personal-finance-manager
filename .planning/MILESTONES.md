@@ -1,22 +1,40 @@
 # Milestones
 
-## v1.1 Hardening & Consistency (Shipped: 2026-05-02)
+## Completed
 
-**Phases completed:** 6 phases, 25 plans, 24 tasks
+### v1.1 Hardening & Consistency (Shipped: 2026-05-02)
+
+**Phases completed:** 6 phases · 25 plans · 24 tasks
+
+**Goal:** Tutup 16 finding security/race/data-integrity dari audit pasca-v1.0 (REVIEW-2026-04-27.md). Zero user-facing behavior change kecuali fix bug yang user pernah lapor (UX-01, CONS-01).
+
+**Started:** 2026-04-27 · **Shipped:** 2026-05-02 (~6 days)
+
+**Delivered:** Tutup 16 finding security/race/data-integrity dari audit pasca-v1.0 dengan zero user-facing regression. Production end-to-end verified live di kantongpintar.vercel.app.
 
 **Key accomplishments:**
 
-- Defect.
-- Header (lines 1-23):
-- PASS-WITH-NOTES
-- Verdict:
-- File:
-- Critical #1 — enforce_goal_investment_total (FOR UPDATE+aggregate fix):
-- Tidak ada `git push` di Plan 10-01.
+- Phase 5 — Security Hardening: Edge function JWT enforcement (`verify_jwt` + `auth.getUser`), per-domain CORS, RLS info-disclosure fixes (profiles + allowed_emails), allowlist bootstrap protection, RPC IDOR guards (`aggregate_by_period`/`aggregate_by_category`). 4 SEC requirements shipped. Migrations `0017_tighten_rls.sql` + in-flight patch `0018_drop_legacy_aggregates.sql`.
+- Phase 6 — Race & Atomicity: `process_due_recurring` + `withdraw_from_goal` RPCs (FOR UPDATE race-safe), `goal_investments_total_check` trigger (cross-row cap enforcement), TS `nextDueDate` dihapus dari hot path. 4 RACE+DEV requirements shipped. Migrations `0019`+`0020`+`0021`.
+- Phase 7 — UI/Data Consistency: `goals_with_progress` VIEW (cash + investasi total), atomic `seed_rencana` RPC + `user_seed_markers`, `todayISO` ESLint rule, View-As CSV gate, Reset Seed key per-user. 5 CONS+UX requirements shipped. Migrations `0022`-`0024`.
+- Phase 8 — Dev Hygiene: Recharts label type cleanup, `supabase/seed.sql` aligned, performance note recentTx documented. 3 DEV requirements shipped.
+- Phase 9 — QA Bug Fix: 8 bug dari `QA-FINDINGS.md` (2 Critical DB, 4 Medium frontend, 2 Low a11y/i18n) — migration `0025_fix_goal_bugs.sql` (trigger FOR UPDATE+aggregate fix + `add_money_to_goal` alias guard) + 6 frontend file fixes.
+- Phase 10 — fetch-prices CORS fix: Tambah `kantongpintar.vercel.app` ke `ALLOWED_ORIGINS` edge function, deploy via Supabase Dashboard, live UAT "Refresh Harga" Playwright PASS, SEC-01 regression curl smoke confirmed JWT enforcement intact.
+
+**Audit verdict:** tech_debt → resolved Phase 10 — 16/16 requirements satisfied, 6/6 phases delivered, fetch-prices CORS gap closed live. See `.planning/milestones/v1.1-MILESTONE-AUDIT.md`.
+
+**Production deploy:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-05-02 (Refresh Harga end-to-end).
+
+**Known deferred items at close:** 9 (3 code fix LOW/MEDIUM cosmetic + 5 live UAT deferred MEDIUM-LOW + 1 AuthProvider .catch gap LOW-MEDIUM) — kandidat v1.2 scope per `project_v1_2_verification_backlog.md`. Plus migration history reconciliation (0014..0025 Local-only, db push broken).
+
+**Archive files:**
+
+- `.planning/milestones/v1.1-ROADMAP.md`
+- `.planning/milestones/v1.1-REQUIREMENTS.md`
+- `.planning/milestones/v1.1-MILESTONE-AUDIT.md`
+- `.planning/milestones/v1.1-phases/` (phase directories 05-10 archived 2026-05-05)
 
 ---
-
-## Completed
 
 ### v1.0 Financial Foundation (Shipped: 2026-04-25)
 
@@ -52,4 +70,4 @@
 
 ## Active
 
-(no active milestone — `/gsd-new-milestone` to start v1.1)
+(no active milestone — `/gsd-new-milestone` to start v1.2)
