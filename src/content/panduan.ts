@@ -113,15 +113,14 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
   },
   {
     slug: 'kekayaan',
-    title: 'Finansial → Kekayaan',
+    title: 'Kekayaan (Net Worth)',
     category: 'fitur',
     summary: 'Catat aset & kewajiban untuk hitung Net Worth.',
     sections: [
       {
-        heading: 'Membuka sub-tab Kekayaan',
+        heading: 'Membuka menu Kekayaan',
         steps: [
-          { number: 1, text: 'Buka tab Finansial.' },
-          { number: 2, text: 'Pilih sub-tab "Kekayaan" (default).' },
+          { number: 1, text: 'Klik menu "Kekayaan" di grup Aset (sidebar kiri).' },
         ],
       },
       {
@@ -147,14 +146,14 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
   },
   {
     slug: 'goals',
-    title: 'Finansial → Goals',
+    title: 'Goals',
     category: 'fitur',
     summary: 'Buat target keuangan dan tabung secara berkala.',
     sections: [
       {
         heading: 'Membuat goal baru',
         steps: [
-          { number: 1, text: 'Buka tab Finansial → sub-tab Goals.' },
+          { number: 1, text: 'Buka menu Goals di grup Tujuan (sidebar kiri).' },
           { number: 2, text: 'Klik "Tambah Goal".' },
           { number: 3, text: 'Isi nama goal (mis. "Dana Darurat"), target jumlah (Rp), dan target tanggal.' },
           { number: 4, text: 'Simpan.' },
@@ -361,7 +360,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
       {
         heading: 'Membuat goal Dana Darurat',
         steps: [
-          { number: 1, text: 'Buka Finansial → Goals → "Tambah Goal".' },
+          { number: 1, text: 'Buka menu Goals → "Tambah Goal".' },
           { number: 2, text: 'Nama: "Dana Darurat".' },
           { number: 3, text: 'Target: 6× pengeluaran bulanan (cek angka di Laporan jika belum yakin).' },
           { number: 4, text: 'Target tanggal: realistis, mis. 18 bulan dari sekarang.' },
@@ -438,7 +437,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
       {
         heading: 'Menambah goal ke Rencana',
         steps: [
-          { number: 1, text: 'Buat goal sesuai kebutuhan (mis. "Nikah", "DP Rumah") di Finansial → Goals.' },
+          { number: 1, text: 'Buat goal sesuai kebutuhan (mis. "Nikah", "DP Rumah") di menu Goals.' },
           { number: 2, text: 'Beri nama persis sama dengan daftar Rencana di Pengaturan jika ingin auto-include (lihat panduan Pengaturan).' },
           { number: 3, text: 'Tambah uang ke goal seperti biasa.' },
         ],
@@ -462,7 +461,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
       {
         heading: 'Update Aset awal bulan',
         steps: [
-          { number: 1, text: 'Buka Finansial → Kekayaan di awal bulan.' },
+          { number: 1, text: 'Buka menu Kekayaan di awal bulan.' },
           { number: 2, text: 'Untuk tiap aset (rumah, mobil, deposito), update nilai estimasi terbaru.' },
           { number: 3, text: 'Tambah aset baru jika ada akuisisi sejak update terakhir.' },
         ],
@@ -478,7 +477,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
       {
         heading: 'Baca tren Net Worth',
         steps: [
-          { number: 1, text: 'Lihat angka Net Worth di header sub-tab Kekayaan: Total Aset − Total Kewajiban.' },
+          { number: 1, text: 'Lihat angka Net Worth di header menu Kekayaan: Total Aset − Total Kewajiban.' },
           { number: 2, text: 'Bandingkan dengan bulan sebelumnya — naik = aset bertambah/utang berkurang.' },
           { number: 3, text: 'Catat hasil di tab Catatan jika ingin punya log historis.' },
         ],
@@ -496,7 +495,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
         heading: 'Mendaftarkan semua hutang',
         intro: 'Tujuannya: punya satu daftar lengkap berapa total yang harus dibayar dan ke siapa.',
         steps: [
-          { number: 1, text: 'Buka Finansial → sub-tab Kekayaan.' },
+          { number: 1, text: 'Buka menu Kekayaan di grup Aset (sidebar kiri).' },
           { number: 2, text: 'Klik "Tambah Kewajiban" untuk setiap utang yang Anda miliki (KPR, KMG, kartu kredit, pinjaman pribadi, dll).' },
           { number: 3, text: 'Isi nama (mis. "KPR BTN", "Kartu Kredit Mandiri"), jenis, dan saldo terutang saat ini.' },
           { number: 4, text: 'Simpan tiap entri.' },
@@ -507,7 +506,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
         heading: 'Update saldo bulanan',
         steps: [
           { number: 1, text: 'Cek saldo terutang dari aplikasi kreditur (mis. mobile banking, billing kartu kredit).' },
-          { number: 2, text: 'Buka Kekayaan, klik entri kewajiban yang mau di-update.' },
+          { number: 2, text: 'Buka menu Kekayaan, klik entri kewajiban yang mau di-update.' },
           { number: 3, text: 'Ganti angka saldo terutang dengan nilai terbaru.' },
           { number: 4, text: 'Simpan.' },
         ],
@@ -517,7 +516,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
         heading: 'Tracking progress pelunasan',
         steps: [
           { number: 1, text: 'Bandingkan saldo bulan ini vs bulan sebelumnya — turun = pelunasan berjalan.' },
-          { number: 2, text: 'Lihat angka Total Kewajiban di header Kekayaan untuk gambaran agregat.' },
+          { number: 2, text: 'Lihat angka Total Kewajiban di header menu Kekayaan untuk gambaran agregat.' },
           { number: 3, text: 'Saat utang lunas, hapus entri agar daftar tetap rapi.' },
           { number: 4, text: 'Catat milestone pelunasan di tab Catatan jika ingin log historis.' },
         ],
@@ -534,7 +533,7 @@ export const PANDUAN_TOPICS: PanduanTopic[] = [
         heading: 'Daftarkan kredit di Kekayaan',
         intro: 'Cicilan butuh dua tracking: pembayaran rutin (transaksi keluar) + saldo pokok yang terus turun (kewajiban).',
         steps: [
-          { number: 1, text: 'Buka Finansial → Kekayaan → "Tambah Kewajiban".' },
+          { number: 1, text: 'Buka menu Kekayaan → "Tambah Kewajiban".' },
           { number: 2, text: 'Isi nama (mis. "KPR Rumah", "Cicilan Xpander"), jenis, dan saldo pokok awal kredit.' },
           { number: 3, text: 'Simpan.' },
         ],
