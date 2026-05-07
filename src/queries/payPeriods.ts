@@ -2,6 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   listPayPeriods,
   createPayPeriod,
+  updatePayPeriod,
+  deletePayPeriod,
+  countTransactionsInWindow,
   payPeriodExistsOnDate,
 } from '../db/payPeriods'
 import type { PayPeriod, PayPeriodSummary } from '../db/payPeriods'
@@ -96,6 +99,40 @@ export function useCreatePayPeriod() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['payPeriods'] })
     },
+  })
+}
+
+export function useUpdatePayPeriod() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: number; label: string }) =>
+      updatePayPeriod(input.id, { label: input.label }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payPeriods'] })
+    },
+  })
+}
+
+export function useDeletePayPeriod() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => deletePayPeriod(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payPeriods'] })
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+    },
+  })
+}
+
+export function usePayPeriodTransactionCount(
+  startDate: string | null,
+  endDate: string | null,
+) {
+  return useQuery({
+    queryKey: ['payPeriods', 'txCount', startDate, endDate],
+    queryFn: () => countTransactionsInWindow(startDate!, endDate),
+    enabled: !!startDate,
+    staleTime: 30_000,
   })
 }
 
