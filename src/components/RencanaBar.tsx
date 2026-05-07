@@ -40,9 +40,15 @@ export default function RencanaBar({ totalNilai, goals }: RencanaBarProps) {
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 text-sm font-medium text-blue-900">
           {formatRupiah(totalNilai)} / {formatRupiah(totalTarget)}
-          {bulanLagi !== null && bulanLagi > 0 && (
-            <span className="ml-1 font-normal text-blue-700">· {bulanLagi} bulan lagi</span>
-          )}
+          {bulanLagi !== null && (() => {
+            if (bulanLagi > 0) {
+              return <span className="ml-1 font-normal text-blue-700">· {bulanLagi} bulan lagi</span>
+            }
+            if (bulanLagi === 0) {
+              return <span className="ml-1 font-medium text-amber-600">· Deadline bulan ini</span>
+            }
+            return <span className="ml-1 font-medium text-red-600">· Deadline lewat {Math.abs(bulanLagi)} bulan</span>
+          })()}
         </div>
         <Progress value={progress} className="h-2" />
       </div>
