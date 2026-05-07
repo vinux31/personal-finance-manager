@@ -48,3 +48,41 @@ export async function payPeriodExistsOnDate(date: string): Promise<boolean> {
   if (error) throw error
   return data !== null
 }
+
+export async function updatePayPeriod(
+  id: number,
+  input: { label: string },
+): Promise<PayPeriod> {
+  const { data, error } = await supabase
+    .from('pay_periods')
+    .update({ label: input.label })
+    .eq('id', id)
+    .select('id, user_id, label, start_date, created_at')
+    .single()
+  if (error) throw error
+  return data as PayPeriod
+}
+
+export async function deletePayPeriod(id: number): Promise<void> {
+  const { error } = await supabase
+    .from('pay_periods')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function countTransactionsInWindow(
+  startDate: string,
+  endDate: string | null,
+): Promise<number> {
+  let query = supabase
+    .from('transactions')
+    .select('id', { count: 'exact', head: true })
+    .gte('date', startDate)
+  if (endDate) {
+    query = query.lt('date', endDate)
+  }
+  const { count, error } = await query
+  if (error) throw error
+  return count ?? 0
+}
