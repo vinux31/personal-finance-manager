@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -89,6 +90,11 @@ export function PayPeriodFormDialog(props: Props) {
           <DialogTitle>
             {isCreate ? 'Buat Periode Baru' : 'Rename Periode'}
           </DialogTitle>
+          <DialogDescription>
+            {isCreate
+              ? 'Tentukan label dan tanggal mulai periode gaji baru.'
+              : 'Ubah label periode tanpa mengubah tanggal mulainya.'}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 py-2">
