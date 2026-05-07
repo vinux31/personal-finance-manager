@@ -24,7 +24,7 @@ export default function NotesTab() {
   const page = filters.page ?? 0
   const totalPages = Math.ceil(total / PAGE_SIZE)
 
-  const { data: transactions = [] } = useTransactions({})
+  const { data: transactions = [] } = useTransactions({ limit: 50 })
   const deleteNote = useDeleteNote()
 
   function setSearch(search: string) {

@@ -32,7 +32,7 @@ export default function NoteDialog({ open, onOpenChange, editing }: Props) {
   const create = useCreateNote()
   const update = useUpdateNote()
   const saving = create.isPending || update.isPending
-  const { data: transactions = [] } = useTransactions({})
+  const { data: transactions = [] } = useTransactions({ limit: 50 })
 
   useEffect(() => {
     if (!open) return
