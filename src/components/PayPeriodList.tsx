@@ -13,10 +13,13 @@ export function PayPeriodList() {
   const [showCreateDialog, setShowCreateDialog] = useState(false)
 
   if (selected) {
+    const isOldest =
+      summaries.length > 0 && summaries[summaries.length - 1].id === selected.id
     return (
       <PayPeriodDetail
         period={selected}
         endDate={selected.end_date}
+        isOldest={isOldest}
         onBack={() => setSelected(null)}
       />
     )
