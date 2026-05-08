@@ -141,7 +141,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
-| 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete   | 2026-05-08 |
+| 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
 | 14. Protection & Tier 4 Checklists | v1.2 | 0/? | Not started | — |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
