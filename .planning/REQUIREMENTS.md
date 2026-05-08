@@ -22,16 +22,16 @@
 
 ### Diagnostic Indicators (DIAG)
 
-- [ ] **DIAG-01**: Indikator Dana Darurat dihitung dari `SUM(net_worth_accounts likuid) ÷ avg(expense bulanan, 3 bulan)`. Threshold: ≥ 6 bulan hijau, 3-5 kuning, < 3 merah. Akun likuid = type IN ('tabungan','giro','cash','dompet_digital'). _Source: design spec §4 tabel indikator._
-- [ ] **DIAG-02**: Indikator Savings Rate dihitung dari `(income − expense) ÷ income`, avg 3 bulan kalender. Threshold: ≥ 20% hijau, 10-19% kuning, < 10% merah. _Source: design spec §4._
-- [ ] **DIAG-03**: Indikator DAR Konsumtif dihitung dari `SUM(liabilities WHERE type ≠ 'kpr') ÷ aset finansial`. Threshold: < 20% hijau, 20-40% kuning, > 40% merah. DAR Total tampil sebagai info tambahan, bukan indikator warna. _Source: design spec §4 + Gap 5._
+- [x] **DIAG-01**: Indikator Dana Darurat dihitung dari `SUM(net_worth_accounts likuid) ÷ avg(expense bulanan, 3 bulan)`. Threshold: ≥ 6 bulan hijau, 3-5 kuning, < 3 merah. Akun likuid = type IN ('tabungan','giro','cash','dompet_digital'). _Source: design spec §4 tabel indikator._
+- [x] **DIAG-02**: Indikator Savings Rate dihitung dari `(income − expense) ÷ income`, avg 3 bulan kalender. Threshold: ≥ 20% hijau, 10-19% kuning, < 10% merah. _Source: design spec §4._
+- [x] **DIAG-03**: Indikator DAR Konsumtif dihitung dari `SUM(liabilities WHERE type ≠ 'kpr') ÷ aset finansial`. Threshold: < 20% hijau, 20-40% kuning, > 40% merah. DAR Total tampil sebagai info tambahan, bukan indikator warna. _Source: design spec §4 + Gap 5._
 - [ ] **DIAG-04**: Tier 1 panel berisi inline checklist Asuransi Kesehatan (single question: kantor/BPJS/pribadi/kombinasi/tidak). Hijau kalau bukan "tidak", merah kalau "tidak". _Source: design spec §4 inline checklist._
 - [ ] **DIAG-05**: Indikator Goals Long-term on-track menghitung % goals yang `current_amount/target_amount ≥ time_elapsed/total_duration`, filter `target_date > NOW() + 1 year AND status='active'`. Threshold: ≥ 75% hijau, 50-74% kuning, < 50% merah. Smart fallback CTA kalau user belum punya long-term goal. _Source: design spec §4 + Gap 3._
 - [ ] **DIAG-06**: Indikator Pensiun menghitung `pension_simulations` projection ÷ target. Threshold: ≥ 100% hijau, 70-99% kuning, < 70% merah. Smart fallback CTA kalau belum simulasi; catatan kecil kalau `updated_at > 6 bulan`. _Source: design spec §4 + Gap 4._
 - [ ] **DIAG-07**: Indikator Rasio Investasi dihitung dari `(SUM(investments value) + SUM(deposito balance)) ÷ aset finansial`. Threshold: ≥ 40% hijau, 20-39% kuning, < 20% merah. Properti & kendaraan exclude dari denominator. _Source: design spec §4._
 - [ ] **DIAG-08**: Indikator Diversifikasi dihitung dari `COUNT(DISTINCT investments.asset_type) + (1 if deposito balance > 0)`. Threshold: ≥ 3 hijau, 2 kuning, ≤ 1 merah. _Source: design spec §4._
 - [ ] **DIAG-09**: Tier 4 panel berisi smart-gated checklist — gate question "punya tanggungan?" → kalau Tidak: 3 estate basic; kalau Ya: 3 estate + 3 asuransi jiwa. _Source: design spec §4 smart-gated._
-- [ ] **DIAG-10**: Edge case data tipis (transactions < 3 bulan kalender berbeda) untuk indikator #1 dan #2 → placeholder "Butuh 3 bulan data, sudah X/3" dengan CTA `/transaksi`. Indikator placeholder tidak ikut agregasi warna tier; tier abu-abu hanya kalau semua indikator placeholder/fallback. _Source: design spec §4 edge case._
+- [x] **DIAG-10**: Edge case data tipis (transactions < 3 bulan kalender berbeda) untuk indikator #1 dan #2 → placeholder "Butuh 3 bulan data, sudah X/3" dengan CTA `/transaksi`. Indikator placeholder tidak ikut agregasi warna tier; tier abu-abu hanya kalau semua indikator placeholder/fallback. _Source: design spec §4 edge case._
 - [ ] **DIAG-11**: Empty state full (total `transactions + accounts + goals + investments` rows < 3) → welcome state piramida grayed-out + 3 quick-link CTA ke `/transaksi` / `/kekayaan` / `/goals`. Banner kalkulator + grid modul tetap accessible. _Source: design spec §4 empty state._
 - [ ] **DIAG-12**: View-As mode → semua indikator pakai data viewed-user (via `viewingAs ?? userId`). Inline form Tier 1 #4 dan Tier 4 checklist switch ke read-only mode (admin tidak boleh modify data user lain). _Source: design spec §4 View-As compatibility._
 
@@ -88,16 +88,16 @@ Kandidat untuk v1.3+:
 | STRAT-04 | Phase 15 | Pending | 6 modul sub-route + Fraunces serif |
 | STRAT-05 | Phase 15 | Pending | Kalkulator compound interest + banner |
 | STRAT-06 | Phase 15 | Pending | Glossary tooltip 8 istilah (Radix Tooltip) |
-| DIAG-01 | Phase 13 | Pending | Indikator Dana Darurat (likuid ÷ avg expense 3 bln) |
-| DIAG-02 | Phase 13 | Pending | Indikator Savings Rate (3-bulan avg) |
-| DIAG-03 | Phase 13 | Pending | Indikator DAR Konsumtif (non-KPR) + DAR Total info |
+| DIAG-01 | Phase 13 | Complete | Indikator Dana Darurat (likuid ÷ avg expense 3 bln) |
+| DIAG-02 | Phase 13 | Complete | Indikator Savings Rate (3-bulan avg) |
+| DIAG-03 | Phase 13 | Complete | Indikator DAR Konsumtif (non-KPR) + DAR Total info |
 | DIAG-04 | Phase 14 | Pending | Tier 1 inline checklist Asuransi Kesehatan |
 | DIAG-05 | Phase 13 | Pending | Goals long-term on-track + smart fallback CTA |
 | DIAG-06 | Phase 13 | Pending | Pensiun readiness + smart fallback CTA + stale notice |
 | DIAG-07 | Phase 13 | Pending | Rasio Investasi (investments + deposito) |
 | DIAG-08 | Phase 13 | Pending | Diversifikasi (DISTINCT asset_type + deposito) |
 | DIAG-09 | Phase 14 | Pending | Tier 4 smart-gated checklist (estate + asuransi jiwa) |
-| DIAG-10 | Phase 13 | Pending | Edge case data tipis #1 & #2 placeholder |
+| DIAG-10 | Phase 13 | Complete | Edge case data tipis #1 & #2 placeholder |
 | DIAG-11 | Phase 12 | Pending | Empty state full landing (grayed piramida + 3 CTA) |
 | DIAG-12 | Phase 14 | Pending | View-As read-only mode untuk inline form & checklist |
 | SCHEMA-01 | Phase 12 | Pending | Tabel `protection_checklist` + RLS |
