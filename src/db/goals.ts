@@ -9,6 +9,14 @@ export interface Goal {
   current_amount: number
   target_date: string | null
   status: GoalStatus
+  /**
+   * created_at — added 2026-05-08 for Phase 13 DIAG-05 (Tier 2 Goals on-track).
+   * Used by computeGoalsOnTrack untuk total_duration calculation.
+   * Additive change — backward compat dengan existing consumers (destructuring,
+   * Goal-shaped objects yang sudah punya created_at di DB).
+   * Column exists since migration 0001 (NOT NULL DEFAULT now()).
+   */
+  created_at: string
 }
 
 export interface GoalInput {
@@ -29,7 +37,7 @@ export async function listGoals(f: GoalFilters | string = {}, uid?: string): Pro
   const resolvedUid = typeof f === 'string' ? f : uid
   let query = supabase
     .from('goals')
-    .select('id, name, target_amount, current_amount, target_date, status')
+    .select('id, name, target_amount, current_amount, target_date, status, created_at')
     .order('status')
     .order('target_date', { ascending: true, nullsFirst: false })
     .order('id', { ascending: false })
@@ -44,7 +52,7 @@ export async function listGoals(f: GoalFilters | string = {}, uid?: string): Pro
 export async function getGoal(id: number): Promise<Goal | null> {
   const { data, error } = await supabase
     .from('goals')
-    .select('id, name, target_amount, current_amount, target_date, status')
+    .select('id, name, target_amount, current_amount, target_date, status, created_at')
     .eq('id', id)
     .maybeSingle()
   if (error) throw error
