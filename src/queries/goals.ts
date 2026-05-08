@@ -20,6 +20,18 @@ import { useTargetUserId } from '@/auth/useTargetUserId'
 export { goalProgress }
 export { type Goal, type GoalInput, type GoalStatus, type GoalFilters }
 
+/**
+ * GoalWithProgress — read shape dari `goals_with_progress` VIEW (migration 0023).
+ *
+ * Catatan: VIEW tidak expose `created_at` (Phase 13 Plan 13-03 extend Goal dengan
+ * created_at). Consumer GoalsTab/DashboardTab pakai GoalWithProgress di tempat yang
+ * expect `Goal`, jadi kita synthesize `created_at` field di mapper query hasil VIEW
+ * (fallback timestamp ISO untuk satisfy type contract — value tidak digunakan oleh
+ * consumer GoalWithProgress; computeGoalsOnTrack pakai `useGoals()` direct table).
+ *
+ * Kalau Phase berikutnya butuh real created_at di GoalWithProgress, tambah migration
+ * 00XX_goals_with_progress_v2.sql include `g.created_at` ke SELECT + GROUP BY.
+ */
 export interface GoalWithProgress extends Goal {
   total_amount: number
 }
@@ -49,7 +61,12 @@ export function useGoalsWithProgress(filters: GoalFilters = {}) {
       if (filters.status) query = query.eq('status', filters.status)
       const { data, error } = await query
       if (error) throw error
-      return data as GoalWithProgress[]
+      // VIEW goals_with_progress tidak expose created_at (migration 0023). Synthesize
+      // empty-string fallback untuk satisfy Goal type contract — value tidak digunakan
+      // oleh consumer GoalWithProgress (DashboardTab/GoalsTab cuma destructure existing
+      // fields). computeGoalsOnTrack (DIAG-05) pakai useGoals() direct table query
+      // yang include real created_at.
+      return (data ?? []).map(row => ({ ...row, created_at: '' })) as GoalWithProgress[]
     },
     enabled: !!uid,
   })
