@@ -37,7 +37,7 @@ import Tier4Panel from './Tier4Panel'
 export default function KesehatanLanding() {
   const countQuery = useTotalDataCount()
   const indikator = useIndikator()
-  const [openTier, setOpenTier] = useState<string | undefined>(undefined)
+  const [openTier, setOpenTier] = useState<string>('')
 
   const isLoading = countQuery.isLoading
   const isError = countQuery.isError

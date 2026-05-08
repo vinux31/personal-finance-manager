@@ -64,12 +64,12 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
 
         const trapezoid = (
           <div
-            className={`flex h-14 items-center justify-between gap-3 px-5 text-sm font-semibold tracking-wide ${trapezoidClass}`}
-            style={{ clipPath: 'polygon(8% 0, 92% 0, 100% 100%, 0 100%)' }}
+            className={`flex h-14 items-center justify-between gap-2 px-3 text-xs font-semibold tracking-wide sm:gap-3 sm:px-5 sm:text-sm ${trapezoidClass}`}
+            style={{ clipPath: 'polygon(5% 0, 95% 0, 100% 100%, 0 100%)' }}
           >
-            <span className="text-[10px] opacity-70">{tier.subtitle}</span>
-            <span>{tier.label}</span>
-            <span className="text-[10px] opacity-0">.</span>
+            <span className="text-[9px] opacity-70 sm:text-[10px]">{tier.subtitle}</span>
+            <span className="truncate">{tier.label}</span>
+            <span className="text-[9px] opacity-0 sm:text-[10px]">.</span>
           </div>
         )
 
