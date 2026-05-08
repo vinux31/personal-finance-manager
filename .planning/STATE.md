@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
-status: executing
-stopped_at: Completed 13-03-PLAN.md (Tier 2 TUJUAN compute + UI wrapper). Wave 2 13-04 (Tier 3) ready next.
-last_updated: "2026-05-08T08:04:49.840Z"
+status: verifying
+stopped_at: Completed 13-04-PLAN.md (Tier 3 PERTUMBUHAN compute + UI wrapper). Phase 13 Wave 2 COMPLETE — 4 plans / 2 waves shipped, 8 indikator data-driven live.
+last_updated: "2026-05-08T08:14:29.091Z"
 last_activity: 2026-05-08
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 6
-  percent: 86
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 13 (diagnostic-data-indicators) — EXECUTING
-Plan: 4 of 4
-Status: Ready to execute
+Phase: 13 (diagnostic-data-indicators) — PLANS COMPLETE
+Plan: 4 of 4 (all shipped)
+Status: Ready for phase verification (`/gsd-verify-phase 13`)
 Last activity: 2026-05-08
 
 ## v1.2 Phase Summary
@@ -36,7 +36,7 @@ Last activity: 2026-05-08
 |-------|------|--------------|--------|
 | 11 | Periode Gaji | (pre-defined v1.2 scope) | **Complete (PASS)** — 2026-05-02 |
 | 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Planned (3 plans) |
-| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | Executing — Plan 1/4 done (Wave 1 TierPanelInfra) |
+| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | **Plans complete (4/4) — Ready for verification** — 2026-05-08 |
 | 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | Not started |
 | 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
 | 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | Not started |
@@ -98,6 +98,14 @@ Last activity: 2026-05-08
 - **calcPesangon positional args** (correction dari plan skeleton): signature aktual `calcPesangon(gajiPokok: number, masaKerja: number)` — bukan object form `{ gajiPokok, masaKerja }`. Verified di `src/lib/pensiun-calc.ts` line 230.
 - **View-As pension_simulations RLS leak** (carried, untuk Phase 14 backlog): policy `auth.uid() = user_id` (no `OR is_admin()`) → admin View-As → null → DIAG-06 cta-fallback "Belum simulasi pensiun". Acceptable v1.2 (graceful degradation, no crash). Phase 14 candidate fix migration `00XX_pension_simulations_rls_admin.sql`.
 
+### Decisions (Phase 13 execute-time, Plan 13-04, 2026-05-08)
+
+- **`totalAsetFinansial` helper PROMOTED ke exported function** dari internal kesehatanTier1.ts. Plan 13-04 `computeRasioInvestasi` import langsung — denominator konsisten antara Tier 1 #3 (DAR Konsumtif), DAR Total info, dan Tier 3 #7 (Rasio Investasi). Alternative (duplicate helper di kesehatanTier3.ts yang plan skeleton sarankan) ditolak karena risk drift cross-tier.
+- **asset_type normalization (DIAG-08 Diversifikasi):** lowercase + trim sebelum `Set` DISTINCT — partial Risk 5 mitigation. "Saham BBCA" + "saham bbca" + "  Saham BBCA  " → 1 distinct ✓. Synonym dedup ("Reksadana" vs "reksa dana") TIDAK handled — defer ke v1.3 (kandidat: enum constraint migration / frontend dropdown picker / server-side synonym dictionary).
+- **Edge case aset finansial=0 → red 'compute' kind degraded display** (computeRasioInvestasi). Konsisten dengan T-13-08 pattern Plan 13-02 (DAR Konsumtif). User 0 aset masuk tier aggregation as red, BUKAN placeholder/cta-fallback (high-risk default).
+- **Closed positions skip + empty asset_type filter** (defense-in-depth): listInvestments() server-side `.gt('quantity', 0)` sebagai layer pertama; client compute layer `.filter(inv => currentValue(inv) > 0)` + `.filter(t => t.length > 0)` defensive guard.
+- **Phase 13 Wave 2 COMPLETE:** 4 plans / 2 waves shipped (13-01 infra + 13-02 Tier1 + 13-03 Tier2 + 13-04 Tier3). 8 indikator data-driven live. Helper reuse pattern (totalAsetFinansial cross-tier export) established. Tier 4 placeholder (Plan 13-01 Tier4Panel) ready untuk Phase 14 swap.
+
 ### Pending Todos
 
 None.
@@ -126,9 +134,11 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08T08:04:29.051Z
-Stopped at: Completed 13-03-PLAN.md (Tier 2 TUJUAN compute + UI wrapper). Wave 2 13-04 (Tier 3) ready next.
+Last session: 2026-05-08T08:14:29.086Z
+Stopped at: Completed 13-04-PLAN.md (Tier 3 PERTUMBUHAN compute + UI wrapper). Phase 13 Wave 2 COMPLETE — 4 plans / 2 waves shipped, 8 indikator data-driven live.
 Resume options:
 
-  - **Execute Phase 13 Wave 2 parallel: `/gsd-execute-phase 13`** — 13-02 (Tier 1) + 13-03 (Tier 2) + 13-04 (Tier 3) parallel-safe via file-ownership matrix ← recommended next
-  - Plan Phase 16 parallel: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT) — independent dari /kesehatan stack
+  - **Verify Phase 13: `/gsd-verify-phase 13`** — visual UAT closure + threshold validation + asset_type normalization seed test + full piramida 4-tier E2E ← recommended next
+  - Plan Phase 14: `/gsd-plan-phase 14` — Protection & Tier 4 Checklists (DIAG-04, 09, 12)
+  - Plan Phase 15: `/gsd-plan-phase 15` — Modul Edukasi & Kalkulator (STRAT-04, 05, 06)
+  - Plan Phase 16: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT)

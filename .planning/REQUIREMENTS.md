@@ -28,8 +28,8 @@
 - [ ] **DIAG-04**: Tier 1 panel berisi inline checklist Asuransi Kesehatan (single question: kantor/BPJS/pribadi/kombinasi/tidak). Hijau kalau bukan "tidak", merah kalau "tidak". _Source: design spec §4 inline checklist._
 - [x] **DIAG-05**: Indikator Goals Long-term on-track menghitung % goals yang `current_amount/target_amount ≥ time_elapsed/total_duration`, filter `target_date > NOW() + 1 year AND status='active'`. Threshold: ≥ 75% hijau, 50-74% kuning, < 50% merah. Smart fallback CTA kalau user belum punya long-term goal. _Source: design spec §4 + Gap 3._
 - [x] **DIAG-06**: Indikator Pensiun menghitung `pension_simulations` projection ÷ target. Threshold: ≥ 100% hijau, 70-99% kuning, < 70% merah. Smart fallback CTA kalau belum simulasi; catatan kecil kalau `updated_at > 6 bulan`. _Source: design spec §4 + Gap 4._
-- [ ] **DIAG-07**: Indikator Rasio Investasi dihitung dari `(SUM(investments value) + SUM(deposito balance)) ÷ aset finansial`. Threshold: ≥ 40% hijau, 20-39% kuning, < 20% merah. Properti & kendaraan exclude dari denominator. _Source: design spec §4._
-- [ ] **DIAG-08**: Indikator Diversifikasi dihitung dari `COUNT(DISTINCT investments.asset_type) + (1 if deposito balance > 0)`. Threshold: ≥ 3 hijau, 2 kuning, ≤ 1 merah. _Source: design spec §4._
+- [x] **DIAG-07**: Indikator Rasio Investasi dihitung dari `(SUM(investments value) + SUM(deposito balance)) ÷ aset finansial`. Threshold: ≥ 40% hijau, 20-39% kuning, < 20% merah. Properti & kendaraan exclude dari denominator. _Source: design spec §4._
+- [x] **DIAG-08**: Indikator Diversifikasi dihitung dari `COUNT(DISTINCT investments.asset_type) + (1 if deposito balance > 0)`. Threshold: ≥ 3 hijau, 2 kuning, ≤ 1 merah. _Source: design spec §4._
 - [ ] **DIAG-09**: Tier 4 panel berisi smart-gated checklist — gate question "punya tanggungan?" → kalau Tidak: 3 estate basic; kalau Ya: 3 estate + 3 asuransi jiwa. _Source: design spec §4 smart-gated._
 - [x] **DIAG-10**: Edge case data tipis (transactions < 3 bulan kalender berbeda) untuk indikator #1 dan #2 → placeholder "Butuh 3 bulan data, sudah X/3" dengan CTA `/transaksi`. Indikator placeholder tidak ikut agregasi warna tier; tier abu-abu hanya kalau semua indikator placeholder/fallback. _Source: design spec §4 edge case._
 - [ ] **DIAG-11**: Empty state full (total `transactions + accounts + goals + investments` rows < 3) → welcome state piramida grayed-out + 3 quick-link CTA ke `/transaksi` / `/kekayaan` / `/goals`. Banner kalkulator + grid modul tetap accessible. _Source: design spec §4 empty state._
@@ -94,8 +94,8 @@ Kandidat untuk v1.3+:
 | DIAG-04 | Phase 14 | Pending | Tier 1 inline checklist Asuransi Kesehatan |
 | DIAG-05 | Phase 13 | Complete | Goals long-term on-track + smart fallback CTA |
 | DIAG-06 | Phase 13 | Complete | Pensiun readiness + smart fallback CTA + stale notice |
-| DIAG-07 | Phase 13 | Pending | Rasio Investasi (investments + deposito) |
-| DIAG-08 | Phase 13 | Pending | Diversifikasi (DISTINCT asset_type + deposito) |
+| DIAG-07 | Phase 13 | Complete | Rasio Investasi (investments + deposito) |
+| DIAG-08 | Phase 13 | Complete | Diversifikasi (DISTINCT asset_type + deposito) |
 | DIAG-09 | Phase 14 | Pending | Tier 4 smart-gated checklist (estate + asuransi jiwa) |
 | DIAG-10 | Phase 13 | Complete | Edge case data tipis #1 & #2 placeholder |
 | DIAG-11 | Phase 12 | Pending | Empty state full landing (grayed piramida + 3 CTA) |

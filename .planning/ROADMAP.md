@@ -43,7 +43,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 
 **Planned:**
 - [x] **Phase 12: /kesehatan Foundation** — sidebar grup Strategi + landing shell + `protection_checklist` schema + empty state piramida (completed 2026-05-08)
-- [ ] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis
+- [x] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis (completed 2026-05-08)
 - [ ] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
 - [ ] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip
 - [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
@@ -141,7 +141,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
-| 13. Diagnostic Data Indicators | v1.2 | 3/4 | In Progress|  |
+| 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete   | 2026-05-08 |
 | 14. Protection & Tier 4 Checklists | v1.2 | 0/? | Not started | — |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
