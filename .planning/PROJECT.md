@@ -11,7 +11,8 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 ## Current State
 
 **Latest milestone:** v1.1 Hardening & Consistency — shipped 2026-05-02 (6 phases, 25 plans, ~6 days execution)
-**Production:** https://kantongpintar.vercel.app/ — verified live via Playwright UAT 2026-05-02 (Refresh Harga end-to-end)
+**Active milestone:** v1.2 Strategic Layer & Verification Closure — Phase 13 complete 2026-05-08 (8 indikator data-driven live di /kesehatan)
+**Production:** https://kantongpintar.vercel.app/ — Phase 13 verified live via Playwright UAT 2026-05-08 (piramida + accordion + tier panels mobile/desktop)
 **Audit:** v1.1 closed clean — 16/16 requirements satisfied; tech_debt verdict (fetch-prices CORS) resolved by Phase 10
 **Tech stack stable:** React 19 + TS + Vite + Supabase (RLS + 25 migrations applied via Studio fallback) + TailwindCSS 4 + shadcn/ui
 **Codebase size:** ~32k LOC delta v1.0→v1.1 (231 files changed, +32k/-15k since v1.0)
