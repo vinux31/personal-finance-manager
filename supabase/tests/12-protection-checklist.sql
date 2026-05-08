@@ -86,6 +86,9 @@ BEGIN
   END IF;
 
   -- Test 1.4 — admin bisa SELECT semua rows (View-As precondition)
+  -- Note: masih SET LOCAL ROLE authenticated (baris 59) — switch hanya JWT claim.
+  -- is_admin() reads auth.uid() dari request.jwt.claim.sub (Supabase behavior),
+  -- bukan dari PostgreSQL current_user. Pattern ini konsisten dengan 05-tighten-rls.sql:122.
   PERFORM set_config('request.jwt.claim.sub', v_admin_uid::TEXT, true);
   SELECT count(*) INTO v_count FROM protection_checklist WHERE user_id IN (v_user_uid, v_other_uid);
   IF v_count = 2 THEN
