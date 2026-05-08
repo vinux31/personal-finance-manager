@@ -70,7 +70,10 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   2. Tabel `protection_checklist` tersedia di production dengan RLS `auth.uid() = user_id OR is_admin()` — `SELECT/INSERT/UPDATE` dari user lain ditolak (verified via SQL)
   3. User baru (rows total < 3 di transactions+accounts+goals+investments) lihat piramida grayed-out + 3 quick-link CTA ke /transaksi /kekayaan /goals; banner kalkulator + grid modul tetap accessible
   4. Sidebar restructure — grup "Strategi" muncul antara grup "Tujuan" dan Footer; navConfig + AppShell tetap sehat di mobile drawer
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 12-01-PLAN.md — protection_checklist schema + RLS + SQL test (SCHEMA-01)
+  - [ ] 12-02-PLAN.md — sidebar grup Strategi + route /kesehatan + landing shell 3 section (STRAT-01, STRAT-02)
+  - [ ] 12-03-PLAN.md — DIAG-11 empty state full (welcome banner + grayed piramida + 3 CTA)
 **UI hint**: yes
 
 ### Phase 13: Diagnostic Data Indicators
@@ -137,7 +140,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 9. QA Bug Fix | v1.1 | 4/4 | ✅ Complete | 2026-05-01 |
 | 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
-| 12. /kesehatan Foundation | v1.2 | 0/? | Not started | — |
+| 12. /kesehatan Foundation | v1.2 | 0/3 | Planned (3 plans) | — |
 | 13. Diagnostic Data Indicators | v1.2 | 0/? | Not started | — |
 | 14. Protection & Tier 4 Checklists | v1.2 | 0/? | Not started | — |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |

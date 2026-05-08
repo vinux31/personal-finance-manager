@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
 status: active
-stopped_at: Roadmap created — ready to plan Phase 12
+stopped_at: Phase 12 planning complete — 3 plans created, ready to execute
 last_updated: "2026-05-08T00:00:00.000Z"
 last_activity: 2026-05-08
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 1
+  total_plans: 4
   completed_plans: 1
   percent: 17
 ---
@@ -21,21 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** v1.2 Strategic Layer & Verification Closure — roadmap dibuat, Phase 11 shipped, siap plan Phase 12 (/kesehatan Foundation)
+**Current focus:** v1.2 Strategic Layer & Verification Closure — roadmap dibuat, Phase 11 shipped, Phase 12 planned (3 plans), siap execute
 
 ## Current Position
 
-Phase: Phase 12 (next) — `/kesehatan` Foundation
-Plan: —
-Status: Roadmap created — ready to plan Phase 12
-Last activity: 2026-05-08 — Roadmap v1.2 dibuat (Phases 11-16, 26 requirements mapped; Phase 16+17 merged)
+Phase: Phase 12 — `/kesehatan` Foundation
+Plan: 12-01 (next, Wave 1) atau 12-02 (parallel Wave 1)
+Status: Phase 12 plans created — 3 plans (2 in Wave 1 parallel, 1 in Wave 2)
+Last activity: 2026-05-08 — Phase 12 planned (SCHEMA-01 + STRAT-01,02 + DIAG-11 mapped to 3 plans)
 
 ## v1.2 Phase Summary
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 11 | Periode Gaji | (pre-defined v1.2 scope) | **Complete (PASS)** — 2026-05-02 |
-| 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Not started |
+| 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Planned (3 plans) |
 | 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | Not started |
 | 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | Not started |
 | 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
@@ -110,8 +110,8 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-08
-Stopped at: Roadmap v1.2 dibuat — Phases 11-16 mapped untuk 26 requirements (100% coverage), Phase 16+17 merged jadi "v1.1 Closure & Ops Cleanup"
+Stopped at: Phase 12 planning complete — 3 plans created (12-01 schema + 12-02 sidebar/route/landing + 12-03 empty state). Wave structure: 12-01 & 12-02 parallel di Wave 1, 12-03 di Wave 2 (depends_on 12-02).
 Resume options:
 
-  - **Plan Phase 12: `/gsd-plan-phase 12`** — /kesehatan Foundation (SCHEMA-01 + STRAT-01,02 + DIAG-11) ← recommended next
+  - **Execute Phase 12: `/gsd-execute-phase 12`** — start Wave 1 (12-01 + 12-02 parallel) ← recommended next
   - Plan Phase 16 parallel: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT) — independent dari /kesehatan stack
