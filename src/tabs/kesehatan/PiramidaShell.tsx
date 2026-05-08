@@ -74,7 +74,7 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
 
         const button = (
           <div
-            className="group relative w-full max-w-[420px] cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring rounded"
+            className="group relative w-full max-w-[420px] min-w-[140px] cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring rounded"
             style={{ width: `${widthPercent}%` }}
             aria-label={`Tier ${tier.id} ${tier.label}`}
           >
@@ -86,7 +86,10 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
         // delegasikan rendering ke parent. Else fallback existing toast behavior.
         if (renderTrigger) {
           return (
-            <div key={tier.id} style={{ width: `${widthPercent}%`, maxWidth: 420 }}>
+            <div
+              key={tier.id}
+              style={{ width: `${widthPercent}%`, maxWidth: 420, minWidth: 140 }}
+            >
               {renderTrigger(tier, button)}
             </div>
           )
