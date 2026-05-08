@@ -42,7 +42,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 - [x] **Phase 11: Periode Gaji** — `pay_periods` table + PayPeriodCard Dashboard + tab Laporan Periode Gaji + PayPeriodConfirmDialog (migration 0026) — 2026-05-02 PASS
 
 **Planned:**
-- [ ] **Phase 12: /kesehatan Foundation** — sidebar grup Strategi + landing shell + `protection_checklist` schema + empty state piramida
+- [x] **Phase 12: /kesehatan Foundation** — sidebar grup Strategi + landing shell + `protection_checklist` schema + empty state piramida (completed 2026-05-08)
 - [ ] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis
 - [ ] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
 - [ ] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip
@@ -73,7 +73,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 **Plans**: 3 plans
   - [x] 12-01-PLAN.md — protection_checklist schema + RLS + SQL test (SCHEMA-01)
   - [x] 12-02-PLAN.md — sidebar grup Strategi + route /kesehatan + landing shell 3 section (STRAT-01, STRAT-02)
-  - [ ] 12-03-PLAN.md — DIAG-11 empty state full (welcome banner + grayed piramida + 3 CTA)
+  - [x] 12-03-PLAN.md — DIAG-11 empty state full (welcome banner + grayed piramida + 3 CTA)
 **UI hint**: yes
 
 ### Phase 13: Diagnostic Data Indicators
@@ -140,7 +140,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 9. QA Bug Fix | v1.1 | 4/4 | ✅ Complete | 2026-05-01 |
 | 10. fetch-prices CORS fix | v1.1 | 2/2 | ✅ Complete (PASS) | 2026-05-02 |
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
-| 12. /kesehatan Foundation | v1.2 | 2/3 | In Progress|  |
+| 12. /kesehatan Foundation | v1.2 | 3/3 | Complete   | 2026-05-08 |
 | 13. Diagnostic Data Indicators | v1.2 | 0/? | Not started | — |
 | 14. Protection & Tier 4 Checklists | v1.2 | 0/? | Not started | — |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
