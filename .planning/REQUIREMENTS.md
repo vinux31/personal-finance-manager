@@ -82,4 +82,31 @@ Kandidat untuk v1.3+:
 
 | REQ | Phase | Status | Notes |
 |-----|-------|--------|-------|
-| (filled by `/gsd-roadmapper` saat roadmap dibuat) | | | |
+| STRAT-01 | Phase 12 | Pending | Sidebar grup "Strategi" + route /kesehatan |
+| STRAT-02 | Phase 12 | Pending | Landing shell (piramida + banner + grid 6 modul) |
+| STRAT-03 | Phase 13 | Pending | Tier expand panel — wired dengan indicator queries |
+| STRAT-04 | Phase 15 | Pending | 6 modul sub-route + Fraunces serif |
+| STRAT-05 | Phase 15 | Pending | Kalkulator compound interest + banner |
+| STRAT-06 | Phase 15 | Pending | Glossary tooltip 8 istilah (Radix Tooltip) |
+| DIAG-01 | Phase 13 | Pending | Indikator Dana Darurat (likuid ÷ avg expense 3 bln) |
+| DIAG-02 | Phase 13 | Pending | Indikator Savings Rate (3-bulan avg) |
+| DIAG-03 | Phase 13 | Pending | Indikator DAR Konsumtif (non-KPR) + DAR Total info |
+| DIAG-04 | Phase 14 | Pending | Tier 1 inline checklist Asuransi Kesehatan |
+| DIAG-05 | Phase 13 | Pending | Goals long-term on-track + smart fallback CTA |
+| DIAG-06 | Phase 13 | Pending | Pensiun readiness + smart fallback CTA + stale notice |
+| DIAG-07 | Phase 13 | Pending | Rasio Investasi (investments + deposito) |
+| DIAG-08 | Phase 13 | Pending | Diversifikasi (DISTINCT asset_type + deposito) |
+| DIAG-09 | Phase 14 | Pending | Tier 4 smart-gated checklist (estate + asuransi jiwa) |
+| DIAG-10 | Phase 13 | Pending | Edge case data tipis #1 & #2 placeholder |
+| DIAG-11 | Phase 12 | Pending | Empty state full landing (grayed piramida + 3 CTA) |
+| DIAG-12 | Phase 14 | Pending | View-As read-only mode untuk inline form & checklist |
+| SCHEMA-01 | Phase 12 | Pending | Tabel `protection_checklist` + RLS |
+| VERIF-01 | Phase 16 | Pending | Pre-condition data state setup B1-B5 |
+| VERIF-02 | Phase 16 | Pending | B1 — Gaji idempotency UAT |
+| VERIF-03 | Phase 16 | Pending | B2 — mark-paid 5x rapid race UAT |
+| VERIF-04 | Phase 16 | Pending | B3 — 2-tab withdraw race UAT |
+| VERIF-05 | Phase 16 | Pending | B4 — completed→active flip UAT |
+| VERIF-06 | Phase 16 | Pending | B5 — Refresh Harga WIB date UAT |
+| TECHDEBT-01 | Phase 16 | Pending | Migration history reconciliation (jalur a vs b) — merged dengan VERIF as ops cleanup |
+
+**Coverage:** 26/26 requirements mapped ✓ (100%, no orphans, no duplicates)

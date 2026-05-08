@@ -3,43 +3,43 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
 status: active
-stopped_at: Defining requirements
+stopped_at: Roadmap created — ready to plan Phase 12
 last_updated: "2026-05-08T00:00:00.000Z"
 last_activity: 2026-05-08
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 6
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+  percent: 17
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-27)
+See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** v1.2 Strategic Layer & Verification Closure — define requirements + roadmap
+**Current focus:** v1.2 Strategic Layer & Verification Closure — roadmap dibuat, Phase 11 shipped, siap plan Phase 12 (/kesehatan Foundation)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 12 (next) — `/kesehatan` Foundation
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-08 — Milestone v1.2 started
+Status: Roadmap created — ready to plan Phase 12
+Last activity: 2026-05-08 — Roadmap v1.2 dibuat (Phases 11-16, 26 requirements mapped; Phase 16+17 merged)
 
-## v1.1 Phase Summary
+## v1.2 Phase Summary
 
-| Phase | Name | Requirements | Migrations | Status |
-|-------|------|--------------|-----------|--------|
-| 5 | Security Hardening | SEC-01..04 | `0017_tighten_rls.sql`, `0018_drop_legacy_aggregates.sql` (in-flight patch) | **Complete (PASS-WITH-NOTES)** |
-| 6 | Race & Atomicity | RACE-01..03, DEV-01 | `0019_process_due_recurring.sql`, `0020_withdraw_from_goal.sql`, `0021_goal_investments_total_check.sql` | Not started |
-| 7 | UI/Data Consistency | CONS-01..03, UX-01..02 | `0022_user_seed_markers.sql` + seed_rencana, `0023_goals_with_progress.sql`, `0024_add_money_to_goal_v2.sql` | **Complete (PASS-WITH-NOTES)** |
-| 8 | Dev Hygiene | DEV-02..04 | (none) | Not started |
-
-> ⚠ **Migration numbering shifted by +1 starting Phase 6** — Phase 5 consumed migration slots 0017 (planned) + 0018 (unplanned in-flight patch). Phase 6's `0018_process_due_recurring.sql` etc. need to be renumbered to 0019/0020/0021. Confirm during /gsd-plan-phase 6.
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 11 | Periode Gaji | (pre-defined v1.2 scope) | **Complete (PASS)** — 2026-05-02 |
+| 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Not started |
+| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | Not started |
+| 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | Not started |
+| 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
+| 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | Not started |
 
 ## Accumulated Context
 
@@ -58,45 +58,28 @@ Last activity: 2026-05-08 — Milestone v1.2 started
 - Production verify-before-close (Playwright + Supabase Cloud) — caught 1 deploy gap + 1 toast bug
 - mapSupabaseError extract `.message` dari plain-object errors (Supabase RPC errors bukan Error instance)
 
-### Decisions (v1.1 roadmap-time)
+### Decisions (carried from v1.1)
 
-- **Phase order:** 5 (Security) → 6 (Race) → 7 (UI Consistency) → 8 (Dev Hygiene). Phase 5 first per blast-radius hierarchy (defensive only, zero user-facing change). Phase 6 isolated karena highest-blast-radius DB writes. Phase 7 has dep on Phase 6 (CONS-01 reuses pattern dari RACE-03 withdraw RPC). Phase 8 last — pure code/config, no DB.
-- **Phase 5 single migration:** `0017_tighten_rls.sql` bundles all 4 SEC findings — `CREATE OR REPLACE FUNCTION` + `DROP POLICY IF EXISTS` make it idempotent; splitting would risk incomplete rollouts (H-04 deployed but not H-06 = IDOR still open).
-- **Phase 6 vs Phase 5 independence:** No hard dep, can parallel-deploy, but ship Phase 5 first per research recommendation (lower blast radius).
-- **Phase 7 vs Phase 8 split rationale:** Phase 7 has 3 DB migrations (additive view + new table + RPC v2), Phase 8 is pure code/config. Different deploy paths + different test gates → keep separate even though both low risk.
-- **DEV-01 mapped to Phase 6:** `nextDueDate` TS removal is auto-resolved by RACE-01 RPC refactor. Snapshot/parity test ditulis sebagai bagian dari verifikasi Phase 6, bukan Phase 8.
-- **UX-01 + UX-02 mapped to Phase 7:** UI-facing fixes (localStorage key + View-As CSV gate) — both small, low-risk, koheren dengan tema "UI/Data Consistency".
-- **Migration numbering (initial):** v1.0 ended at 0016. v1.1 starts at 0017 (Phase 5).
+- Phase 5 in-flight patch 0018: PG keys function identity on (name, arg_types). Future signature changes WAJIB emit `DROP FUNCTION IF EXISTS sig` sebelum CREATE OR REPLACE.
+- Studio paste de-facto migration channel — `db push` broken (history mismatch), Studio SQL Editor manual paste tetap default sampai TECHDEBT-01 di Phase 16 resolves.
+- RETURNS TABLE plpgsql output variables shadowing — qualify base-table refs dengan alias (lesson 0024 hot-fix).
+- Edge Function deploy via Supabase Dashboard sebagai workaround saat CLI tidak terinstall.
+- Gateway-layer JWT reject (verify_jwt=true) > handler-layer reject (defense-in-depth).
+- CORS allowlist drift saat domain baru — domain decision = ALLOWED_ORIGINS update di same plan/PR.
 
-### Decisions (v1.1 execution-time, post-Phase-5)
+### Decisions (v1.2 roadmap-time, 2026-05-08)
 
-- **Phase 5 PASS-WITH-NOTES.** All 5 ROADMAP success criteria evidenced; SC #3 verified DB-side only (TRUNCATE+signup destructive variant intentionally not run against production).
-- **In-flight patch 0018.** Migration 0017 used `CREATE OR REPLACE FUNCTION` to "swap" `aggregate_by_period`/`aggregate_by_category` from sql→plpgsql while adding `p_user_id UUID DEFAULT NULL` arg. PostgreSQL keys function identity on signature → new 4-arg plpgsql versions created alongside (not replacing) legacy 3-arg `sql` versions. Legacy versions had `SECURITY DEFINER` + no user filter → reachable info-disclosure via direct PostgREST 3-arg call. Patched with `0018_drop_legacy_aggregates.sql` during 05-04 verification. **Lesson:** planner must require explicit `DROP FUNCTION` whenever a function signature changes.
-- **Migration numbering shift +1 from Phase 6.** Phase 5 consumed slots 0017 (planned) + 0018 (in-flight patch). Phase 6's planned 0018-0020 must be renumbered to 0019-0021. Phase 7's planned 0021-0023 → 0022-0024. Confirm and update during /gsd-plan-phase 6.
-- **Studio fallback is the de-facto migration channel.** Per memory `project_supabase_migration_workflow.md`, `supabase db push` fails with history mismatch and `migration repair` is broken. All migrations from 0014 onward have been applied via Studio SQL Editor manual paste. `supabase migration list --linked` will show 0014..0018 as Local-only — this is acceptable for now; reconciling history is a separate hygiene task (filed below).
-- **Edge function runtime gate stronger than handler gate.** `verify_jwt = true` in config.toml causes Supabase runtime to reject pre-handler with body `{"code":"UNAUTHORIZED_NO_AUTH_HEADER"...}` instead of the handler's `{"error":"Unauthorized"}`. This is acceptable defense-in-depth; plan-stated body wording is informational only.
-- **REST/RPC HTTP testing > DevTools console for RLS UAT.** UAT-1/2/3 in Plan 05-04 originally specified DevTools console assertions (`window.__sb`); we used direct REST/RPC calls with the non-admin JWT instead. Reproducible from CI/shell, captures verbatim JSON evidence, and matches the actual threat model (any token-holder can hit PostgREST directly).
-
-### Decisions (v1.1 execution-time, post-Phase-7)
-
-- **Phase 7 PASS-WITH-NOTES.** All 8 plans complete, all 5 ROADMAP success criteria evidenced. Two notes: (1) D-14 raw NUMERIC formatting in withdraw_from_goal error message (cosmetic, acceptance criteria met); (2) UAT-2 Edge Function CORS blocks live date param verification (code fix in source verified).
-- **withdraw_from_goal RETURNS TABLE column ambiguity hotfix (0024).** Supabase plpgsql `RETURNS TABLE (current_amount NUMERIC, ...)` creates output variables in scope, making `SELECT current_amount FROM goals` ambiguous. Fix: qualify table columns with alias `g`. Applied as Studio hot-patch + commit `c1783d2`. **Lesson:** when writing plpgsql RETURNS TABLE, always qualify base-table column references with a table alias to avoid output-variable shadowing.
-- **Studio paste de-facto migration channel continues.** `db push` remains broken (history mismatch). Migrations 0022+0023+0024 applied via Studio SQL Editor paste. Migration list shows Local-only — accepted per prior STATE.md decision.
-- **seed_rencana creates 5 goals + 3 investments (not 5+5 as in pre-planning notes).** RPC inserts 5 goal rows + 3 investment rows. Confirmed via production UAT (Pengaturan shows "5 goals" post-re-seed). No drift from CONTEXT.md D-04.
-- **Edge Function fetch-prices CORS misconfiguration (pre-existing).** Function allows `kantongpintar.app` but app deploys to `kantongpintar.vercel.app`. Blocks live UAT-2 date verification. Deferred to v1.2 → **resolved Phase 10**.
-
-### Decisions (v1.1 execution-time, post-Phase-10)
-
-- **Phase 10 PASS.** ALLOWED_ORIGINS Set di edge function fetch-prices ditambahi `https://kantongpintar.vercel.app`; deployed via Supabase Dashboard (CLI tidak terinstall di dev machine — Dashboard editor dipakai sebagai workaround). Live UAT Refresh Harga di production browser pass via Playwright: POST /functions/v1/fetch-prices → 200, BMRI saham 4620→4390, Emas 2.683.000→2.573.515, toast "2 harga diperbarui", 0 console errors. SEC-01 regression curl smoke pass — JWT gate tetap 401 untuk request tanpa Authorization (gateway-layer reject via `verify_jwt = true`). 10-VERIFICATION.md tersedia di .planning/phases/10-fetch-prices-cors-fix/10-VERIFICATION.md.
-- **Lesson Phase 10 — CORS allowlist drift saat domain baru.** Saat memutuskan deploy app ke domain baru (Vercel default vs custom domain), edge function ALLOWED_ORIGINS harus di-update bersamaan, jika tidak browser flow yang bergantung pada edge function akan silent-fail (network 200 di OPTIONS pre-flight tapi browser block actual POST karena Origin mismatch). Pattern: domain decision → ALLOWED_ORIGINS update di same plan/PR.
-- **CONS-02 live un-blocked.** Phase 7 CONS-02 sebelumnya hanya verified static + pgTAP karena CORS block menghalangi live UAT. Phase 10 un-block live verification — row price_history id 30+31 untuk user 546627...59b3 dengan `date='2026-05-02'` (= WIB today) confirmed. CONS-02 status di REQUIREMENTS.md tetap `shipped` (Phase 7) — Phase 10 hanya menambah live evidence layer.
-- **Supabase Dashboard editor sebagai deploy fallback.** Saat dev machine tidak punya `supabase` CLI, Dashboard → Edge Functions → Code editor → Deploy adalah workaround valid. Caveat: tidak ada git-source-of-truth verification (harus disiplin paste full file dari git working tree). Kandidat doc untuk dev-onboarding di v1.2.
-- **Gateway-layer JWT reject vs handler-layer reject.** Curl POST tanpa Authorization mengembalikan `{"code":"UNAUTHORIZED_NO_AUTH_HEADER"}` dengan `Access-Control-Allow-Origin: *` — itu signature platform gateway, bukan handler `corsFor()`. Handler tidak dieksekusi karena `verify_jwt = true`. Lebih aman (defense-in-depth), tapi expectation Plan 10-02 ("CORS echo back") tidak applicable untuk request tanpa JWT — gateway tidak peduli Origin saat reject.
-
-### Roadmap Evolution
-
-- Phase 9 added (2026-05-01): Phase 09 — QA Bug Fix: Fix semua bug dari QA-FINDINGS.md (2 Critical, 4 Medium, 2 Low). Triggered oleh full static + live audit semua 10 tab.
-- Phase 10 completed (2026-05-02): fetch-prices CORS allowlist fix — un-blocks live verification SEC-01 + CONS-02. PASS verdict.
+- **Phase 11 already shipped (2026-05-02)** — Periode Gaji kept as part of v1.2 milestone numbering; v1.2 active phases = 12-16.
+- **Phase order rationale:**
+  - Phase 12 first — sidebar route + landing shell + SCHEMA-01 are foundation; DIAG-11 empty state lives here karena landing-level fallback.
+  - Phase 13 (Indicators) depends on 12 — tier panel infrastructure + landing route harus ada dulu.
+  - Phase 14 (Checklists) depends on 12 (SCHEMA-01) + 13 (tier panel infra). Split dari Phase 13 karena: (a) different data layer (mutation form vs read-only query), (b) View-As guard logic specific ke checklist, (c) protection_checklist write-path butuh atensi terpisah.
+  - Phase 15 (Modul + Kalkulator) parallel-able dengan 13/14 — tidak share state. Bisa juga jalan setelah 12. Default: jalankan setelah 14 untuk linear momentum, tapi plan-phase boleh re-order.
+  - Phase 16 (v1.1 Closure & Ops Cleanup — VERIF + TECHDEBT merged) **independent** — bisa parallel dengan 12-15 atau di akhir. Default akhir biar fokus. Ops phase tanpa UI baru.
+- **DIAG-11 (empty state full) dimasukkan ke Phase 12** karena ini behavior landing route, bukan indikator data layer.
+- **DIAG-12 (View-As compatibility) dimasukkan ke Phase 14** karena guard yang paling sensitif adalah inline form + checklist mutations; indikator read-only di Phase 13 inherit pattern existing (`viewingAs ?? userId`).
+- **STRAT-03 (tier expand panel) dimasukkan ke Phase 13** bukan 12 karena panel content butuh indicator queries; landing tanpa expand di Phase 12 acceptable interim.
+- **Phase 16 merge (VERIF + TECHDEBT)** — keduanya ops-focused, tying up v1.1 loose ends, no UI. Coherent narrative "v1.1 Closure & Ops Cleanup" daripada 2 phase kecil terpisah.
 
 ### Pending Todos
 
@@ -104,35 +87,31 @@ None.
 
 ### Blockers/Concerns
 
-None active. Phase 7 cleared all in-flight items.
+- **Threshold belum tervalidasi empiris** (design spec Risk 1) — semua threshold indikator pakai rule-of-thumb. Mitigasi: simpan threshold sebagai konstanta di `src/queries/kesehatan.ts` (bukan inline) supaya gampang adjust pasca-rilis.
+- **`investments.asset_type` TEXT bebas** (design spec Risk 5) — DIAG-08 Diversifikasi pakai DISTINCT count yang bisa di-game oleh user. Trust-user di v1.2; normalize ke v1.3 backlog.
+- **Modul content authoring** (design spec Open Question) — port apa adanya dari `financial_framework.html` direkomendasikan untuk v1.2; adaptasi inkremental v1.3.
 
-## Deferred Items (carried + new from Phase 5)
+## Deferred Items (carried from v1.1, candidate for resolution di v1.2)
 
-| Category | Item | Status | Severity | Deferred At | Source |
-|----------|------|--------|----------|-------------|--------|
-| bug | createRecurringTemplate missing user_id → RLS 403 (pre-existing) | candidate-for-Phase-6 | HIGH | 2026-04-25 | v1.0-MILESTONE-AUDIT.md Tech Debt #1 |
-| test | Full psql regression `supabase/tests/04-mark-bill-paid.sql` not executed (Docker absent) | blocked-by-environment | MEDIUM | 2026-04-25 | 04-VERIFICATION.md |
-| ux | UpcomingBillsPanel AlertDialog body shows only nama bill, missing nominal+tanggal | open (not in v1.1) | cosmetic | 2026-04-25 | 04-UAT.md |
-| ux | Net Worth card no auto-refresh post mark-as-paid (by-design) — needs tooltip/helper text | open (not in v1.1) | cosmetic | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
-| test | useMarkBillPaid does not invalidate `['net-worth-snapshots']` query | open (not in v1.1) | INFO | 2026-04-25 | v1.0-MILESTONE-AUDIT.md |
-| test | `mapSupabaseError` unit test for plain-object errors not added | open (not in v1.1) | LOW | 2026-04-25 | 04-UAT.md |
-| bug | net_worth_snapshots auto-insert fails with 42501 when View-As is active — frontend should skip the snapshot job in View-As mode | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md / uat-05-04-console-errors.txt |
-| test | SC #3 destructive variant (TRUNCATE allowed_emails + signup) — needs staging mirror to upgrade from PASS-WITH-NOTES (DB-side only) → clean PASS | candidate-for-v1.2 | LOW | 2026-04-28 | 05-VERIFICATION.md |
-| infra | Migration history reconciliation — `supabase migration list --linked` shows 0014..0024 as Local-only because `db push` is broken in this project; revisit when staging mirror exists | open | LOW | 2026-04-28 | 05-VERIFICATION.md |
-| code | 23 lint errors di src/ pre-existing (badge/button/tabs fast-refresh, csvInvestments/investments any, PensiunTab refs-during-render) | candidate-for-Phase-8 | LOW | 2026-04-25 | 05-handoff |
-| cosmetic | D-14 error message raw NUMERIC formatting in withdraw_from_goal — shows `0.00` / `100000000.000...` instead of formatted `Rp 0` / `Rp 100.000.000`. Fix: `REPLACE(TO_CHAR(ROUND(v)::BIGINT,'FM999G999G999'),',','.')` in format() call. Requires Studio hot-patch + migration update. | LOW | 2026-04-29 | 07-VERIFICATION.md |
-| infra | Edge Function `fetch-prices` CORS misconfiguration — allows `kantongpintar.app` not `kantongpintar.vercel.app`. Blocks UAT-2 live date param verification. Pre-existing, unrelated to Phase 7. | **resolved Phase 10** | LOW | 2026-04-29 | 07-08-UAT.md UAT-2 → 10-VERIFICATION.md |
-| test | UAT-3 fresh-signup variant not executed (no second test email in allowed_emails). Admin-reset variant accepted. pgTAP structural proofs cover idempotency. | LOW | 2026-04-29 | 07-VERIFICATION.md |
+| Category | Item | Status | Severity | Mapped To |
+|----------|------|--------|----------|-----------|
+| bug | net_worth_snapshots auto-insert 42501 saat View-As aktif | candidate | LOW | (carry to v1.3 — out of scope v1.2) |
+| test | SC #3 destructive variant (TRUNCATE allowed_emails + signup) — needs staging mirror | candidate | LOW | out of scope v1.2 (PROJECT.md confirmed) |
+| infra | Migration history reconciliation 0014..0028 Local-only | open | LOW | **Phase 16** (TECHDEBT-01) |
+| cosmetic | D-14 raw NUMERIC formatting di withdraw_from_goal MESSAGE | candidate | LOW | (carry to v1.3 — defer micro polish) |
+| live UAT | B1 Gaji idempotency | deferred | MEDIUM | **Phase 16** (VERIF-02) |
+| live UAT | B2 mark-paid 5x rapid race | deferred | MEDIUM | **Phase 16** (VERIF-03) |
+| live UAT | B3 2-tab withdraw | deferred | MEDIUM | **Phase 16** (VERIF-04) |
+| live UAT | B4 completed→active flip | deferred | MEDIUM | **Phase 16** (VERIF-05) |
+| live UAT | B5 Refresh Harga WIB date | deferred | LOW | **Phase 16** (VERIF-06) |
+| code | AuthProvider .catch() gap (corrupt-localStorage path raw TypeError) | candidate | LOW-MEDIUM | (carry to v1.3 — small frontend fix, no v1.2 home) |
+| docs | DEV-04 wording reconcile ("10k" vs "50k") | candidate | LOW | (carry to v1.3) |
 
 ## Session Continuity
 
-Last session: 2026-05-02T11:45:00.000Z
-Stopped at: Phase 10 complete — v1.1 milestone fully verified including live SEC-01 + CONS-02
-Phase 10 head commit: pending Plan 10-02 close-out commit (this session)
-Phase 9 head commit: 7d648f2 (GoalsTab setFilters TS fix — triggered new Vercel bundle Dh7mdCsN)
+Last session: 2026-05-08
+Stopped at: Roadmap v1.2 dibuat — Phases 11-16 mapped untuk 26 requirements (100% coverage), Phase 16+17 merged jadi "v1.1 Closure & Ops Cleanup"
 Resume options:
 
-  - **v1.1 close: `/gsd-complete-milestone v1.1`** — all phases verified, ready to archive ← recommended
-  - v1.2 milestone: `/gsd-new-milestone` for next milestone planning
-  - Phase 8 (Dev Hygiene, deferred): `/gsd-plan-phase 8` — DEV-02 Recharts type, DEV-03 seed.sql, DEV-04 perf note — no DB
-  - No blockers. Production is stable, all 8 QA bugs fixed, fetch-prices CORS gap closed.
+  - **Plan Phase 12: `/gsd-plan-phase 12`** — /kesehatan Foundation (SCHEMA-01 + STRAT-01,02 + DIAG-11) ← recommended next
+  - Plan Phase 16 parallel: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT) — independent dari /kesehatan stack
