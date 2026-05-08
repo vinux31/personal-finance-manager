@@ -73,8 +73,8 @@ blocked: 0
 
 | ID | Severity | File | Issue | Fix |
 |----|----------|------|-------|-----|
-| F-01 | minor (cosmetic) | PiramidaShell.tsx (mobile ≤640px) | Trapezoid Tier 4 label "WARISAN" truncated jadi "WA"; Tier 3 "PERTUMBUHAN" jadi "PERTUMBU" karena clip-path narrow | Defer v1.3 — adjust mobile clip-path width atau scale label font-size. Non-blocking, layout still functional. |
-| F-02 | minor (warning) | KesehatanLanding.tsx:40 | `useState<string \| undefined>(undefined)` → first click triggers Radix "Accordion is changing from uncontrolled to controlled" warning | One-line fix: `useState<string>("")`. Defer v1.3 atau fix sekarang. Non-breaking di production. |
+| F-01 | RESOLVED | PiramidaShell.tsx (mobile ≤640px) | Trapezoid Tier 4 label "WARISAN" truncated jadi "WA"; Tier 3 "PERTUMBUHAN" jadi "PERTUMBU" karena clip-path narrow | FIXED commits 998d978/d779617/d67637e/f08949d — `min-w-[140px]` wrapper + hide subtitle mobile + flex-1 truncate label + reduced clip-path inset. Verified production: semua 4 label full visible mobile 375px. |
+| F-02 | RESOLVED | KesehatanLanding.tsx:40 | `useState<string \| undefined>(undefined)` → first click triggers Radix "Accordion is changing from uncontrolled to controlled" warning | FIXED commit 998d978 — `useState<string>('')` initial. Verified production: 0 console warnings setelah Tier 1 click. |
 | F-03 | info | computeDARTotal | DAR Total info row tidak render saat liab=0 (correct behavior) | Verified compute path (`null` short-circuit). Active 3-band display path butuh user dengan KPR untuk full UAT. |
 
 ## Gaps
