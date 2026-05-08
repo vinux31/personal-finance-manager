@@ -67,7 +67,7 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
             className={`flex h-14 items-center gap-2 px-3 text-xs font-semibold tracking-wide sm:gap-3 sm:px-5 sm:text-sm ${trapezoidClass}`}
             style={{ clipPath: 'polygon(5% 0, 95% 0, 100% 100%, 0 100%)' }}
           >
-            <span className="shrink-0 text-[9px] opacity-70 sm:text-[10px]">{tier.subtitle}</span>
+            <span className="hidden shrink-0 text-[9px] opacity-70 sm:inline sm:text-[10px]">{tier.subtitle}</span>
             <span className="min-w-0 flex-1 truncate text-center">{tier.label}</span>
           </div>
         )
