@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
 status: executing
-stopped_at: Completed 13-02-PLAN.md (Tier 1 PROTEKSI compute + UI wrapper). Wave 2 13-03/13-04 ready for parallel execution.
-last_updated: "2026-05-08T07:53:10.867Z"
+stopped_at: Completed 13-03-PLAN.md (Tier 2 TUJUAN compute + UI wrapper). Wave 2 13-04 (Tier 3) ready next.
+last_updated: "2026-05-08T08:04:49.840Z"
 last_activity: 2026-05-08
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 6
+  percent: 86
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 ## Current Position
 
 Phase: 13 (diagnostic-data-indicators) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-05-08
 
@@ -90,6 +90,14 @@ Last activity: 2026-05-08
 - **File-ownership matrix locked** untuk Wave 2 zero-conflict parallelism: 13-02 owns `Tier1Panel.tsx` + `kesehatanTier1.ts`; 13-03 owns `Tier2Panel.tsx` + `kesehatanTier2.ts`; 13-04 owns `Tier3Panel.tsx` + `kesehatanTier3.ts`. `KesehatanLanding.tsx` TIDAK dimodifikasi di Wave 2.
 - **`IndikatorResult.compute.staleMonths?: number`** extension menjawab CONTEXT.md Open Question 2 (DIAG-06 stale pension notice — IndikatorCard render amber badge "Stale Xbln" jika set).
 
+### Decisions (Phase 13 execute-time, Plan 13-03, 2026-05-08)
+
+- **Formula deviation locked (computePensiun DIAG-06):** spec §4 literal "× usia_harapan" diganti dengan `(LIFE_EXPECTANCY_YEARS − usia_pensiun)` untuk years-remaining-post-retirement semantics. Rationale: user pensiun usia 55 butuh dana 20 tahun pasca-pensiun, bukan 75 tahun total. Edge case guard `Math.max(yearsRemaining, 1)` prevent divide-by-zero. Code comment block dokumentasi rationale di kesehatanTier2.ts.
+- **Goal interface extension (Plan 13-03 Task 1):** `created_at: string` field added (additive backward compat — column exist sejak migration 0001). `listGoals` + `getGoal` SELECT include created_at. **Cascade fix queries/goals.ts:** `goals_with_progress` VIEW (migration 0023) tidak expose created_at. GoalWithProgress consumers (GoalsTab/DashboardTab) substitute untuk Goal type → cascade type errors. Workaround: synthesize empty-string created_at di mapper VIEW result. Migration `00XX_goals_with_progress_v2.sql` backlog kalau Phase berikutnya butuh real value di GoalWithProgress.
+- **Pension source compute coverage:** ALL 6 sources SUCCESS (BPJS / DPPK / DPLK / Taspen / Pesangon / Investasi Mandiri). PensionSimRow di `src/db/pensiun.ts` tidak ada nullable boolean/number — simple truthy gate `if (sim.ht_en_*)` works. Pragmatic minimal-fallback path (BPJS+Invest only) yang plan offered TIDAK dibutuhkan.
+- **calcPesangon positional args** (correction dari plan skeleton): signature aktual `calcPesangon(gajiPokok: number, masaKerja: number)` — bukan object form `{ gajiPokok, masaKerja }`. Verified di `src/lib/pensiun-calc.ts` line 230.
+- **View-As pension_simulations RLS leak** (carried, untuk Phase 14 backlog): policy `auth.uid() = user_id` (no `OR is_admin()`) → admin View-As → null → DIAG-06 cta-fallback "Belum simulasi pensiun". Acceptable v1.2 (graceful degradation, no crash). Phase 14 candidate fix migration `00XX_pension_simulations_rls_admin.sql`.
+
 ### Pending Todos
 
 None.
@@ -118,8 +126,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08T07:53:10.858Z
-Stopped at: Completed 13-02-PLAN.md (Tier 1 PROTEKSI compute + UI wrapper). Wave 2 13-03/13-04 ready for parallel execution.
+Last session: 2026-05-08T08:04:29.051Z
+Stopped at: Completed 13-03-PLAN.md (Tier 2 TUJUAN compute + UI wrapper). Wave 2 13-04 (Tier 3) ready next.
 Resume options:
 
   - **Execute Phase 13 Wave 2 parallel: `/gsd-execute-phase 13`** — 13-02 (Tier 1) + 13-03 (Tier 2) + 13-04 (Tier 3) parallel-safe via file-ownership matrix ← recommended next
