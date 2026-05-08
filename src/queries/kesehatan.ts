@@ -99,3 +99,22 @@ export function useTotalDataCount() {
     staleTime: 60_000,
   })
 }
+
+// ============================================================
+// Phase 13: Diagnostic indicators barrel re-exports
+// ============================================================
+export {
+  useIndikator,
+  aggregateTierColor,
+  deriveTierColors,
+  TIER_INDICATORS,
+  THRESHOLDS,
+  COLOR_BADGE_CLASS,
+  COLOR_BORDER_CLASS,
+  LIFE_EXPECTANCY_YEARS,
+  type IndikatorMap,
+  type DARTotalInfo,
+  type IndikatorResult,
+  type TierColors,
+  type TierId,
+} from './kesehatanIndikator'
