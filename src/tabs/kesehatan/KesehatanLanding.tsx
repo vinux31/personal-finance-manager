@@ -25,8 +25,10 @@ export default function KesehatanLanding() {
   const countQuery = useTotalDataCount()
 
   const isLoading = countQuery.isLoading
+  const isError = countQuery.isError
   const isEmpty =
     !isLoading &&
+    !isError &&
     countQuery.data !== undefined &&
     countQuery.data.total < EMPTY_STATE_THRESHOLD
 
@@ -50,7 +52,14 @@ export default function KesehatanLanding() {
             <Skeleton className="h-14 w-[95%]" />
           </div>
         ) : (
-          <PiramidaShell variant={isEmpty ? 'grayed-empty' : 'default'} />
+          <>
+            {isError && (
+              <p className="text-sm text-destructive text-center py-2">
+                Gagal memuat data. Coba refresh halaman.
+              </p>
+            )}
+            <PiramidaShell variant={isEmpty ? 'grayed-empty' : 'default'} />
+          </>
         )}
       </section>
 
