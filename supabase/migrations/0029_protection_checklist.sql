@@ -41,5 +41,5 @@ ALTER TABLE protection_checklist ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users manage own protection checklist"
   ON protection_checklist FOR ALL
-  USING      (auth.uid() = user_id OR is_admin())
-  WITH CHECK (auth.uid() = user_id);
+  USING      ((SELECT auth.uid()) = user_id OR (SELECT is_admin()))
+  WITH CHECK ((SELECT auth.uid()) = user_id);
