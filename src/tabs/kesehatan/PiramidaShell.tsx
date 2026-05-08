@@ -5,15 +5,23 @@ import { COLOR_BADGE_CLASS, type TierColors, type TierId } from '@/queries/keseh
 type Tier = {
   id: TierId
   label: string
-  subtitle: string
 }
 
 const TIERS: Tier[] = [
-  { id: 4, label: 'WARISAN', subtitle: 'Tier 4' },
-  { id: 3, label: 'PERTUMBUHAN', subtitle: 'Tier 3' },
-  { id: 2, label: 'AKUMULASI', subtitle: 'Tier 2' },
-  { id: 1, label: 'PROTEKSI', subtitle: 'Tier 1' },
+  { id: 4, label: 'WARISAN' },
+  { id: 3, label: 'PERTUMBUHAN' },
+  { id: 2, label: 'AKUMULASI' },
+  { id: 1, label: 'PROTEKSI' },
 ]
+
+// Width tapering Tier 4 → Tier 1 (60% → 100%), modest taper untuk piramida feel
+// tanpa Tier 4 jadi sangat sempit (label muat penuh di 60% even mobile)
+const WIDTH_PERCENT: Record<TierId, number> = {
+  4: 60,
+  3: 75,
+  2: 90,
+  1: 100,
+}
 
 type Props = {
   /** DIAG-11 empty state path (existing dari Phase 12). */
@@ -21,7 +29,7 @@ type Props = {
   /** Phase 13: warna per tier (dari deriveTierColors). Override default gray. */
   tierColors?: TierColors
   /**
-   * Phase 13 wrapper hook: KesehatanLanding wrap setiap trapezoid sebagai
+   * Phase 13 wrapper hook: KesehatanLanding wrap setiap tier sebagai
    * AccordionTrigger. Callback receives tier metadata + the rendered button
    * element; return wrapped element. If undefined, fallback toast handler.
    */
@@ -29,66 +37,87 @@ type Props = {
 }
 
 /**
- * 4-tier piramida shell.
+ * 4-tier piramida shell — stepped solid pyramid.
  *
- * Phase 12 baseline (variant only): semua tier gray, klik → toast.
- * Phase 13 extend: `tierColors` set warna trapezoid dynamic (hijau/kuning/merah/abu).
- *   `renderTrigger` allow KesehatanLanding wrap trapezoid jadi AccordionTrigger.
- *
- * Visual: 4 trapezoid stacked, top sempit (Tier 4 WARISAN) ke bottom lebar (Tier 1 PROTEKSI).
- * Implementation: CSS clip-path polygon + Tailwind width %.
+ * Visual: 4 stacked rectangles tapering Tier 4 (60%) → Tier 1 (100%).
+ * Pure rectangles (no clip-path) — sharp edges, zero label truncation risk.
+ * Pyramid feel via width taper + tight stacking + tier separators + rounded corners
+ * di Tier 4 top dan Tier 1 bottom.
  */
 export default function PiramidaShell({ variant = 'default', tierColors, renderTrigger }: Props) {
   const isEmpty = variant === 'grayed-empty'
+  const lastIndex = TIERS.length - 1
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-1 py-4">
+    <div className="mx-auto flex max-w-lg flex-col items-center py-4">
       {TIERS.map((tier, index) => {
-        // Width %: tier 4 → 50%, tier 3 → 65%, tier 2 → 80%, tier 1 → 95%
-        const widthPercent = 50 + index * 15
+        const widthPercent = WIDTH_PERCENT[tier.id]
+        const isFirst = index === 0
+        const isLast = index === lastIndex
 
         // Resolve color: empty state always gray; tierColors override; else fallback gray
         const colorKey: keyof typeof COLOR_BADGE_CLASS =
           isEmpty ? 'gray' : (tierColors?.[tier.id] ?? 'gray')
 
-        const trapezoidClass =
+        const tierClass =
           isEmpty
-            ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+            ? 'bg-gray-200 text-gray-600 ring-gray-300/60 dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-600/60'
             : colorKey === 'gray'
-              ? 'bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-200'
+              ? 'bg-gray-300 text-gray-800 ring-gray-400/50 dark:bg-gray-600 dark:text-gray-100 dark:ring-gray-500/50'
               : colorKey === 'green'
-                ? 'bg-green-500 text-white'
+                ? 'bg-emerald-500 text-white ring-emerald-700/30'
                 : colorKey === 'yellow'
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-red-500 text-white'
+                  ? 'bg-amber-500 text-white ring-amber-700/30'
+                  : 'bg-red-500 text-white ring-red-700/30'
 
-        const trapezoid = (
+        // Status dot color (saturated, white border for definition on filled bg)
+        const dotClass =
+          isEmpty || colorKey === 'gray'
+            ? 'bg-gray-100 dark:bg-gray-300'
+            : colorKey === 'green'
+              ? 'bg-emerald-200'
+              : colorKey === 'yellow'
+                ? 'bg-amber-200'
+                : 'bg-red-200'
+
+        // Rounded corners: Tier 4 (top) rounded-t-lg, Tier 1 (bottom) rounded-b-lg, middle squared
+        const radiusClass = isFirst
+          ? 'rounded-t-lg'
+          : isLast
+            ? 'rounded-b-lg'
+            : ''
+
+        // Border antar tier — top border for all except first, gives crisp seam
+        const seamClass = isFirst ? '' : 'border-t border-white/20 dark:border-black/20'
+
+        const tierBlock = (
           <div
-            className={`flex h-14 items-center gap-2 px-3 text-xs font-semibold tracking-wide sm:gap-3 sm:px-5 sm:text-sm ${trapezoidClass}`}
-            style={{ clipPath: 'polygon(5% 0, 95% 0, 100% 100%, 0 100%)' }}
+            className={`relative flex h-14 items-center justify-center px-5 text-sm font-semibold tracking-wide shadow-sm ring-1 ring-inset transition-colors ${tierClass} ${seamClass} ${radiusClass}`}
           >
-            <span className="hidden shrink-0 text-[9px] opacity-70 sm:inline sm:text-[10px]">{tier.subtitle}</span>
-            <span className="min-w-0 flex-1 truncate text-center">{tier.label}</span>
+            <span className="truncate">{tier.label}</span>
+            <span
+              className={`absolute right-4 size-2.5 rounded-full ring-2 ring-white/70 dark:ring-black/40 ${dotClass}`}
+              aria-hidden
+            />
           </div>
         )
 
         const button = (
           <div
-            className="group relative w-full max-w-[420px] min-w-[140px] cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring rounded"
+            className="group relative w-full cursor-pointer transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
             style={{ width: `${widthPercent}%` }}
             aria-label={`Tier ${tier.id} ${tier.label}`}
           >
-            {trapezoid}
+            {tierBlock}
           </div>
         )
 
-        // Wave 1: kalau renderTrigger provided (KesehatanLanding wrap dengan AccordionTrigger),
-        // delegasikan rendering ke parent. Else fallback existing toast behavior.
         if (renderTrigger) {
           return (
             <div
               key={tier.id}
-              style={{ width: `${widthPercent}%`, maxWidth: 420, minWidth: 140 }}
+              className="w-full"
+              style={{ width: `${widthPercent}%`, maxWidth: 480 }}
             >
               {renderTrigger(tier, button)}
             </div>
@@ -107,10 +136,10 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
               )
             }
             aria-label={`Tier ${tier.id} ${tier.label}`}
-            className="group relative w-full max-w-[420px] cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring rounded"
-            style={{ width: `${widthPercent}%` }}
+            className="group relative cursor-pointer transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+            style={{ width: `${widthPercent}%`, maxWidth: 480 }}
           >
-            {trapezoid}
+            {tierBlock}
           </button>
         )
       })}
