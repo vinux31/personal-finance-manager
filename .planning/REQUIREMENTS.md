@@ -15,7 +15,7 @@
 
 - [ ] **STRAT-01**: User punya halaman `/kesehatan` yang accessible via grup sidebar baru "Strategi" (sejajar dengan Keuangan/Aset/Tujuan, di atas Footer). Item sidebar single: "Kesehatan". _Source: design spec §3._
 - [ ] **STRAT-02**: Landing `/kesehatan` menampilkan hero piramida 4-tier hidup berwarna, banner kalkulator, dan grid 6 card modul. _Source: design spec §3 layout._
-- [ ] **STRAT-03**: User klik tier piramida → expand panel inline menampilkan indikator detail + CTA aksi + (kecuali Tier 4) link ke modul terkait. CTA mapping per spec §4.5. _Source: design spec §4 CTA mapping._
+- [x] **STRAT-03**: User klik tier piramida → expand panel inline menampilkan indikator detail + CTA aksi + (kecuali Tier 4) link ke modul terkait. CTA mapping per spec §4.5. _Source: design spec §4 CTA mapping._
 - [ ] **STRAT-04**: User akses 6 modul edukasi via sub-route `/kesehatan/<slug>` dengan slug Indonesian: `arus-kas`, `tujuan`, `alokasi-aset`, `instrumen`, `pajak-biaya-inflasi`, `perilaku`. Modul prose pakai typography Fraunces serif. _Source: design spec §3 + §6._
 - [ ] **STRAT-05**: User akses kalkulator compound interest via `/kesehatan/kalkulator` (full page) + teaser banner di landing. Kalkulator punya slider awal/bulanan/return/tenor + grafik tahun-per-tahun + tabel breakdown 5-tahunan. _Source: design spec §5._
 - [ ] **STRAT-06**: 8 istilah teknis (Asset Allocation, Real Return, Sharpe Ratio, DCA, Drawdown, Expense Ratio, Rebalancing, Risk Tolerance) tampil sebagai tooltip inline (Radix Tooltip) di angka teknis modul. _Source: design spec §6 glossary._
@@ -84,7 +84,7 @@ Kandidat untuk v1.3+:
 |-----|-------|--------|-------|
 | STRAT-01 | Phase 12 | Pending | Sidebar grup "Strategi" + route /kesehatan |
 | STRAT-02 | Phase 12 | Pending | Landing shell (piramida + banner + grid 6 modul) |
-| STRAT-03 | Phase 13 | Pending | Tier expand panel — wired dengan indicator queries |
+| STRAT-03 | Phase 13 | Complete | Tier expand panel — wired dengan indicator queries |
 | STRAT-04 | Phase 15 | Pending | 6 modul sub-route + Fraunces serif |
 | STRAT-05 | Phase 15 | Pending | Kalkulator compound interest + banner |
 | STRAT-06 | Phase 15 | Pending | Glossary tooltip 8 istilah (Radix Tooltip) |

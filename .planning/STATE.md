@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
 status: executing
-stopped_at: "Phase 12 planning complete — 3 plans created (12-01 schema + 12-02 sidebar/route/landing + 12-03 empty state). Wave structure: 12-01 & 12-02 parallel di Wave 1, 12-03 di Wave 2 (depends_on 12-02)."
-last_updated: "2026-05-08T04:22:10.213Z"
+stopped_at: Phase 13 plan 01 (TierPanelInfra) complete. Wave 1 done; ready for Wave 2 parallel (13-02/03/04).
+last_updated: "2026-05-08T07:44:16.297Z"
 last_activity: 2026-05-08
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_plans: 7
+  completed_plans: 4
+  percent: 57
 ---
 
 # Project State
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 12 — kesehatan-foundation
+**Current focus:** Phase 13 — diagnostic-data-indicators
 
 ## Current Position
 
-Phase: 13
-Plan: Not started
-Status: Executing Phase 12
+Phase: 13 (diagnostic-data-indicators) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
 Last activity: 2026-05-08
 
 ## v1.2 Phase Summary
@@ -36,7 +36,7 @@ Last activity: 2026-05-08
 |-------|------|--------------|--------|
 | 11 | Periode Gaji | (pre-defined v1.2 scope) | **Complete (PASS)** — 2026-05-02 |
 | 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Planned (3 plans) |
-| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | Not started |
+| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | Executing — Plan 1/4 done (Wave 1 TierPanelInfra) |
 | 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | Not started |
 | 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
 | 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | Not started |
@@ -81,6 +81,15 @@ Last activity: 2026-05-08
 - **STRAT-03 (tier expand panel) dimasukkan ke Phase 13** bukan 12 karena panel content butuh indicator queries; landing tanpa expand di Phase 12 acceptable interim.
 - **Phase 16 merge (VERIF + TECHDEBT)** — keduanya ops-focused, tying up v1.1 loose ends, no UI. Coherent narrative "v1.1 Closure & Ops Cleanup" daripada 2 phase kecil terpisah.
 
+### Decisions (Phase 13 plan-time, 2026-05-08)
+
+- **LIFE_EXPECTANCY_YEARS = 75** locked di `src/queries/kesehatanTypes.ts` (BPS Indonesia 2024 ~74y rounded). Simpan sebagai konstanta supaya gampang adjust pasca-rilis tanpa rebuild compute logic.
+- **useTransactions filtered dengan `dateFrom = today - 3 months`** di `useIndikator()` — hindari full-table scan untuk user dengan ribuan transaksi (RESEARCH.md pitfall #2).
+- **Hybrid compute strategy** (CONTEXT.md decision B): client-side derivation reuse existing query hook cache. Migration path ke server-side RPC `compute_indicators(uid)` preserved tanpa break consumer interface.
+- **Single-open Accordion** (CONTEXT.md decision A): shadcn Accordion `type='single' collapsible`. Klik tier baru auto-close tier lama. tw-animate-css sudah imported di `src/index.css`.
+- **File-ownership matrix locked** untuk Wave 2 zero-conflict parallelism: 13-02 owns `Tier1Panel.tsx` + `kesehatanTier1.ts`; 13-03 owns `Tier2Panel.tsx` + `kesehatanTier2.ts`; 13-04 owns `Tier3Panel.tsx` + `kesehatanTier3.ts`. `KesehatanLanding.tsx` TIDAK dimodifikasi di Wave 2.
+- **`IndikatorResult.compute.staleMonths?: number`** extension menjawab CONTEXT.md Open Question 2 (DIAG-06 stale pension notice — IndikatorCard render amber badge "Stale Xbln" jika set).
+
 ### Pending Todos
 
 None.
@@ -109,9 +118,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08
-Stopped at: Phase 12 planning complete — 3 plans created (12-01 schema + 12-02 sidebar/route/landing + 12-03 empty state). Wave structure: 12-01 & 12-02 parallel di Wave 1, 12-03 di Wave 2 (depends_on 12-02).
+Last session: 2026-05-08T07:44:16.290Z
+Stopped at: Phase 13 plan 01 (TierPanelInfra) complete. Wave 1 done; ready for Wave 2 parallel (13-02/03/04).
 Resume options:
 
-  - **Execute Phase 12: `/gsd-execute-phase 12`** — start Wave 1 (12-01 + 12-02 parallel) ← recommended next
+  - **Execute Phase 13 Wave 2 parallel: `/gsd-execute-phase 13`** — 13-02 (Tier 1) + 13-03 (Tier 2) + 13-04 (Tier 3) parallel-safe via file-ownership matrix ← recommended next
   - Plan Phase 16 parallel: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT) — independent dari /kesehatan stack
