@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-08T10:58:21.322Z",
+  "phase": "14",
+  "phase_name": "Protection & Tier 4 Checklists",
+  "phase_dir": ".planning/phases/14-protection-tier4-checklists",
+  "plan": null,
+  "task": null,
+  "total_tasks": 0,
+  "status": "paused_after_discuss",
+  "completed_tasks": [
+    {"id": "phase-13", "name": "Phase 13 Diagnostic Data Indicators (4 plans)", "status": "done", "commit": "785488b"},
+    {"id": "phase-13-uat", "name": "Browser UAT Phase 13 (10 items, 7 PASS)", "status": "done", "commit": "7408b22"},
+    {"id": "phase-13-fixes", "name": "F-01 mobile labels + F-02 Accordion controlled (4 commits)", "status": "done", "commit": "f08949d"},
+    {"id": "phase-14-discuss", "name": "Phase 14 CONTEXT.md (6 decisions locked)", "status": "done", "commit": "7d97c2d"}
+  ],
+  "remaining_tasks": [
+    {"id": "phase-14-plan", "name": "Run /gsd-plan-phase 14 (research + planner)", "status": "not_started"},
+    {"id": "phase-14-execute", "name": "Run /gsd-execute-phase 14", "status": "not_started"},
+    {"id": "phase-14-verify", "name": "Verify Phase 14 + UAT", "status": "not_started"},
+    {"id": "phase-13-residue", "name": "MD-01/MD-02 disposition + items 4/5 SQL seed UAT (deferrable v1.3 backlog)", "status": "deferred"}
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {"action": "Decide MD-01 (kprFraction 0.5 boundary) + MD-02 (30-day month drift) disposition — accept v1.2 atau patch", "context": "Code review Phase 13 medium findings, low impact, non-blocking", "blocking": false},
+    {"action": "SQL seed UAT items 4 (no pension sim) + 5 (stale notice >6mo)", "context": "Production user has fresh pension sim — SKIPPED items at Phase 13 closure, deferrable", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Tier 1 #4 form: inline replace IndikatorCard (zero modal/drawer)", "rationale": "Konsisten dengan accordion-style spec, mobile-friendly, no new package", "phase": "14"},
+    {"decision": "Tier 4 layout: gate first → conditional sections inline (estate universal + asuransi jiwa kalau Ya)", "rationale": "Single panel scroll, no nested accordion (UAT phase 13 confirm double-accordion confusing)", "phase": "14"},
+    {"decision": "Mutation: optimistic update via React Query setQueryData + supabase upsert (lazy create on user_id PK)", "rationale": "Sama pattern existing transactions/goals mutations, smooth UX", "phase": "14"},
+    {"decision": "Gate toggle: preserve life_coverage* answers, hide UI saat has_dependents=false (non-destructive)", "rationale": "Schema allow NULL, no friction, kalau user toggle Ya lagi data kembali", "phase": "14"},
+    {"decision": "Estate input: 3-state radio per item (Ya/Tidak/Belum diisi → boolean true/false/NULL)", "rationale": "Konsisten pattern life_coverage_post_employment, distinguish unanswered dari Tidak", "phase": "14"},
+    {"decision": "View-As mode: form visible disabled + banner kuning + submit hidden + mutation guard", "rationale": "Konsisten View-As pattern di /pensiun + /goals; defense-in-depth selain RLS", "phase": "14"}
+  ],
+  "uncommitted_files": [
+    "dashboard-deployed.png",
+    "financial_framework.html",
+    "periode-gaji-shipped-2026-05-07.png",
+    "phase13-uat-01..07.png (7 UAT screenshots)",
+    "production-sidebar.png",
+    "sidebar-*.png (4 sidebar screenshots)",
+    "uat-*.png + prod-01-dashboard.png (3 misc)"
+  ],
+  "next_action": "Run /clear → /gsd-plan-phase 14 (Phase 14 CONTEXT.md siap, researcher + planner generate plans)",
+  "context_notes": "Phase 13 fully shipped + production verified (Playwright UAT). 4 fix commits round-trip mobile clip-path. Phase 14 discuss done — 6 decisions locked, schema 0029 already live (zero schema change). Next: plan-phase 14. Migration 0029 fields exact match spec §7. IndikatorCard variant baru `form-radio` perlu added. Tier4Panel full rewrite (Phase 13 placeholder text)."
+}
