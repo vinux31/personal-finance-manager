@@ -147,7 +147,11 @@ export function computeSavingsRate(transactions: Transaction[]): IndikatorResult
 // ============================================================
 // Helper: aset finansial (denominator DAR & Rasio Investasi)
 // ============================================================
-function totalAsetFinansial(
+//
+// Exported untuk reuse dari kesehatanTier3.ts (Plan 13-04 computeRasioInvestasi)
+// agar denominator konsisten antara DAR Konsumtif (Tier 1 #3), DAR Total (info),
+// dan Rasio Investasi (Tier 3 #7). Properti & kendaraan EXCLUDE via FINANCIAL_TYPES.
+export function totalAsetFinansial(
   accounts: NetWorthAccount[],
   investments: Investment[],
 ): number {
