@@ -96,7 +96,7 @@ export default function PiramidaShell({ variant = 'default', tierColors, renderT
           >
             <span className="truncate">{tier.label}</span>
             <span
-              className={`absolute right-4 size-2.5 rounded-full ring-2 ring-white/70 dark:ring-black/40 ${dotClass}`}
+              className={`absolute right-4 hidden size-2.5 rounded-full ring-2 ring-white/70 sm:block dark:ring-black/40 ${dotClass}`}
               aria-hidden
             />
           </div>
