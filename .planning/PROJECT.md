@@ -16,17 +16,24 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 **Tech stack stable:** React 19 + TS + Vite + Supabase (RLS + 25 migrations applied via Studio fallback) + TailwindCSS 4 + shadcn/ui
 **Codebase size:** ~32k LOC delta v1.0→v1.1 (231 files changed, +32k/-15k since v1.0)
 
-## Next Milestone: v1.2 (TBD)
+## Current Milestone: v1.2 Strategic Layer & Verification Closure
 
-Backlog kandidat per `project_v1_2_verification_backlog.md` + v1.1 audit `deferred_to_next_milestone`:
-- D-14 NUMERIC formatting in withdraw_from_goal MESSAGE (cosmetic LOW)
-- net_worth_snapshots auto-insert 42501 saat View-As aktif (LOW)
-- Phase 6 deferred UATs (5 items, MEDIUM-LOW) — perlu data state setup
-- AuthProvider .catch() gap (corrupt-localStorage path) — fresh UAT 2026-05-02
-- Migration history reconciliation (0014..0025 Local-only)
-- SEC-01 SC#3 destructive variant (perlu staging mirror)
+**Goal:** Tambahkan halaman `/kesehatan` (piramida diagnostic + literasi finansial) sebagai layer strategis di atas tabs operasional, sekaligus tutup sisa verification debt dari v1.1.
 
-Run `/gsd-new-milestone` untuk define v1.2 scope.
+**Target features:**
+- **Halaman /kesehatan** — piramida 4-tier data-driven (8 indikator), 6 modul edukasi sub-route, kalkulator compound interest. Schema baru `protection_checklist`. Design spec di `docs/superpowers/specs/2026-05-08-framework-page-design.md` (commit b219fc3).
+- **Verification closure v1.1 (B1-B5 live UAT)** — setup data state (template Gaji, expense recurring, goal cash, goal completed) + jalankan UAT idempotency Gaji, race mark-paid, 2-tab withdraw, completed→active flip, Refresh Harga WIB date.
+- **Tech debt minor** — migration history reconciliation (0014..0025 local-only), Phase 8 deferred dev-hygiene residu.
+
+**Out of scope v1.2 (defer ke v1.3+):**
+- Modul "Warisan & Estate Planning" (Tier 4 cuma checklist v1.2)
+- Kalkulator suite tambahan (real return, expense drag, retirement gap) — cuma compound di v1.2
+- IPS Builder, risk tolerance quiz, behavior gap detector
+- Tier 4 jadi data-driven diagnostic (saat ini self-assessment)
+- Asset class normalization untuk `investments.asset_type`
+- SEC-01 SC#3 destructive variant (butuh staging mirror — infra besar)
+
+**Started:** 2026-05-08
 
 ## Requirements
 
@@ -84,7 +91,7 @@ Run `/gsd-new-milestone` untuk define v1.2 scope.
 
 ### Active
 
-(v1.2 requirements TBD — define via `/gsd-new-milestone`)
+(v1.2 requirements being defined — see REQUIREMENTS.md)
 
 ### Out of Scope
 
@@ -158,4 +165,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-02 — v1.1 Hardening & Consistency milestone shipped (PASS, all 16 reqs satisfied)*
+*Last updated: 2026-05-08 — v1.2 Strategic Layer & Verification Closure milestone started*

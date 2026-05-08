@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Hardening & Consistency
-status: completed
-stopped_at: Phase 10 complete — v1.1 milestone fully verified including live SEC-01 + CONS-02
-last_updated: "2026-05-02T12:01:55.110Z"
-last_activity: 2026-05-02
+milestone: v1.2
+milestone_name: Strategic Layer & Verification Closure
+status: active
+stopped_at: Defining requirements
+last_updated: "2026-05-08T00:00:00.000Z"
+last_activity: 2026-05-08
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 25
-  completed_plans: 25
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,15 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** v1.1 milestone close — all phases verified, fetch-prices CORS gap closed
+**Current focus:** v1.2 Strategic Layer & Verification Closure — define requirements + roadmap
 
 ## Current Position
 
-Phase: 10 (fetch-prices-cors-fix) — Complete (2026-05-02) PASS
-Plan: 2 of 2 complete
-Phase: 08 (dev-hygiene) — Deferred (low-priority cosmetic; no DB migrations; can ship anytime)
-Status: v1.1 ready to close — `/gsd-complete-milestone v1.1`
-Last activity: 2026-05-02
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-08 — Milestone v1.2 started
 
 ## v1.1 Phase Summary
 
