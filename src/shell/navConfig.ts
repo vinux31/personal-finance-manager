@@ -8,6 +8,7 @@ import {
   Landmark,
   Target,
   PiggyBank,
+  HeartPulse,
   BookOpen,
   Settings as SettingsIcon,
 } from 'lucide-react'
@@ -53,6 +54,12 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: '/goals', label: 'Goals', icon: Target },
       { to: '/pensiun', label: 'Pensiun', icon: PiggyBank },
+    ],
+  },
+  {
+    label: 'Strategi',
+    items: [
+      { to: '/kesehatan', label: 'Kesehatan', icon: HeartPulse },
     ],
   },
   {

@@ -11,6 +11,8 @@ import GoalsTab from '@/tabs/GoalsTab'
 import PeriodeGajiTab from '@/tabs/PeriodeGajiTab'
 import SettingsTab from '@/tabs/SettingsTab'
 import PanduanFullPage from '@/components/PanduanFullPage'
+import KesehatanLayout from '@/tabs/kesehatan/KesehatanLayout'
+import KesehatanLanding from '@/tabs/kesehatan/KesehatanLanding'
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ export const router = createBrowserRouter([
       { path: 'kekayaan', element: <KekayaanTab /> },
       { path: 'goals', element: <GoalsTab /> },
       { path: 'pensiun', element: <PensiunTab /> },
+      // NEW: nested /kesehatan route — Phase 15 akan tambah child routes (kalkulator + 6 modul)
+      {
+        path: 'kesehatan',
+        element: <KesehatanLayout />,
+        children: [
+          { index: true, element: <KesehatanLanding /> },
+        ],
+      },
       { path: 'finansial', element: <Navigate to="/kekayaan" replace /> },
       { path: 'pengaturan', element: <SettingsTab /> },
       { path: 'panduan', element: <PanduanFullPage /> },
