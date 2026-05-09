@@ -98,7 +98,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   2. User klik Tier 4 → lihat gate question "Punya tanggungan finansial?"; pilih "Tidak" → 3 estate basic; pilih "Ya" → 3 estate + 3 asuransi jiwa; threshold warna tier 4 sesuai spec §4 (hijau semua "ya", merah ada "tidak" estate/asuransi)
   3. Admin dengan View-As aktif lihat indikator pakai data viewed-user, tetapi inline form Tier 1 #4 dan Tier 4 checklist switch ke read-only mode (input disabled, no submit) — admin tidak bisa modify protection_checklist user lain
 **Plans**: 3 plans
-  - [ ] 14-01-PLAN.md — Foundation: radio-group + db/queries layer + mutation hook + extend useProtectionChecklist + SQL test
+  - [x] 14-01-PLAN.md — Foundation: radio-group + db/queries layer + mutation hook + extend useProtectionChecklist + SQL test
   - [ ] 14-02-PLAN.md — DIAG-04: Tier 1 #4 Asuransi Kesehatan inline form (3-state machine) + Tier 1 View-As notice
   - [ ] 14-03-PLAN.md — DIAG-09: Tier 4 smart-gated checklist (gate + life conditional + estate universal) + Tier 4 aggregation + KesehatanLanding wiring + Tier 4 View-As notice
 **UI hint**: yes
@@ -145,6 +145,6 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
 | 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
-| 14. Protection & Tier 4 Checklists | v1.2 | 0/3 | Plans complete | — |
+| 14. Protection & Tier 4 Checklists | v1.2 | 1/3 | In Progress|  |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
