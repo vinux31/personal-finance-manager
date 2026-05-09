@@ -1,19 +1,16 @@
 import { useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
-import { useTargetUserId } from '@/auth/useTargetUserId'
 import { useTransactions } from '@/queries/transactions'
 import { useNetWorthAccounts, useNetWorthLiabilities } from '@/queries/netWorth'
 import { useGoals } from '@/queries/goals'
 import { useInvestments } from '@/queries/investments'
 import { usePensionSim } from '@/queries/pensiun'
+import { useProtectionChecklist } from '@/queries/protectionChecklist'
 import {
   computeDanaDarurat,
   computeSavingsRate,
   computeDARKonsumtif,
   computeDARTotal,
   computeAsuransiShell,
-  type ProtectionChecklistRow,
 } from './kesehatanTier1'
 import { computeGoalsOnTrack, computePensiun } from './kesehatanTier2'
 import { computeRasioInvestasi, computeDiversifikasi } from './kesehatanTier3'
@@ -48,35 +45,6 @@ export type DARTotalInfo = {
   value: number
   display: string
   kprFraction: number
-}
-
-/**
- * useProtectionChecklist — read-only hook untuk Tier 1 #4 shell.
- *
- * Phase 13 scope: cuma SELECT row untuk targetUid. Row mungkin null (lazy-create
- * di Phase 14). RLS protection_checklist policy: `auth.uid() = user_id OR is_admin()`
- * → admin View-As bisa baca user lain.
- */
-function useProtectionChecklist() {
-  const targetUid = useTargetUserId()
-  return useQuery<ProtectionChecklistRow | null>({
-    queryKey: ['kesehatan', 'protection-checklist', targetUid],
-    enabled: !!targetUid,
-    queryFn: async () => {
-      if (!targetUid) return null
-      const { data, error } = await supabase
-        .from('protection_checklist')
-        .select('user_id, health_coverage')
-        .eq('user_id', targetUid)
-        .maybeSingle()
-      if (error) {
-        console.warn('[useProtectionChecklist]', error.message)
-        return null
-      }
-      return data as ProtectionChecklistRow | null
-    },
-    staleTime: 60_000,
-  })
 }
 
 /**

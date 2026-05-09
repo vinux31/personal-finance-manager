@@ -12,17 +12,15 @@ import {
 } from './kesehatanTypes'
 
 // ============================================================
-// ProtectionChecklistRow
+// ProtectionChecklistRow — Phase 14 PROMOTED
 // ============================================================
 //
-// Single source of truth untuk shape protection_checklist row yang relevan
-// untuk Tier 1 #4 shell. Phase 14 mutation form akan extend type ini (atau
-// move ke src/db/protectionChecklist.ts) saat menambah field has_dependents,
-// life_*, estate_*. Phase 13 cuma butuh health_coverage.
-export type ProtectionChecklistRow = {
-  user_id: string
-  health_coverage: 'kantor' | 'bpjs' | 'pribadi' | 'kombinasi' | 'tidak' | null
-}
+// Phase 14: ProtectionChecklistRow PROMOTED ke src/db/protectionChecklist.ts
+// dengan widened shape (10 columns). Kesehatan Tier 1 modules tetap import
+// dari sini untuk backward compat — re-export aja. Import lokal supaya
+// computeAsuransiShell di file ini tetap bisa reference type by name.
+import type { ProtectionChecklistRow } from '@/db/protectionChecklist'
+export type { ProtectionChecklistRow } from '@/db/protectionChecklist'
 
 // ============================================================
 // Helper: distinct calendar months dari array transactions
