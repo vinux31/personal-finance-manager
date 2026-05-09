@@ -14,7 +14,9 @@ import {
 } from './kesehatanTier1'
 import { computeGoalsOnTrack, computePensiun } from './kesehatanTier2'
 import { computeRasioInvestasi, computeDiversifikasi } from './kesehatanTier3'
+import { computeTier4Color } from './kesehatanTier4'
 import type { IndikatorResult, TierColors, TierId } from './kesehatanTypes'
+import type { ProtectionChecklistRow } from '@/db/protectionChecklist'
 
 // Re-export types untuk convenience consumers (KesehatanLanding, TierPanel)
 export type { IndikatorResult, TierColors, TierId } from './kesehatanTypes'
@@ -56,6 +58,10 @@ export type DARTotalInfo = {
  *
  * Untuk DIAG-01/02/10: useTransactions filtered dengan dateFrom = 3-bulan-lalu (per
  * RESEARCH.md pitfall #2 — avoid full-table scan).
+ *
+ * Phase 14 extension: useIndikator return shape includes `protectionRow` so
+ * KesehatanLanding can call `deriveTierColors(indicators, protectionRow)`.
+ * Without this, Tier 4 trapezoid stays gray (Phase 13 behavior).
  */
 export function useIndikator() {
   const threeMonthsAgoISO = useMemo(() => {
@@ -83,7 +89,7 @@ export function useIndikator() {
 
   const result = useMemo(() => {
     if (isLoading) {
-      return { isLoading: true as const, indicators: null, darTotalInfo: null }
+      return { isLoading: true as const, indicators: null, darTotalInfo: null, protectionRow: null }
     }
     const txData = tx.data ?? []
     const accData = accounts.data ?? []
@@ -106,7 +112,7 @@ export function useIndikator() {
 
     const darTotalInfo: DARTotalInfo | null = computeDARTotal(accData, liabData, invData)
 
-    return { isLoading: false as const, indicators, darTotalInfo }
+    return { isLoading: false as const, indicators, darTotalInfo, protectionRow: protData }
   }, [
     isLoading,
     tx.data,
@@ -153,8 +159,17 @@ export const TIER_INDICATORS: Record<TierId, ReadonlyArray<keyof IndikatorMap>> 
   4: [],
 }
 
-/** Helper: derive TierColors dari IndikatorMap. */
-export function deriveTierColors(indicators: IndikatorMap | null): TierColors {
+/**
+ * Helper: derive TierColors dari IndikatorMap + protectionRow.
+ *
+ * Phase 14: signature extended dengan protectionRow param untuk Tier 4 compute.
+ * Tier 1-3 unchanged (still aggregate over IndikatorResult[] from indicators map).
+ * Tier 4 delegate ke computeTier4Color (gate-conditional + NULL=red rules).
+ */
+export function deriveTierColors(
+  indicators: IndikatorMap | null,
+  protectionRow: ProtectionChecklistRow | null,
+): TierColors {
   if (!indicators) {
     return { 1: 'gray', 2: 'gray', 3: 'gray', 4: 'gray' }
   }
@@ -162,6 +177,6 @@ export function deriveTierColors(indicators: IndikatorMap | null): TierColors {
     1: aggregateTierColor(TIER_INDICATORS[1].map(id => indicators[id])),
     2: aggregateTierColor(TIER_INDICATORS[2].map(id => indicators[id])),
     3: aggregateTierColor(TIER_INDICATORS[3].map(id => indicators[id])),
-    4: 'gray', // Phase 14 deliver Tier 4 content
+    4: computeTier4Color(protectionRow),
   }
 }
