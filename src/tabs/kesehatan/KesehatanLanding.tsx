@@ -47,9 +47,10 @@ export default function KesehatanLanding() {
     countQuery.data !== undefined &&
     countQuery.data.total < EMPTY_STATE_THRESHOLD
 
-  // Derive tier colors hanya kalau indikator ready + bukan empty state
+  // Derive tier colors hanya kalau indikator ready + bukan empty state.
+  // Phase 14: pass protectionRow ke deriveTierColors untuk Tier 4 aggregation.
   const tierColors = !isEmpty && !indikator.isLoading
-    ? deriveTierColors(indikator.indicators)
+    ? deriveTierColors(indikator.indicators, indikator.protectionRow)
     : undefined
 
   /**
