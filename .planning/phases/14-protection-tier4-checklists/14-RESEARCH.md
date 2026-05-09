@@ -913,32 +913,32 @@ const tierColors = !isEmpty && !indikator.isLoading
 
 **If this table is empty:** would mean fully verified — but A3 in particular needs planner judgment.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **NULL estate aggregation: red or gray?**
    - What we know: CONTEXT.md Decision E says "NULL = treat sebagai 'Tidak' untuk warna (red) ATAU sebagai 'abu-abu' (TBD planner). Recommend RED biar push user fill."
    - What's unclear: Is NULL = red the right UX? Some users prefer gray "not yet answered" over red "negative".
-   - Recommendation: Lock to **red** per CONTEXT.md author intent ("push user fill"). Document in plan-time decisions.
+   - **RESOLVED:** Lock to **red** per CONTEXT.md author intent ("push user fill"). Implemented in Plan 14-03 `computeTier4Color`.
 
 2. **Tier 4 yellow boundary: include `tidak_yakin` as yellow?**
    - What we know: Spec §4 mentions yellow case for "ya tapi cuma kantor" / "tidak yakin" — but doesn't formalize. CONTEXT.md deferred ideas: "lean ke green/red binary per spec literal".
    - What's unclear: Whether to ship binary green/red or attempt yellow.
-   - Recommendation: Lock to **binary green/red for v1.2** (`life_coverage_post_employment === 'ya'` → green; `'tidak'` and `'tidak_yakin'` → red). Defer yellow refinement to v1.3 — track as deferred.
+   - **RESOLVED:** Lock to **binary green/red for v1.2** (`life_coverage_post_employment === 'ya'` → green; `'tidak'` and `'tidak_yakin'` → red). Yellow nuance deferred to v1.3. Implemented in Plan 14-03 `computeTier4Color`.
 
 3. **Auto-save on radio change vs explicit Submit button?**
    - What we know: Decision A says Tier 1 has Simpan button; Decision B implicit.
    - What's unclear: Tier 4 form (7 questions) — auto-save per radio change or batch submit?
-   - Recommendation: **Auto-save per radio change** (each `onValueChange` fires `mutation.mutate({ field: value })`). Pros: no "save" step; partial completion always persisted. Cons: 7 mutations if user fills all; offset by optimistic update so UX feels instant. Pattern matches Decision C optimistic flow.
+   - **RESOLVED:** Tier 1 #4 uses explicit Simpan/Batal buttons (CONTEXT.md UX flow #3). Tier 4 uses **auto-save per radio change** (orchestrator additional_context). Implemented in Plan 14-02 (Tier 1) and Plan 14-03 (Tier 4).
 
 4. **Should `computeAsuransiShell` add a 4th IndikatorResult variant `'form-radio'`?**
    - What we know: Decision A mentions "extend dengan variant baru `form-radio` ATAU wrap with internal state `isEditing`".
    - What's unclear: Recommended approach.
-   - Recommendation: **Wrap, don't extend.** Keep `IndikatorResult` union 3-variant (Phase 13 invariant); render custom `<AsuransiKesehatanForm>` sibling component at Tier1Panel level for slot #4. Reuses Phase 13 IndikatorCard shell visual style via Tailwind utilities (already exported). Less coupling. (Documented in Pattern 5 Option A2.)
+   - **RESOLVED:** **Wrap, don't extend.** Keep `IndikatorResult` union 3-variant (Phase 13 invariant); render `<AsuransiKesehatanForm>` sibling component at Tier1Panel level for slot #4 (Option A2). Implemented in Plan 14-02.
 
 5. **Whether to migrate `ProtectionChecklistRow` type to `src/db/protectionChecklist.ts`?**
    - What we know: Phase 13 13-02 Hand-off Notes explicitly suggested two options; current placement is `kesehatanTier1.ts` (Tier 1 #4 minimal subset: 2 fields).
    - What's unclear: Whether to expand in-place or migrate.
-   - Recommendation: **Migrate to `src/db/protectionChecklist.ts`** — parity with `pension_simulations` pattern (`src/db/pensiun.ts` owns `PensionSimRow` + `PensionSimInput`). Cleaner separation. Re-export from `kesehatanTier1.ts` for Phase 13 import compat:
+   - **RESOLVED:** **Migrate to `src/db/protectionChecklist.ts`** — parity with `pension_simulations` pattern (`src/db/pensiun.ts` owns `PensionSimRow` + `PensionSimInput`). Re-export from `kesehatanTier1.ts` for Phase 13 import compat. Implemented in Plan 14-01.
      ```ts
      // src/queries/kesehatanTier1.ts
      export type { ProtectionChecklistRow } from '@/db/protectionChecklist'
