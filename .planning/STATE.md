@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
 status: executing
-stopped_at: Phase 14 UI-SPEC approved
-last_updated: "2026-05-09T14:02:45.247Z"
-last_activity: 2026-05-09 -- Phase 14 execution started
+stopped_at: Phase 14 complete (verified, 2 View-As UAT deferred)
+last_updated: "2026-05-09T15:13:00.000Z"
+last_activity: 2026-05-09 -- Phase 14 verified + closed
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 10
-  completed_plans: 7
-  percent: 70
+  completed_phases: 3
+  total_plans: 13
+  completed_plans: 13
+  percent: 100
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 14 — protection-tier4-checklists
+**Current focus:** Phase 15 — Modul Edukasi & Kalkulator (next)
 
 ## Current Position
 
-Phase: 14 (protection-tier4-checklists) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 14
-Last activity: 2026-05-09 -- Phase 14 execution started
+Phase: 14 (protection-tier4-checklists) — **COMPLETE (verified)**
+Plan: 3 of 3 (all shipped)
+Status: Ready to plan Phase 15
+Last activity: 2026-05-09 -- Phase 14 verified + closed (17/19 UAT PASS, 2 View-As deferred to admin-seed UAT cycle)
 
 ## v1.2 Phase Summary
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 11 | Periode Gaji | (pre-defined v1.2 scope) | **Complete (PASS)** — 2026-05-02 |
-| 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | Planned (3 plans) |
-| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | **Plans complete (4/4) — Ready for verification** — 2026-05-08 |
-| 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | Not started |
+| 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | **Complete** — 2026-05-08 |
+| 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | **Complete** — 2026-05-08 |
+| 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | **Complete (verified)** — 2026-05-09 |
 | 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
 | 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | Not started |
 
@@ -134,11 +134,21 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-09T10:29:02.072Z
-Stopped at: Phase 14 UI-SPEC approved
+Last session: 2026-05-09T15:13:00.000Z
+Stopped at: Phase 14 verified + closed (3/3 plans shipped, 17/19 UAT PASS, 2 View-As deferred)
 Resume options:
 
-  - **Verify Phase 13: `/gsd-verify-phase 13`** — visual UAT closure + threshold validation + asset_type normalization seed test + full piramida 4-tier E2E ← recommended next
-  - Plan Phase 14: `/gsd-plan-phase 14` — Protection & Tier 4 Checklists (DIAG-04, 09, 12)
-  - Plan Phase 15: `/gsd-plan-phase 15` — Modul Edukasi & Kalkulator (STRAT-04, 05, 06)
+  - **Plan Phase 15: `/gsd-plan-phase 15`** — Modul Edukasi & Kalkulator (STRAT-04, 05, 06) ← recommended next
   - Plan Phase 16: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT)
+  - Follow-up UAT: View-As guard visual verification (DIAG-12) — needs admin role + target user_id seed; defense-in-depth code-path already verified (mutation guard + form disabled + RLS WITH CHECK)
+
+### Decisions (Phase 14 execute-time, 2026-05-09)
+
+- **Mutation pattern** — `useUpdateProtectionChecklist` ships single optimistic mutation hook (onMutate snapshot setQueryData → onError rollback + mapSupabaseError toast → onSuccess "Tersimpan" toast → onSettled invalidate). Single source of truth, consumed by Tier 1 form + Tier 4 panel + life section. Auto-save per radio click for Tier 4; explicit Simpan for Tier 1 form (different UX).
+- **3-state radio for estate fields** (Decision E) — `Ya/Tidak/Belum diisi` maps to boolean `true/false/NULL` via gateValueToString/boolToString adapters. NULL semantics preserved through round-trip. UAT verified via supabase REST GET.
+- **Gate toggle preserves life_*** (Decision D) — has_dependents Ya→Tidak retains life_coverage* columns in DB; Tidak→Ya restores visual without re-mutation. UAT confirmed via DB SELECT post-toggle.
+- **View-As 3-layer defense** (DIAG-12) — UI conditional render (`!isViewAs`) + mutation hook defensive throw (`if viewingAs !== null`) + RLS WITH CHECK auth.uid() = user_id. Visual UAT for Tests 8 + 17 deferred to admin-seed cycle; RLS backstop sufficient for v1.2 ship.
+- **Zero schema change** — Migration 0029 (Phase 12) shipped all 10 columns. Phase 14 strictly UI + mutation hooks. ProtectionChecklistRow widened from 2-col Phase 13 shell to full 10-col shape via re-export from new `src/db/protectionChecklist.ts`.
+- **File ownership preserved** — `KesehatanLanding.tsx` edit limited to single-line `deriveTierColors` call-site update (Plan 14-03 Task 2). Phase 13 plan 13-01 ownership respected for all other landing modifications.
+- **Build serves as regression gate** — `npm run build` (tsc -b + vite build) passes. No `npm test` script — build catches type + bundle integrity. Post-merge build PASS for both waves.
+- **Code review advisories** (4 warnings, non-blocking, deferred): WR-01 unused `'yellow'` return type in computeTier4Color; WR-02 auto-save lacks `disabled={mutation.isPending}` gate (UX hardening, candidate Phase 15 polish or v1.3); WR-03 SQL test T5 bare INSERT instead of UPSERT (test coverage); WR-04 closure `uid` stale on sign-out mid-flight (RLS backstop sufficient).

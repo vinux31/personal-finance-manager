@@ -44,7 +44,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 **Planned:**
 - [x] **Phase 12: /kesehatan Foundation** — sidebar grup Strategi + landing shell + `protection_checklist` schema + empty state piramida (completed 2026-05-08)
 - [x] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis (completed 2026-05-08)
-- [ ] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
+- [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode (completed 2026-05-09)
 - [ ] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip
 - [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
 
@@ -99,8 +99,8 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   3. Admin dengan View-As aktif lihat indikator pakai data viewed-user, tetapi inline form Tier 1 #4 dan Tier 4 checklist switch ke read-only mode (input disabled, no submit) — admin tidak bisa modify protection_checklist user lain
 **Plans**: 3 plans
   - [x] 14-01-PLAN.md — Foundation: radio-group + db/queries layer + mutation hook + extend useProtectionChecklist + SQL test
-  - [ ] 14-02-PLAN.md — DIAG-04: Tier 1 #4 Asuransi Kesehatan inline form (3-state machine) + Tier 1 View-As notice
-  - [ ] 14-03-PLAN.md — DIAG-09: Tier 4 smart-gated checklist (gate + life conditional + estate universal) + Tier 4 aggregation + KesehatanLanding wiring + Tier 4 View-As notice
+  - [x] 14-02-PLAN.md — DIAG-04: Tier 1 #4 Asuransi Kesehatan inline form (3-state machine) + Tier 1 View-As notice
+  - [x] 14-03-PLAN.md — DIAG-09: Tier 4 smart-gated checklist (gate + life conditional + estate universal) + Tier 4 aggregation + KesehatanLanding wiring + Tier 4 View-As notice
 **UI hint**: yes
 
 ### Phase 15: Modul Edukasi & Kalkulator
@@ -145,6 +145,6 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 11. Periode Gaji | v1.2 | 1/1 | ✅ Complete (PASS) | 2026-05-02 |
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
 | 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
-| 14. Protection & Tier 4 Checklists | v1.2 | 1/3 | In Progress|  |
+| 14. Protection & Tier 4 Checklists | v1.2 | 3/3 | Complete   | 2026-05-09 |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
