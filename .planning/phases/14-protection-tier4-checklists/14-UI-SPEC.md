@@ -1,10 +1,11 @@
 ---
 phase: 14
 slug: protection-tier4-checklists
-status: draft
+status: approved
 shadcn_initialized: true
 preset: radix-nova (existing — components.json)
 created: 2026-05-09
+reviewed_at: 2026-05-09
 language: id
 extends: phase-13 design tokens (kesehatanTypes.ts COLOR_BADGE_CLASS / COLOR_BORDER_CLASS, IndikatorCard layout, TierPanel shell)
 ---
