@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital — A Framework for Financial Planning & Investing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0c0a08;
+    --paper: #f4efe6;
+    --paper-2: #ebe4d6;
+    --rule: #1a1612;
+    --accent: #c9412b;
+    --accent-2: #1d4d3a;
+    --gold: #b88a3a;
+    --muted: #6b6359;
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* Paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.7 0 0 0 0 0.65 0 0 0 0 0.55 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ========== HEADER ========== */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 16px 0 12px;
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 50;
+  }
+
+  .masthead-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .masthead-meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .masthead-logo {
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    font-style: italic;
+  }
+
+  .masthead-logo sup {
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    color: var(--accent);
+    margin-left: 4px;
+    vertical-align: super;
+  }
+
+  .masthead-nav {
+    display: flex;
+    gap: 28px;
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .masthead-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .masthead-nav a:hover { border-bottom-color: var(--accent); }
+
+  /* ========== HERO ========== */
+  .hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(56px, 9vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .hero-deck {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 480px;
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 56px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero-stat {
+    padding: 20px 0;
+    border-right: 1px solid var(--rule);
+    padding-right: 20px;
+  }
+
+  .hero-stat:last-child { border-right: none; }
+
+  .hero-stat-num {
+    font-family: var(--serif);
+    font-size: 44px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .hero-stat-num em {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--accent);
+    margin-left: 4px;
+    font-style: normal;
+  }
+
+  .hero-stat-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ========== TOC / MODULE GRID ========== */
+  .section-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .section-label .num {
+    font-family: var(--mono);
+    color: var(--ink);
+  }
+
+  section.modules {
+    padding: 80px 0;
+  }
+
+  .modules-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+    align-items: end;
+  }
+
+  .modules h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .modules h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .modules-intro {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .module-list {
+    border-top: 2px solid var(--ink);
+  }
+
+  .module-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 2fr 200px;
+    gap: 32px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    transition: background 0.3s, padding 0.3s;
+    align-items: baseline;
+    position: relative;
+  }
+
+  .module-row:hover {
+    background: var(--paper-2);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .module-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .module-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .module-title em {
+    font-style: italic;
+  }
+
+  .module-desc {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .module-meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .module-meta .arrow {
+    display: inline-block;
+    margin-left: 8px;
+    transition: transform 0.3s;
+    color: var(--accent);
+  }
+
+  .module-row:hover .arrow { transform: translateX(6px); }
+
+  /* ========== EXPANDED MODULE PANEL ========== */
+  .module-panel {
+    display: none;
+    grid-column: 1 / -1;
+    padding: 48px 0 24px;
+    border-top: 1px dashed var(--rule);
+    margin-top: 24px;
+  }
+
+  .module-row.open .module-panel { display: block; }
+  .module-row.open { background: var(--paper-2); padding-left: 16px; padding-right: 16px; }
+  .module-row.open .arrow { transform: rotate(90deg); }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+  }
+
+  .panel-section h4 {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .panel-section p {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.65;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .panel-section ul {
+    list-style: none;
+    margin-bottom: 14px;
+  }
+
+  .panel-section ul li {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    padding: 8px 0 8px 28px;
+    border-bottom: 1px dotted var(--rule);
+    position: relative;
+  }
+
+  .panel-section ul li::before {
+    content: counter(item);
+    counter-increment: item;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 11px;
+  }
+
+  .panel-section ul { counter-reset: item; }
+
+  .panel-section .pull {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    border-left: 3px solid var(--accent);
+    padding: 8px 0 8px 20px;
+    margin: 20px 0;
+    color: var(--ink);
+  }
+
+  .case-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px;
+    margin-top: 24px;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .case-box::before {
+    content: 'CASE STUDY';
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 3px 10px;
+  }
+
+  .case-box h5 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    margin-bottom: 12px;
+    margin-top: 8px;
+  }
+
+  .case-box p {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(244, 239, 230, 0.85);
+    margin-bottom: 8px;
+  }
+
+  .case-box .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    margin-top: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Quick check */
+  .check {
+    margin-top: 24px;
+    padding: 20px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+
+  .check-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .check-q {
+    font-family: var(--serif);
+    font-size: 16px;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .check-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-opt {
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: var(--ink);
+  }
+
+  .check-opt:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .check-opt.correct {
+    background: var(--accent-2);
+    color: var(--paper);
+    border-color: var(--accent-2);
+  }
+
+  .check-opt.wrong {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .check-feedback {
+    margin-top: 12px;
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.5;
+    display: none;
+  }
+
+  .check-feedback.show { display: block; }
+
+  /* ========== CALCULATOR ========== */
+  section.calc {
+    padding: 80px 0;
+    border-top: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  section.calc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(201, 65, 43, 0.15), transparent 60%);
+    pointer-events: none;
+  }
+
+  section.calc .container { position: relative; z-index: 2; }
+
+  section.calc .section-label { color: var(--gold); }
+  section.calc .section-label .num { color: var(--paper); }
+
+  section.calc h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  section.calc h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  section.calc > .container > p.lede {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: rgba(244, 239, 230, 0.7);
+    max-width: 600px;
+    margin-bottom: 56px;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .calc-inputs label {
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .calc-inputs .label-text {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .calc-inputs .label-text .val {
+    font-family: var(--mono);
+    color: var(--paper);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .calc-inputs input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: rgba(244, 239, 230, 0.2);
+    outline: none;
+  }
+
+  .calc-inputs input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid var(--paper);
+  }
+
+  .calc-inputs input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid var(--paper);
+  }
+
+  .calc-output {
+    background: rgba(244, 239, 230, 0.04);
+    border: 1px solid rgba(244, 239, 230, 0.15);
+    padding: 32px;
+  }
+
+  .calc-output-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .calc-output-value {
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .calc-output-currency {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .calc-breakdown {
+    border-top: 1px solid rgba(244, 239, 230, 0.15);
+    padding-top: 24px;
+  }
+
+  .calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px dotted rgba(244, 239, 230, 0.1);
+    font-family: var(--serif);
+    font-size: 15px;
+  }
+
+  .calc-row .lbl { color: rgba(244, 239, 230, 0.6); font-size: 13px; }
+  .calc-row .num { font-family: var(--mono); font-size: 14px; }
+
+  .calc-chart {
+    margin-top: 32px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 80px;
+    border-bottom: 1px solid rgba(244, 239, 230, 0.2);
+  }
+
+  .calc-bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--accent), var(--gold));
+    transition: height 0.4s;
+    min-height: 2px;
+  }
+
+  /* ========== FRAMEWORK PYRAMID ========== */
+  section.pyramid {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .pyramid-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .pyramid h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .pyramid h2 em { font-style: italic; color: var(--accent); }
+
+  .pyramid p.lede {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .pyramid-viz {
+    position: relative;
+    aspect-ratio: 1 / 0.9;
+  }
+
+  .pyr-tier {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 12px 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .pyr-tier:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .pyr-tier.t1 { width: 30%; top: 0%; }
+  .pyr-tier.t2 { width: 50%; top: 22%; }
+  .pyr-tier.t3 { width: 70%; top: 45%; }
+  .pyr-tier.t4 { width: 90%; top: 72%; }
+
+  .pyr-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    margin-bottom: 2px;
+  }
+
+  .pyr-sub {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .pyr-tier:hover .pyr-sub { color: var(--gold); }
+
+  .pyr-tier .num-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    position: absolute;
+    top: -6px;
+    left: 8px;
+    background: var(--paper);
+    padding: 0 4px;
+  }
+
+  .pyr-tier:hover .num-badge { background: var(--ink); }
+
+  /* ========== GLOSSARY ========== */
+  section.glossary {
+    padding: 80px 0;
+    border-top: 2px solid var(--ink);
+  }
+
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 56px;
+  }
+
+  .gloss-item {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: baseline;
+  }
+
+  .gloss-term {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .gloss-term .acro {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 400;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .gloss-def {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    border-top: 2px solid var(--ink);
+    padding: 48px 0 32px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  footer .container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 48px;
+  }
+
+  footer .colophon {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(244, 239, 230, 0.6);
+  }
+
+  footer h5 {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  footer ul { list-style: none; }
+  footer ul li {
+    font-family: var(--serif);
+    font-size: 14px;
+    padding: 4px 0;
+    color: rgba(244, 239, 230, 0.7);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(244, 239, 230, 0.15);
+    margin-top: 40px;
+    padding-top: 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(244, 239, 230, 0.4);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .hero-grid, .modules-head, .panel-grid, .calc-grid, .pyramid-grid, .glossary-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .module-row {
+      grid-template-columns: 60px 1fr;
+      gap: 16px;
+    }
+    .module-desc, .module-meta { display: none; }
+    .masthead-nav { display: none; }
+    footer .container { grid-template-columns: 1fr; }
+    .hero-stats { grid-template-columns: 1fr; }
+    .hero-stat { border-right: none; border-bottom: 1px solid var(--rule); }
+  }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s, transform 0.8s; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div class="masthead-meta">Vol. I &nbsp;·&nbsp; Edisi Pelajar &nbsp;·&nbsp; ID/Global</div>
+    <div class="masthead-logo">Capital<sup>®</sup></div>
+    <nav class="masthead-nav">
+      <a href="#framework">Kerangka</a>
+      <a href="#modules">Modul</a>
+      <a href="#tools">Kalkulator</a>
+      <a href="#glossary">Istilah</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">A Learning Framework, est. 2026</div>
+        <h1>Money,<br>made <em>methodical.</em></h1>
+      </div>
+      <div>
+        <p class="hero-deck">
+          Sebuah kerangka pembelajaran enam-tahap untuk perencanaan keuangan dan investasi —
+          ditulis untuk pembaca yang sudah punya dasar, dan siap berpikir lebih dalam.
+          Konteks pasar Indonesia, dengan referensi global di tempat yang relevan.
+        </p>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">06<em>↗</em></div>
+        <div class="hero-stat-label">Modul Progresif</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">42<em>%</em></div>
+        <div class="hero-stat-label">Studi Kasus IDR &amp; Global</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">∞<em>·</em></div>
+        <div class="hero-stat-label">Latihan &amp; Quick Checks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAMEWORK PYRAMID -->
+<section class="pyramid" id="framework">
+  <div class="container">
+    <div class="section-label"><span class="num">§ 01</span> The Hierarchy</div>
+    <div class="pyramid-grid">
+      <div>
+        <h2>Sebelum berinvestasi,<br>pastikan <em>fondasi</em> tegak.</h2>
+        <p class="lede">
+          Banyak yang langsung lompat ke saham atau crypto sebelum cash flow pribadinya beres.
+          Hierarki ini membaca dari bawah ke atas — selesaikan tier dasar sebelum naik.
+        </p>
+        <p class="lede" style="font-size: 14px;">
+          Ini adalah versi terstruktur dari <em>financial planning pyramid</em> klasik
+          (CFP Board), disesuaikan dengan instrumen yang tersedia di Indonesia.
+        </p>
+      </div>
+      <div class="pyramid-viz">
+        <div class="pyr-tier t1">
+          <span class="num-badge">04</span>
+          <div class="pyr-name">Wealth Transfer</div>
+          <div class="pyr-sub">Estate · Warisan · Wakaf</div>
+        </div>
+        <div class="pyr-tier t2">
+          <span class="num-badge">03</span>
+          <div class="pyr-name">Wealth Growth</div>
+          <div class="pyr-sub">Saham · Reksadana · Properti</div>
+        </div>
+        <div class="pyr-tier t3">
+          <span class="num-badge">02</span>
+          <div class="pyr-name">Wealth Accumulation</div>
+          <div class="pyr-sub">Pensiun · Tujuan Jangka Panjang</div>
+        </div>
+        <div class="pyr-tier t4">
+          <span class="num-badge">01</span>
+          <div class="pyr-name">Wealth Protection</div>
+          <div class="pyr-sub">Dana Darurat · Asuransi · Cash Flow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules" id="modules">
+  <div class="container">
+    <div class="section-label"><span class="num">§ 02</span> The Curriculum</div>
+    <div class="modules-head">
+      <h2>Enam modul,<br>satu <em>jalur belajar.</em></h2>
+      <p class="modules-intro">
+        Tiap modul dibangun dari yang sebelumnya. Klik untuk membuka teori, studi kasus, dan
+        latihan singkat. Total estimasi waktu belajar: 12–18 jam, dengan praktik berkelanjutan.
+      </p>
+    </div>
+
+    <div class="module-list" id="moduleList">
+      <!-- Modules will be injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="calc" id="tools">
+  <div class="container">
+    <div class="section-label"><span class="num">§ 03</span> Tools</div>
+    <h2>Compound interest,<br><em>visualized.</em></h2>
+    <p class="lede">
+      Atur investasi awal, kontribusi bulanan, return tahunan, dan jangka waktu —
+      lihat bagaimana <em>time</em> mengalahkan <em>timing</em>.
+    </p>
+
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <label>
+          <div class="label-text">
+            <span>Investasi Awal</span>
+            <span class="val" id="initVal">Rp 10.000.000</span>
+          </div>
+          <input type="range" id="init" min="0" max="100000000" step="1000000" value="10000000">
+        </label>
+
+        <label>
+          <div class="label-text">
+            <span>Kontribusi Bulanan</span>
+            <span class="val" id="monthlyVal">Rp 2.000.000</span>
+          </div>
+          <input type="range" id="monthly" min="0" max="20000000" step="100000" value="2000000">
+        </label>
+
+        <label>
+          <div class="label-text">
+            <span>Return Tahunan</span>
+            <span class="val" id="rateVal">9 %</span>
+          </div>
+          <input type="range" id="rate" min="2" max="20" step="0.5" value="9">
+        </label>
+
+        <label>
+          <div class="label-text">
+            <span>Jangka Waktu</span>
+            <span class="val" id="yearsVal">20 tahun</span>
+          </div>
+          <input type="range" id="years" min="1" max="40" step="1" value="20">
+        </label>
+
+        <p style="font-family: var(--serif); font-style: italic; font-size: 14px; color: rgba(244,239,230,0.5); margin-top: 24px; line-height: 1.55;">
+          Catatan: 9 % adalah perkiraan rata-rata return jangka panjang campuran reksadana saham
+          IDX. Return aktual tidak terjamin dan akan bervariasi.
+        </p>
+      </div>
+
+      <div class="calc-output">
+        <div class="calc-output-label">Nilai Akhir Diproyeksikan</div>
+        <div class="calc-output-value" id="finalVal">Rp 1,4 M</div>
+        <div class="calc-output-currency" id="finalExact">≈ 1.398.245.000</div>
+
+        <div class="calc-breakdown">
+          <div class="calc-row">
+            <span class="lbl">Total Setoran</span>
+            <span class="num" id="totalContrib">490.000.000</span>
+          </div>
+          <div class="calc-row">
+            <span class="lbl">Hasil Compounding</span>
+            <span class="num" id="totalGain" style="color: var(--gold);">+ 908.245.000</span>
+          </div>
+          <div class="calc-row">
+            <span class="lbl">Multiplier</span>
+            <span class="num" id="multiplier">2,85×</span>
+          </div>
+        </div>
+
+        <div class="calc-chart" id="chart"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section class="glossary" id="glossary">
+  <div class="container">
+    <div class="section-label"><span class="num">§ 04</span> The Lexicon</div>
+    <h2 style="font-family: var(--serif); font-size: clamp(36px, 5vw, 56px); font-weight: 300; line-height: 1; letter-spacing: -0.02em; margin-bottom: 48px;">
+      Istilah penting,<br>didefinisikan ulang.
+    </h2>
+
+    <div class="glossary-grid">
+      <div class="gloss-item">
+        <div class="gloss-term">Asset Allocation<span class="acro">— ALOKASI ASET</span></div>
+        <div class="gloss-def">Pembagian portofolio antar kelas aset (saham, obligasi, kas, properti) — penentu utama return jangka panjang, lebih besar dari pemilihan saham individual.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Real Return<span class="acro">— RETURN RIIL</span></div>
+        <div class="gloss-def">Return setelah dikurangi inflasi. Deposito 5% saat inflasi 3,5% hanya memberi real return 1,5%. Inilah angka yang sebenarnya bertambah pada daya beli.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Sharpe Ratio<span class="acro">— SHARPE</span></div>
+        <div class="gloss-def">Return berlebih per unit risiko: (return − risk-free rate) ÷ standar deviasi. Semakin tinggi semakin baik. Pembanding antar portofolio yang adil.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Dollar-Cost Averaging<span class="acro">— DCA</span></div>
+        <div class="gloss-def">Setor jumlah tetap secara periodik tanpa peduli harga. Mengurangi risiko market timing dan meratakan harga beli — strategi default untuk investor sibuk.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Drawdown<span class="acro">— PENURUNAN</span></div>
+        <div class="gloss-def">Penurunan dari puncak portofolio ke titik terendah. Mengukur seberapa "menyakitkan" sebuah strategi — penting untuk menilai apakah Anda akan bertahan.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Expense Ratio<span class="acro">— BIAYA</span></div>
+        <div class="gloss-def">Persentase biaya tahunan yang dipotong dari NAB reksadana. Selisih 1% per tahun = ratusan juta dalam 30 tahun. Indeks fund Indonesia: 0,3–1%.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Rebalancing<span class="acro">— REBALANCE</span></div>
+        <div class="gloss-def">Mengembalikan alokasi ke target awal saat pergerakan harga membuatnya menyimpang. Memaksa "jual tinggi, beli rendah" secara sistematis. 1–2× setahun cukup.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Risk Tolerance<span class="acro">— TOLERANSI RISIKO</span></div>
+        <div class="gloss-def">Kombinasi kapasitas (berapa kerugian yang masih survive secara finansial) dan psikologi (berapa yang masih nyenyak tidur). Yang lebih kecil yang menentukan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="colophon">
+      <em>Capital</em> adalah materi pembelajaran independen, bukan saran investasi.
+      Setiap keputusan finansial harus mempertimbangkan situasi pribadi Anda — dan,
+      bila perlu, konsultasi dengan perencana keuangan tersertifikasi.
+    </div>
+    <div>
+      <h5>Lebih lanjut</h5>
+      <ul>
+        <li>Bogleheads Wiki</li>
+        <li>OJK Sikapi Uangmu</li>
+        <li>Morningstar ID</li>
+        <li>IDX Investor Education</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Bacaan</h5>
+      <ul>
+        <li>The Psychology of Money</li>
+        <li>The Intelligent Investor</li>
+        <li>Common Sense on Mutual Funds</li>
+        <li>Your Money or Your Life</li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>CAPITAL / VOL. I / EDISI PELAJAR</span>
+    <span>SET IN FRAUNCES &amp; INTER TIGHT</span>
+  </div>
+</footer>
+
+<script>
+  // ============ MODULE DATA ============
+  const modules = [
+    {
+      n: '01',
+      title: 'Pondasi & <em>Cash Flow</em>',
+      desc: 'Anggaran 50/30/20, dana darurat, dan mengapa stabilitas cash flow lebih penting dari return.',
+      time: '2 JAM',
+      stage: 'PROTECTION',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Stabilitas cash flow adalah <em>oksigen</em> untuk semua keputusan finansial selanjutnya. Tanpa surplus bulanan yang konsisten, investasi hanya akan dilikuidasi saat darurat — sering pada timing terburuk.</p>
+        <p class="pull">"Investing should be more like watching paint dry. If you want excitement, take \$800 and go to Las Vegas." — Paul Samuelson</p>
+        <p>Tiga metrik dasar yang harus Anda hitung bulan ini juga:</p>`,
+        list: [
+          '<strong>Savings Rate:</strong> (Pemasukan − Pengeluaran) / Pemasukan. Target intermediate: 20–30%.',
+          '<strong>Emergency Fund Ratio:</strong> Dana likuid / pengeluaran bulanan. Target: 6–12× untuk freelancer, 3–6× untuk karyawan tetap.',
+          '<strong>Debt-to-Income:</strong> Cicilan bulanan / take-home. Maksimal 30%, idealnya kurang dari 20%.'
+        ]
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Studi Kasus: Rio, 31, marketing manager Jakarta',
+          body: `<p>Take-home Rp 18 juta. Cicilan KPR Rp 6,5 jt + cicilan mobil Rp 3,5 jt = DTI 55%. Dana darurat hanya Rp 5 jt.</p><p>Diagnosis: <em>Wealth protection bocor.</em> Sebelum bicara saham atau crypto, prioritas Rio adalah refinance/jual mobil, lalu bangun dana darurat 6 bulan (≈ Rp 60 jt) di reksadana pasar uang.</p>`,
+          tag: 'KONTEKS: INDONESIA'
+        }
+      },
+      check: {
+        q: 'Anda punya bonus tahunan Rp 50 juta. Dana darurat Anda baru 1 bulan pengeluaran, dan Anda punya cicilan kartu kredit 24% p.a. sebesar Rp 30 jt. Prioritas pertama:',
+        opts: [
+          { t: 'Investasi semua di reksadana saham — 50jt × 9% adalah Rp 4,5jt setahun.', correct: false },
+          { t: 'Lunasi kartu kredit dulu (24% guaranteed return), sisanya ke dana darurat.', correct: true },
+          { t: 'Bagi rata: 1/3 saham, 1/3 emas, 1/3 deposito.', correct: false }
+        ],
+        feedback: 'Bunga utang konsumtif 24% adalah "investasi" dengan return tertinggi yang pasti — Anda mustahil dapat 24% guaranteed di pasar. Setelah itu, dana darurat menjadi prioritas berikutnya sebelum aset risk-on.'
+      }
+    },
+    {
+      n: '02',
+      title: 'Tujuan, <em>Time Horizon</em>, & Risiko',
+      desc: 'Memetakan tujuan ke alokasi aset. Mengapa "agresif" untuk tujuan 3 tahun adalah salah kaprah.',
+      time: '2,5 JAM',
+      stage: 'PLANNING',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Setiap tujuan finansial punya <em>time horizon</em> berbeda — dan time horizon adalah penentu utama alokasi yang tepat, bukan "profil risiko" Anda secara umum.</p>
+        <p class="pull">Anda bisa agresif di dana pensiun (30 tahun) dan konservatif di DP rumah (3 tahun) — di waktu yang sama.</p>
+        <p>Pemetaan klasik:</p>`,
+        list: [
+          '<strong>< 1 tahun (likuid):</strong> Reksadana pasar uang, deposito. Tujuan: kepastian, bukan return.',
+          '<strong>1–3 tahun (jangka pendek):</strong> RDPU + obligasi tenor pendek (SBR/ORI). Saham = terlalu berisiko.',
+          '<strong>3–7 tahun (menengah):</strong> Mix obligasi & saham 40/60 atau 60/40. DP rumah masuk sini.',
+          '<strong>> 7 tahun (panjang):</strong> Boleh agresif: 70–90% saham, sisanya obligasi/emas.'
+        ]
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Studi Kasus: Salah alokasi yang umum',
+          body: `<p>Maya, 28, ingin DP rumah Rp 200jt dalam 2 tahun. Dia "tahu" investasi jangka panjang menang, jadi semua tabungan DP-nya di reksadana saham. 18 bulan kemudian, IHSG turun 22%.</p><p>Pelajaran: <em>Time horizon mengalahkan keyakinan.</em> Untuk tujuan 2 tahun, recovery dari drawdown sering tidak cukup waktu. Maya seharusnya pakai SBR atau RDPU.</p>`,
+          tag: 'KONTEKS: GLOBAL & INDONESIA'
+        }
+      },
+      check: {
+        q: 'Anda 35 tahun, ingin pensiun di 60. Tujuan pensiun ini paling tepat dialokasikan:',
+        opts: [
+          { t: '100% deposito — uang pensiun harus aman.', correct: false },
+          { t: '70–90% saham (campuran IDX + global), sisanya obligasi/emas. Rebalance tahunan.', correct: true },
+          { t: '100% saham emerging market untuk return maksimal.', correct: false }
+        ],
+        feedback: 'Time horizon 25 tahun memungkinkan menyerap volatilitas saham, dan deposito akan kalah dari inflasi. Tapi 100% emerging market saja terlalu terkonsentrasi — diversifikasi geografis (mis. ETF S&P 500 + IDX) menurunkan risiko tanpa banyak korban return.'
+      }
+    },
+    {
+      n: '03',
+      title: '<em>Asset Allocation</em> & Diversifikasi',
+      desc: 'Mengapa alokasi menentukan ~90% return jangka panjang, bukan stock picking.',
+      time: '3 JAM',
+      stage: 'STRATEGY',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Studi Brinson, Hood, & Beebower (1986, diperbarui berkali-kali) menunjukkan bahwa <em>asset allocation</em> menjelaskan sebagian besar variasi return portofolio jangka panjang — pemilihan saham individual jauh lebih kecil pengaruhnya.</p>
+        <p>Diversifikasi bekerja di tiga dimensi:</p>`,
+        list: [
+          '<strong>Antar kelas aset:</strong> Saham, obligasi, kas, properti, komoditas. Korelasi rendah = portfolio lebih stabil.',
+          '<strong>Antar geografi:</strong> IDX saja terlalu terkonsentrasi. Tambahkan global (S&P 500, MSCI World) lewat reksadana indeks atau ETF.',
+          '<strong>Antar waktu (time diversification):</strong> DCA mengurangi risiko entry pada satu titik harga.'
+        ],
+        body2: `<p class="pull">Don't look for the needle in the haystack. Just buy the haystack. — John C. Bogle</p>`
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Portofolio Lazy 3-Fund (versi Indonesia)',
+          body: `<p>Kerangka sederhana yang mengalahkan mayoritas reksadana aktif jangka panjang:</p><p>• 50% reksadana indeks IHSG / LQ45<br>• 30% reksadana indeks global (S&P 500 atau MSCI World)<br>• 20% obligasi (SBN ritel, SBR, ORI, FR via reksadana)</p><p>Rebalance tahunan. Total expense ratio: ~0,5%. Strategi ini "membosankan" — dan itulah kekuatannya.</p>`,
+          tag: 'TEMPLATE: ALOKASI'
+        }
+      },
+      check: {
+        q: 'Portofolio Anda awalnya 60% saham, 40% obligasi. Setelah 1 tahun bull market saham, alokasi jadi 75% saham, 25% obligasi. Tindakan rebalancing yang benar:',
+        opts: [
+          { t: 'Tidak melakukan apa-apa — saham sedang menang, biarkan saja.', correct: false },
+          { t: 'Jual sebagian saham, beli obligasi sampai kembali ke 60/40.', correct: true },
+          { t: 'Setor uang baru hanya ke saham karena momentumnya bagus.', correct: false }
+        ],
+        feedback: 'Rebalancing memaksa disiplin "sell high, buy low" — kebalikan dari naluri kebanyakan investor. Tanpa rebalancing, profil risiko Anda diam-diam berubah dan saat market koreksi, drawdown akan jauh lebih besar.'
+      }
+    },
+    {
+      n: '04',
+      title: 'Instrumen <em>Indonesia</em> & Global',
+      desc: 'Dari SBN ritel sampai ETF, dari reksadana sampai REIT — peta lengkap medan.',
+      time: '3 JAM',
+      stage: 'INSTRUMENTS',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Mengetahui instrumen yang ada bukan untuk dipakai semua — tapi untuk memilih yang <em>cocok dengan tujuan</em>. Berikut peta utama yang harus dikuasai investor intermediate:</p>`,
+        list: [
+          '<strong>SBN Ritel (SBR, ORI, ST, SR):</strong> Surat utang negara untuk ritel. Aman, kupon di atas deposito BUMN. Tenor 2–6 tahun.',
+          '<strong>Reksadana Indeks IHSG/LQ45:</strong> Eksposur pasar Indonesia, biaya rendah (0,3–0,5%). Default untuk core portfolio.',
+          '<strong>Reksadana Indeks Global:</strong> Akses ke S&P 500 / MSCI World via manajer investasi lokal. Penting untuk diversifikasi mata uang.',
+          '<strong>ETF di IDX:</strong> R-LQ45, XIIT, XPLF, XISI dll. Lebih efisien biaya dari reksadana untuk dana besar.',
+          '<strong>Saham individual:</strong> Setelah core terbentuk, maks 10–20% portofolio untuk eksplorasi tematik.',
+          '<strong>Emas (logam mulia / digital):</strong> Hedge inflasi & geopolitik. 5–10% portofolio cukup.',
+          '<strong>P2P Lending & Crypto:</strong> Risiko tinggi. Maks 5% portofolio. Bukan pengganti core.'
+        ]
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Mengapa "deposito BCA" sering bukan jawaban',
+          body: `<p>Deposito BUMN/swasta besar 2026: ~4–5% p.a. Inflasi rata-rata Indonesia 2,5–4%. Real return: ~0–2%. Pajak bunga 20% memotong lebih jauh.</p><p>SBR di OJK/Kemenkeu sering memberikan kupon 5,5–6,5% dengan pajak 10% — secara matematis hampir selalu mengalahkan deposito untuk fungsi yang sama (uang aman, jangka pendek-menengah).</p>`,
+          tag: 'KONTEKS: INDONESIA 2026'
+        }
+      },
+      check: {
+        q: 'Untuk dana darurat 6 bulan pengeluaran, instrumen paling tepat:',
+        opts: [
+          { t: 'Reksadana saham — agar uangnya tumbuh sambil "menganggur".', correct: false },
+          { t: 'Reksadana pasar uang (RDPU) atau tabungan dengan auto-debit.', correct: true },
+          { t: 'SBR 4 tahun — kuponnya lebih tinggi dari deposito.', correct: false }
+        ],
+        feedback: 'Dana darurat butuh dua hal: (1) likuiditas instan, (2) tidak fluktuatif. RDPU mencairkan dalam 1–2 hari kerja dengan return ~3–4% p.a. SBR punya tenor mengikat — saat darurat, pasar sekunder mungkin rugi.'
+      }
+    },
+    {
+      n: '05',
+      title: 'Pajak, <em>Biaya</em>, & Inflasi',
+      desc: 'Tiga musuh diam yang menggerogoti return — dan cara menetralisirnya secara sistematis.',
+      time: '2 JAM',
+      stage: 'OPTIMIZATION',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Return brutto yang Anda lihat di brosur jarang sama dengan return yang masuk kantong. Tiga gerigi yang mengurangi setiap tahun:</p>`,
+        list: [
+          '<strong>Inflasi (~3% rata-rata):</strong> Mengikis daya beli. Yang Anda kejar adalah <em>real return</em>, bukan nominal.',
+          '<strong>Biaya manajer (0,3% – 3% p.a.):</strong> Reksadana aktif sering 1,5–2,5%. Indeks fund 0,3–0,5%. Selisih 1,5% × 30 tahun = portofolio Anda hanya separuhnya.',
+          '<strong>Pajak:</strong> Bunga deposito 20%, kupon obligasi 10%, capital gain saham 0,1% transaksi. Reksadana: pajak ada di level instrumen, redemption tax-free.'
+        ],
+        body2: `<p class="pull">In investing, you get what you don't pay for. — John C. Bogle</p>`
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Aritmatika biaya 1% — yang sering diremehkan',
+          body: `<p>Dua investor menyetor Rp 5jt/bulan selama 30 tahun di pasar yang sama-sama memberi 9% gross.</p><p>Investor A (reksadana indeks, biaya 0,5%): Rp 7,8 miliar.<br>Investor B (reksadana aktif, biaya 2%): Rp 5,6 miliar.</p><p>Selisih Rp 2,2 miliar — dari 1,5% biaya per tahun. <em>Ini bukan biaya, ini transfer kekayaan.</em></p>`,
+          tag: 'PERHITUNGAN: COMPOUND'
+        }
+      },
+      check: {
+        q: 'Reksadana saham A: return 5 tahun rata-rata 12%, biaya 2,5%. Reksadana indeks B: return 5 tahun rata-rata 10%, biaya 0,5%. Mana yang lebih masuk akal untuk core jangka panjang?',
+        opts: [
+          { t: 'A — 12% lebih besar dari 10%, jelas menang.', correct: false },
+          { t: 'B — net return-nya 9,5% vs 9,5% sama, tapi B konsisten dengan benchmark dan tidak bergantung pada manajer.', correct: true },
+          { t: 'Bagi rata 50/50 untuk diversifikasi.', correct: false }
+        ],
+        feedback: 'Studi SPIVA berulang kali menunjukkan: 70–85% reksadana aktif kalah dari indeks-nya dalam 10–15 tahun. Past outperformance jarang berlanjut. Indeks fund memberikan return pasar dikurangi biaya minimal — pilihan default yang rasional untuk core.'
+      }
+    },
+    {
+      n: '06',
+      title: 'Behavioral Finance & <em>Disiplin</em>',
+      desc: 'Mengapa investor pintar masih kalah dari pasar — dan checklist untuk tidak mengulanginya.',
+      time: '2,5 JAM',
+      stage: 'MASTERY',
+      theory: {
+        head: 'Teori Inti',
+        body: `<p>Studi DALBAR tahunan menemukan: investor reksadana saham AS rata-rata mendapat ~3–4% lebih rendah dari reksadana yang mereka pegang. Penyebab: masuk-keluar di waktu salah. <em>Behavior gap.</em></p>
+        <p>Bias kognitif yang paling sering memakan portofolio:</p>`,
+        list: [
+          '<strong>Loss aversion:</strong> Kerugian terasa 2× lebih sakit dari keuntungan setara. Memicu jual saat panik.',
+          '<strong>Recency bias:</strong> Asumsi tren terkini akan berlanjut. Mendorong "kejar yang lagi naik".',
+          '<strong>Confirmation bias:</strong> Hanya mencari info yang membenarkan posisi. Buta terhadap red flag.',
+          '<strong>Overconfidence:</strong> Setelah beberapa win, merasa "punya feeling". Memicu over-trading.',
+          '<strong>FOMO:</strong> Takut ketinggalan crypto/saham viral. Membeli di puncak.'
+        ],
+        body2: `<p class="pull">The investor's chief problem — and even his worst enemy — is likely to be himself. — Benjamin Graham</p>`
+      },
+      practice: {
+        head: 'Praktik & Studi Kasus',
+        case: {
+          title: 'Investment Policy Statement (IPS) — Pertahanan Anda',
+          body: `<p>IPS adalah dokumen 1 halaman yang Anda tulis saat <em>tenang</em> dan baca saat <em>panik</em>. Isinya:</p><p>1. Tujuan finansial & time horizon<br>2. Alokasi target & batas drift sebelum rebalancing<br>3. Aturan setoran (mis. tanggal 5 setiap bulan)<br>4. Aturan eksplisit: "Saya tidak akan menjual saat IHSG turun > 20%"<br>5. Review schedule: 1× setahun, bukan setiap minggu</p><p>IPS adalah Ulysses mengikat dirinya ke tiang kapal — perlindungan dari diri sendiri.</p>`,
+          tag: 'TOOL: TEMPLATE'
+        }
+      },
+      check: {
+        q: 'IHSG turun 30% dalam 2 bulan. Berita penuh prediksi resesi. IPS Anda mengatakan target alokasi 70/30 (saham/obligasi). Karena penurunan, alokasi sekarang 60/40. Tindakan terbaik:',
+        opts: [
+          { t: 'Jual semua saham, tunggu sampai jelas pasar pulih.', correct: false },
+          { t: 'Rebalance ke 70/30 sesuai IPS — beli saham yang sudah diskon dengan dana obligasi.', correct: true },
+          { t: 'Berhenti setor sampai pasar stabil.', correct: false }
+        ],
+        feedback: 'Rebalancing saat market crash adalah momen tersulit secara psikologis dan paling menguntungkan secara matematis. Setiap koreksi besar adalah test apakah IPS Anda nyata atau hanya teori. Investor yang membeli saat panik pada 2008, 2020, dan 2022 mendapat return luar biasa dalam 3–5 tahun setelahnya.'
+      }
+    }
+  ];
+
+  // Render modules
+  const list = document.getElementById('moduleList');
+  modules.forEach((m, idx) => {
+    const row = document.createElement('div');
+    row.className = 'module-row';
+    row.innerHTML = `
+      <div class="module-num">№ ${m.n}</div>
+      <div class="module-title">${m.title}</div>
+      <div class="module-desc">${m.desc}</div>
+      <div class="module-meta">${m.time} · ${m.stage} <span class="arrow">›</span></div>
+      <div class="module-panel">
+        <div class="panel-grid">
+          <div class="panel-section">
+            <h4>${m.theory.head}</h4>
+            ${m.theory.body}
+            ${m.theory.list ? '<ul>' + m.theory.list.map(li => `<li>${li}</li>`).join('') + '</ul>' : ''}
+            ${m.theory.body2 || ''}
+          </div>
+          <div class="panel-section">
+            <h4>${m.practice.head}</h4>
+            <div class="case-box">
+              <h5>${m.practice.case.title}</h5>
+              ${m.practice.case.body}
+              <div class="tag">${m.practice.case.tag}</div>
+            </div>
+            <div class="check" data-idx="${idx}">
+              <div class="check-label">Quick Check</div>
+              <div class="check-q">${m.check.q}</div>
+              <div class="check-options">
+                ${m.check.opts.map((o, i) => `<button class="check-opt" data-correct="${o.correct}" data-idx="${idx}">${String.fromCharCode(65 + i)} · ${o.t}</button>`).join('')}
+              </div>
+              <div class="check-feedback">${m.check.feedback}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    list.appendChild(row);
+
+    // Toggle expand on row click (but not inside panel)
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('.module-panel')) return;
+      row.classList.toggle('open');
+    });
+  });
+
+  // Quick check handlers
+  document.querySelectorAll('.check-opt').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const check = btn.closest('.check');
+      const correct = btn.dataset.correct === 'true';
+      btn.classList.add(correct ? 'correct' : 'wrong');
+      check.querySelector('.check-feedback').classList.add('show');
+      // Disable all options in this check
+      check.querySelectorAll('.check-opt').forEach(b => b.disabled = true);
+    });
+  });
+
+  // ============ CALCULATOR ============
+  const fmtIDR = (n) => {
+    if (n >= 1e12) return 'Rp ' + (n / 1e12).toFixed(2) + ' T';
+    if (n >= 1e9) return 'Rp ' + (n / 1e9).toFixed(2) + ' M';
+    if (n >= 1e6) return 'Rp ' + (n / 1e6).toFixed(1) + ' jt';
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  };
+  const fmtFull = (n) => Math.round(n).toLocaleString('id-ID');
+
+  function calc() {
+    const init = +document.getElementById('init').value;
+    const monthly = +document.getElementById('monthly').value;
+    const rate = +document.getElementById('rate').value / 100;
+    const years = +document.getElementById('years').value;
+
+    document.getElementById('initVal').textContent = fmtIDR(init);
+    document.getElementById('monthlyVal').textContent = fmtIDR(monthly);
+    document.getElementById('rateVal').textContent = rate * 100 + ' %';
+    document.getElementById('yearsVal').textContent = years + ' tahun';
+
+    // Year by year
+    const yearlyVals = [];
+    let bal = init;
+    const monthlyRate = rate / 12;
+    for (let y = 1; y <= years; y++) {
+      for (let m = 0; m < 12; m++) {
+        bal = bal * (1 + monthlyRate) + monthly;
+      }
+      yearlyVals.push(bal);
+    }
+
+    const final = yearlyVals[yearlyVals.length - 1];
+    const totalContrib = init + monthly * 12 * years;
+    const gain = final - totalContrib;
+
+    document.getElementById('finalVal').textContent = fmtIDR(final);
+    document.getElementById('finalExact').textContent = '≈ ' + fmtFull(final);
+    document.getElementById('totalContrib').textContent = fmtFull(totalContrib);
+    document.getElementById('totalGain').textContent = '+ ' + fmtFull(gain);
+    document.getElementById('multiplier').textContent = (final / totalContrib).toFixed(2) + '×';
+
+    // Chart
+    const chart = document.getElementById('chart');
+    chart.innerHTML = '';
+    const max = Math.max(...yearlyVals);
+    yearlyVals.forEach(v => {
+      const bar = document.createElement('div');
+      bar.className = 'calc-bar';
+      bar.style.height = (v / max * 100) + '%';
+      chart.appendChild(bar);
+    });
+  }
+
+  ['init', 'monthly', 'rate', 'years'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calc);
+  });
+  calc();
+
+  // ============ REVEAL ============
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.hero, .modules, .calc, .pyramid, .glossary').forEach(el => {
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
+</script>
+
+</body>
+</html>
