@@ -44,7 +44,8 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 **Planned:**
 - [x] **Phase 12: /kesehatan Foundation** — sidebar grup Strategi + landing shell + `protection_checklist` schema + empty state piramida (completed 2026-05-08)
 - [x] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis (completed 2026-05-08)
-- [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode (completed 2026-05-09)
+- [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
+ (completed 2026-05-09)
 - [ ] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip
 - [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
 
@@ -111,7 +112,11 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   1. User klik card modul di landing → masuk ke `/kesehatan/<slug>` (arus-kas, tujuan, alokasi-aset, instrumen, pajak-biaya-inflasi, perilaku) dengan typography Fraunces serif + breadcrumb "Kesehatan / <Modul>" + footer link ke modul lain
   2. User klik banner kalkulator → masuk ke `/kesehatan/kalkulator` dengan slider awal/bulanan/return/tenor + nilai akhir big number + grafik garis Recharts tahun-per-tahun + tabel breakdown 5-tahunan
   3. User hover/tap istilah teknis (Asset Allocation, Real Return, Sharpe Ratio, DCA, Drawdown, Expense Ratio, Rebalancing, Risk Tolerance) di prose modul → Radix Tooltip muncul dengan definisi singkat
-**Plans**: TBD
+**Plans**: 4 plans
+  - [ ] 15-01-PLAN.md — Foundation: typography token + glossary dictionary + modul content port + compound interest math util (STRAT-04, 05, 06)
+  - [ ] 15-02-PLAN.md — Modul system: GlossaryTooltip (Radix Popover) + KesehatanModulLayout + ModulRenderer (STRAT-04, 06)
+  - [ ] 15-03-PLAN.md — Kalkulator system: KalkulatorChart + KalkulatorPage (STRAT-05)
+  - [ ] 15-04-PLAN.md — Wave 3 wiring: routes.tsx lazy + KalkulatorBanner + Playwright UAT + human checkpoint (STRAT-04, 05, 06)
 **UI hint**: yes
 
 ### Phase 16: v1.1 Closure & Ops Cleanup
@@ -146,5 +151,5 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
 | 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
 | 14. Protection & Tier 4 Checklists | v1.2 | 3/3 | Complete   | 2026-05-09 |
-| 15. Modul Edukasi & Kalkulator | v1.2 | 0/? | Not started | — |
+| 15. Modul Edukasi & Kalkulator | v1.2 | 0/4 | Not started | — |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
