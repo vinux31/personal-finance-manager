@@ -31,14 +31,11 @@
 ### Konten Modul — Sourcing & Storage
 
 - **D-01 (Sourcing):** Port konten verbatim dari `docs/financial_framework.html` (1515 baris HTML). Minimal edit, replace istilah teknis dengan `<GlossaryTooltip>` wrap manual. Adaptasi konten ke user data = deferred v2.
-- **D-02 (Storage format):** TSX prose hardcoded per modul. 6 file komponen di `src/tabs/kesehatan/modul/` (atau equivalent):
-  - `ArusKasModul.tsx` → `/kesehatan/arus-kas` (Modul 01: Pondasi & Cash Flow)
-  - `TujuanModul.tsx` → `/kesehatan/tujuan` (Modul 02: Tujuan/Risiko)
-  - `AlokasiAsetModul.tsx` → `/kesehatan/alokasi-aset` (Modul 03)
-  - `InstrumenModul.tsx` → `/kesehatan/instrumen` (Modul 04)
-  - `PajakBiayaInflasiModul.tsx` → `/kesehatan/pajak-biaya-inflasi` (Modul 05)
-  - `PerilakuModul.tsx` → `/kesehatan/perilaku` (Modul 06: Behavioral Finance)
-- **D-03 (No MDX):** Tidak install `@mdx-js/rollup` atau remark plugin. Konsisten dengan pattern `src/components/PanduanFullPage.tsx` existing (prose JSX hardcoded). Glossary wiring manual dgn `<GlossaryTooltip term="DCA">DCA</GlossaryTooltip>`.
+- **D-02 (Storage format) — REVISED 2026-05-10 post-research:** Data-array + ModulRenderer pattern. Source `docs/financial_framework.html` lines 1167-1383 sudah berupa JS const array `modules = [{n, title, theory, practice, check}, ...]` (HTML render runtime dari JS data). Port strategy: copy array verbatim ke `src/data/modulContent.ts` (TypeScript interface `ModulData`), single `<ModulRenderer />` component baca slug dari URL params, render dari array. Glossary marker `[[term]]` post-hoc replace dgn `<GlossaryTooltip term="...">term</GlossaryTooltip>` via simple parser. Files:
+  - `src/data/modulContent.ts` — array of 6 ModulData entries (theory/practice/check structure)
+  - `src/tabs/kesehatan/ModulRenderer.tsx` — generic component, useParams() slug → lookup → render Fraunces prose
+  - Routes: 6 sub-route `/kesehatan/<slug>` → `<ModulRenderer />` (single element, slug discriminates)
+- **D-03 (No MDX) — REVISED:** Tidak install `@mdx-js/rollup`. Glossary wiring tetap manual via `[[term]]` marker → ModulRenderer parses + wraps `<GlossaryTooltip term="dca">DCA</GlossaryTooltip>`. Source HTML inline markup (`<em>`, `<strong>`, `<p class="pull">`) preserved sebagai raw string + render via `dangerouslySetInnerHTML` (safe: trusted authored content, no user input).
 - **D-04 (Quick-check):** Render prose-only static (bullet "Coba jawab: 1. ... 2. ... 3. ..."). No input field, no state, no tracking. Self-reflection only.
 - **D-05 (Footer nav):** Prev/next button (urut catalog `MODUL_CATALOG`) + link "Lihat semua modul → /kesehatan". Pattern: `← {prev.label}` di kiri, `{next.label} →` di kanan; wrap-around (modul 6 next = modul 1).
 
@@ -58,7 +55,7 @@
 
 ### Glossary Tooltip
 
-- **D-12 (Mekanisme):** Manual wrap `<GlossaryTooltip term="DCA">DCA</GlossaryTooltip>` di TSX prose. No auto-detect runtime. Author kontrol kapan tooltip muncul (avoid noise saat istilah disebut berulang — wrap kemunculan pertama atau kemunculan yang paling relevant per section).
+- **D-12 (Mekanisme) — REVISED 2026-05-10 post-research:** Manual wrap `<GlossaryTooltip term="dca">DCA</GlossaryTooltip>` di prose data string sebagai marker `[[dca]]DCA[[/dca]]` (parser-friendly). ModulRenderer parses markers + injects `<GlossaryTooltip>` component runtime. No auto-detect of arbitrary text. Author kontrol kapan marker muncul (avoid noise istilah berulang — mark kemunculan pertama atau paling relevant per H2 section).
 - **D-13 (Source dictionary):** `src/data/glossary.ts` — const object 8 entry, type-safe:
   ```ts
   export const GLOSSARY: Record<GlossaryTerm, { label: string; definition: string }> = {
@@ -72,16 +69,16 @@
     'risk-tolerance': { label: 'Risk Tolerance', definition: '...' },
   }
   ```
-- **D-14 (Mobile behavior):** Tap-to-open Radix Tooltip default (tap istilah → tooltip muncul, tap di luar / scroll → close). Konsisten desktop hover.
+- **D-14 (Primitive + interaction) — REVISED 2026-05-10 post-research:** Pivot Radix Tooltip → **Radix Popover** (same `radix-ui` ^1.4.3 package, same JSX import pattern). Reason: Radix Tooltip W3C ARIA hover/focus only — tap-to-open mobile IMPOSSIBLE without abandoning primitive guarantees (verified GitHub #1573, #2589, #2866 — maintainers say "use Popover"). **Behavior:** click-only on all devices (desktop click + mobile tap), click-outside / Esc / focus-out closes. Konsisten UX across devices, accessible (Radix Popover gives focus management + `aria-expanded` free). Component file `src/components/GlossaryTooltip.tsx` (API name preserved for clarity in modul prose).
 - **D-15 (Visual hint):** `border-b border-dotted border-muted-foreground cursor-help` di trigger element. Subtle web-standard "ada definisi", tidak intrusive ke flow baca.
 
 ### Modul UX Detail
 
-- **D-16 (Font load):** `@fontsource/fraunces` package (npm install). Dynamic import di `KesehatanModulLayout` parent route (atau langsung di tiap modul page top). Self-hosted, no Google Fonts external request, no CLS dari FOUT eksternal. Specifically subset weight 400 + 600 untuk prose body + heading.
-- **D-17 (Layout):** Centered prose `max-w-[65ch] mx-auto px-4`. Optimal reading width. Body Fraunces serif `font-serif` (configured Tailwind), heading Fraunces dengan weight tebal. Inter tetap default untuk breadcrumb + chrome.
+- **D-16 (Font load) — REVISED 2026-05-10 post-research:** `@fontsource-variable/fraunces ^5.2.9` (variable font, NOT static — konsisten dgn existing `@fontsource-variable/geist`). Single payload covers weight 100-900. Import statement di `src/tabs/kesehatan/KesehatanModulLayout.tsx` (NEW parent layout for 6 modul routes — `import "@fontsource-variable/fraunces"`). Combined dgn `React.lazy(() => import('@/tabs/kesehatan/KesehatanModulLayout'))` di `src/routes.tsx` → Vite chunks layout + font separately, loads only saat user enter `/kesehatan/<slug>`. Tailwind v4 `@theme inline { --font-serif: 'Fraunces Variable', Georgia, serif }` di `src/index.css` (CSS family value `'Fraunces Variable'` matches @fontsource-variable convention). Georgia fallback for FOUT (`font-display: swap` default).
+- **D-17 (Layout) — REVISED 2026-05-10 post-research:** Centered prose `max-w-[65ch] mx-auto px-4`. Optimal reading width. Body Fraunces serif `font-serif` (Tailwind v4 utility), heading Fraunces weight 600. **Geist Variable** (NOT Inter — project default per `@fontsource-variable/geist` already in `src/index.css`; spec §8 said "Inter" tapi outdated) tetap default untuk breadcrumb + chrome. UI-SPEC final type scale: 14/18/28/36 (4 sizes), weights 400+600 only, H3 sub-section distinction via weight + `mt-8`/`mb-3` spacing.
 - **D-18 (Breadcrumb):** 2-level — `Kesehatan / <Modul>`. "Kesehatan" link ke `/kesehatan` (Inter sans), `<Modul>` current page (no link, Inter sans). Top of page above prose body.
 - **D-19 (Header sticky):** Static (scroll dgn page). Breadcrumb + heading H1 modul scroll bareng konten. AppShell topbar/sidebar tetap sticky di luar.
-- **D-20 (Kalkulator typography):** Inter sans (NOT Fraunces). Kalkulator UI = tools, bukan modul prose. Spec §8 jelas memisahkan typography Inter (UI) vs Fraunces (modul prose).
+- **D-20 (Kalkulator typography) — REVISED 2026-05-10 post-research:** **Geist Variable** sans (NOT Inter — spec §8 outdated). Kalkulator UI = tools, bukan modul prose. Sizes 14/18/28/36 (UI-SPEC final cap), weights 400+600 only. Number input value: 18px / 400 / `tabular-nums`. Slider label: 14px / 400 / `tracking-wide uppercase` / `text-muted-foreground`. Big number "Nilai Akhir": 36px / 600 / `tabular-nums`.
 
 ### Claude's Discretion
 
