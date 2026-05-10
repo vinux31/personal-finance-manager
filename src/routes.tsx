@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components -- this file owns React.lazy + LazyFallback alongside router export; HMR fast-refresh not applicable to router config */
+import React, { Suspense } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import AppShell from '@/shell/AppShell'
 import DashboardTab from '@/tabs/DashboardTab'
@@ -14,6 +16,20 @@ import PanduanFullPage from '@/components/PanduanFullPage'
 import KesehatanLayout from '@/tabs/kesehatan/KesehatanLayout'
 import KesehatanLanding from '@/tabs/kesehatan/KesehatanLanding'
 
+// Phase 15 lazy modul + kalkulator. Bundles Fraunces font with KesehatanModulLayout chunk
+// so font payload arrives only when user enters /kesehatan/<slug>.
+const KesehatanModulLayout = React.lazy(() => import('@/tabs/kesehatan/KesehatanModulLayout'))
+const ModulRenderer = React.lazy(() => import('@/tabs/kesehatan/ModulRenderer'))
+const KalkulatorPage = React.lazy(() => import('@/tabs/kesehatan/KalkulatorPage'))
+
+function LazyFallback() {
+  return (
+    <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">
+      Memuat…
+    </div>
+  )
+}
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -29,12 +45,37 @@ export const router = createBrowserRouter([
       { path: 'kekayaan', element: <KekayaanTab /> },
       { path: 'goals', element: <GoalsTab /> },
       { path: 'pensiun', element: <PensiunTab /> },
-      // NEW: nested /kesehatan route — Phase 15 akan tambah child routes (kalkulator + 6 modul)
+      // Phase 15: nested /kesehatan with kalkulator + 6 modul (lazy-loaded)
       {
         path: 'kesehatan',
         element: <KesehatanLayout />,
         children: [
           { index: true, element: <KesehatanLanding /> },
+          {
+            path: 'kalkulator',
+            element: (
+              <Suspense fallback={<LazyFallback />}>
+                <KalkulatorPage />
+              </Suspense>
+            ),
+          },
+          {
+            element: (
+              <Suspense fallback={<LazyFallback />}>
+                <KesehatanModulLayout />
+              </Suspense>
+            ),
+            children: [
+              { path: 'arus-kas', element: <ModulRenderer /> },
+              { path: 'tujuan', element: <ModulRenderer /> },
+              { path: 'alokasi-aset', element: <ModulRenderer /> },
+              { path: 'instrumen', element: <ModulRenderer /> },
+              { path: 'pajak-biaya-inflasi', element: <ModulRenderer /> },
+              { path: 'perilaku', element: <ModulRenderer /> },
+              // Catch-all under modul layout — ModulRenderer Navigate redirects unknown slug to /kesehatan
+              { path: ':slug', element: <ModulRenderer /> },
+            ],
+          },
         ],
       },
       { path: 'finansial', element: <Navigate to="/kekayaan" replace /> },
