@@ -1,9 +1,10 @@
-import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 import { Calculator, ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 export default function KalkulatorBanner() {
+  const navigate = useNavigate()
   return (
     <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
       <CardContent className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
@@ -24,9 +25,7 @@ export default function KalkulatorBanner() {
           variant="default"
           size="sm"
           className="shrink-0"
-          onClick={() =>
-            toast.info('Kalkulator compound interest akan tersedia di update berikutnya.')
-          }
+          onClick={() => navigate('/kesehatan/kalkulator')}
         >
           Buka kalkulator
           <ArrowRight className="ml-2 h-4 w-4" />
