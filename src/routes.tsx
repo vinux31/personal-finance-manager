@@ -66,13 +66,9 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
             children: [
-              { path: 'arus-kas', element: <ModulRenderer /> },
-              { path: 'tujuan', element: <ModulRenderer /> },
-              { path: 'alokasi-aset', element: <ModulRenderer /> },
-              { path: 'instrumen', element: <ModulRenderer /> },
-              { path: 'pajak-biaya-inflasi', element: <ModulRenderer /> },
-              { path: 'perilaku', element: <ModulRenderer /> },
-              // Catch-all under modul layout — ModulRenderer Navigate redirects unknown slug to /kesehatan
+              // Single :slug route — ModulRenderer.isModulSlug() validates against MODUL_CONTENT
+              // keys and Navigate-redirects unknown slugs to /kesehatan. Literal routes were
+              // omitted because they don't populate the :slug param, breaking useParams().
               { path: ':slug', element: <ModulRenderer /> },
             ],
           },
