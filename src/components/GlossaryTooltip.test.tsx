@@ -26,12 +26,12 @@ describe('GlossaryTooltip', () => {
     render(<GlossaryTooltip term="rebalancing">Rebalance</GlossaryTooltip>)
     const trigger = screen.getByRole('button', { name: /Definisi: Rebalancing/i })
     fireEvent.click(trigger)
-    // Radix renders content in Portal — query by text content
-    // (assertion lenient: check at least label present in document)
-    const labelElements = await screen.findAllByText('Rebalancing')
-    // Two appearances: trigger text + popover label
-    expect(labelElements.length).toBeGreaterThanOrEqual(2)
-    // Definition snippet present
+    // Radix renders content in Portal — query by text content.
+    // Popover label = full GLOSSARY label "Rebalancing"; trigger children = "Rebalance" (different).
+    // After click, popover content must contain the full label + definition snippet.
+    const popoverLabel = await screen.findByText('Rebalancing')
+    expect(popoverLabel).toBeDefined()
+    // Definition snippet present (only rendered inside the popover content, not trigger)
     expect(screen.getByText(/jual yang naik tinggi/i)).toBeDefined()
   })
 })
