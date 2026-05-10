@@ -5,6 +5,7 @@ status: draft
 shadcn_initialized: true
 preset: radix-nova
 created: 2026-05-10
+revised: 2026-05-10
 ---
 
 # Phase 15 — UI Design Contract
@@ -58,38 +59,50 @@ Declared values (Tailwind default scale, multiples of 4):
 
 ## Typography
 
+**Hard limits:** ≤4 distinct font sizes per typography context, exactly 2 weights total (400 regular + 600 semibold). Italic-400 acceptable as variant of 400.
+
 ### Modul Prose (Fraunces serif — `font-serif`)
+
+**Sizes used:** 18 / 20 / 28 / 36 (4 distinct sizes).
 
 | Role | Size | Weight | Line Height | Tailwind |
 |------|------|--------|-------------|----------|
 | Body modul | 18px | 400 | 1.7 | `text-lg leading-relaxed font-serif` |
-| H1 modul title | 36px | 600 | 1.2 | `text-4xl font-semibold leading-tight font-serif` |
+| Blockquote / pull-quote (variant of body) | 18px | 400 italic | 1.7 | `text-lg italic font-serif border-l-4 border-muted pl-6 my-8` |
+| H3 sub-section | 20px | 600 | 1.3 | `text-xl font-semibold leading-snug font-serif mt-8 mb-3` |
 | H2 section | 28px | 600 | 1.25 | `text-3xl font-semibold leading-snug font-serif mt-12 mb-4` |
-| H3 sub-section | 22px | 600 | 1.3 | `text-xl font-semibold leading-snug font-serif mt-8 mb-3` |
-| Blockquote / pull-quote | 20px | 400 italic | 1.6 | `text-xl italic font-serif border-l-4 border-muted pl-6 my-8` |
-| Code inline (override mono) | 15px | 400 | 1.5 | `font-mono text-sm bg-muted px-1.5 py-0.5 rounded` |
+| H1 modul title | 36px | 600 | 1.2 | `text-4xl font-semibold leading-tight font-serif` |
+| Code inline (override mono) | 18px (inherits body) | 400 | 1.5 | `font-mono text-[0.85em] bg-muted px-1.5 py-0.5 rounded` (relative size, no new declared size) |
+
+**Note on consolidation:** Blockquote uses the same 18px body size with italic variant — not a new size declaration. Inline code uses `text-[0.85em]` relative sizing inherited from parent body, so it does not introduce a 5th size.
 
 ### Chrome / Kalkulator UI / Breadcrumb (Geist Variable sans — `font-sans` default)
+
+**Sizes used:** 14 / 18 / 28 / 36 (4 distinct sizes).
 
 | Role | Size | Weight | Line Height | Tailwind |
 |------|------|--------|-------------|----------|
 | Breadcrumb | 14px | 400 | 1.5 | `text-sm font-normal text-muted-foreground` |
-| Kalkulator label (slider) | 14px | 500 | 1.5 | `text-sm font-medium` |
-| Kalkulator number input value | 16px | 500 | 1.5 | `text-base font-medium tabular-nums` |
-| Kalkulator big-number output (Nilai Akhir) | 36px | 600 | 1.1 | `text-4xl font-semibold tabular-nums tracking-tight` |
+| Kalkulator label (slider) | 14px | 400 | 1.5 | `text-sm font-normal tracking-wide uppercase text-muted-foreground` |
+| Kalkulator number input value | 14px | 400 | 1.5 | `text-sm font-normal tabular-nums` |
 | Kalkulator sub-info (Total Setoran, Total Bunga) | 14px | 400 | 1.5 | `text-sm font-normal tabular-nums` |
-| Kalkulator H1 page title | 28px | 600 | 1.2 | `text-3xl font-semibold leading-tight` |
-| Kalkulator H2 panel | 18px | 600 | 1.3 | `text-lg font-semibold` |
-| Footer prev/next nav label | 14px | 500 | 1.4 | `text-sm font-medium` |
+| Footer prev/next nav label | 14px | 600 | 1.4 | `text-sm font-semibold` |
 | Tooltip definition body | 14px | 400 | 1.5 | `text-sm leading-relaxed` |
 | Table cell (5-tahunan tabel) | 14px | 400 | 1.4 | `text-sm tabular-nums` |
-| Table header | 12px | 600 uppercase | 1.4 | `text-xs font-semibold uppercase tracking-wide` |
-| Quick-check intro | 16px | 600 | 1.5 | `text-base font-semibold font-serif` (still in prose, Fraunces stays) |
-| Quick-check question | 18px | 400 | 1.7 | `text-lg font-serif` (numbered list, Fraunces stays) |
+| Table header | 14px | 600 | 1.4 | `text-sm font-semibold uppercase tracking-wide` |
+| Kalkulator H2 panel | 18px | 600 | 1.3 | `text-lg font-semibold` |
+| Quick-check question | 18px | 400 | 1.7 | `text-lg font-serif` (numbered list, Fraunces stays — counts under prose context) |
+| Kalkulator H1 page title | 28px | 600 | 1.2 | `text-3xl font-semibold leading-tight` |
+| Kalkulator big-number output (Nilai Akhir) | 36px | 600 | 1.1 | `text-4xl font-semibold tabular-nums tracking-tight` |
+| Quick-check intro (still in prose, Fraunces stays) | 18px | 600 | 1.5 | `text-lg font-semibold font-serif` (counts under prose context) |
 
-**Weight policy:** Project uses 2 weights total — **400 regular** + **600 semibold**. Italic 400 acceptable for blockquote variant (single italic style). NO 300, 500, 700, 800 weights in modul/kalkulator UI.
+**Weight policy:** Project uses exactly 2 weights — **400 regular** + **600 semibold**. Italic 400 acceptable for blockquote variant (single italic style of the same 400 weight). NO 300, 500, 700, 800 weights anywhere in modul/kalkulator UI.
 
-**Note:** "500 medium" used in kalkulator labels above is ALLOWED because Geist Variable supports continuous weight axis — but planner must keep usage minimal (label + tabular numbers only). All other text uses 400 or 600. This is a deliberate trade-off: Geist Variable's medium weight reads as a clearer "label vs value" visual distinction than 600 would in tight UI controls. If checker flags as 3rd weight, downgrade kalkulator labels to 400 + uppercase tracking instead.
+**Visual distinction strategy without weight 500:**
+- Slider labels: weight 400 + `tracking-wide uppercase` + `text-muted-foreground` for label/value separation
+- Number input value: weight 400 + `tabular-nums` (monospaced digits) for visual rhythm and alignment
+- Table headers: weight 600 + `uppercase tracking-wide` for header/cell separation
+- Footer nav prev/next labels: weight 600 (emphasis as interactive affordance, consistent with section headings)
 
 ---
 
@@ -171,6 +184,7 @@ Project tokens (existing OKLCH variables in `src/index.css`):
 | Kalkulator chart tooltip rows | `Total setoran: Rp X`, `Total bunga: Rp Y`, `Nilai akhir: Rp Z` |
 | Kalkulator tabel title | `Breakdown 5-tahunan` |
 | Kalkulator tabel kolom | `Tahun` / `Total Setoran` / `Total Bunga Compound` / `Nilai Akhir` |
+| Kalkulator tabel edge-case (tenor < 5) | `Atur tenor minimal 5 tahun untuk lihat breakdown` (`text-sm text-muted-foreground italic`) |
 | Glossary trigger style | (no copy — wraps existing in-prose term, e.g. wraps the literal "DCA" word) |
 | Glossary tooltip body format | `{label}: {definition}` (e.g. `DCA (Dollar-Cost Averaging): Strategi investasi rutin dengan jumlah tetap, terlepas dari naik-turun harga.`) |
 | Empty state — modul | NOT applicable (modul prose hardcoded, always renders) |
@@ -289,12 +303,15 @@ Project tokens (existing OKLCH variables in `src/index.css`):
 ### Slider + number input combo row (D-06)
 
 ```
-Label "Saldo awal"                          Rp 10.000.000  ← number input
-Helper "Modal yang sudah kamu punya..."     ↑ tabular-nums right-aligned
-[━━━━━━━━━●─────────────────────────]       w-32 (8rem)
-↑ Slider full-width (flex-1)                bg-muted text-base font-medium
+Label "SALDO AWAL"                          Rp 10.000.000  ← number input
+↑ uppercase tracking-wide muted             ↑ tabular-nums right-aligned
+Helper "Modal yang sudah kamu punya..."     w-32 (8rem)
+[━━━━━━━━━●─────────────────────────]       bg-muted text-sm tabular-nums
+↑ Slider full-width (flex-1)
 ```
 
+- Label visual treatment: `text-sm font-normal tracking-wide uppercase text-muted-foreground` (no weight 500; distinction via tracking + uppercase + muted color).
+- Number input visual treatment: `text-sm font-normal tabular-nums` (no weight 500; distinction via mono digits + right-alignment).
 - Desktop layout: label + helper on row 1 left, number input on row 1 right (flex justify-between). Slider on row 2 full-width.
 - Mobile layout: label + helper stack row 1, number input row 2 right-aligned, slider row 3 full-width. (D-06 hint: slider dominant + number input collapse — Claude's Discretion.)
 - Number input: `<input type="number" inputMode="numeric" pattern="[0-9.]*">` with `id-ID` thousand-separator formatting on blur, raw number on focus.
@@ -337,6 +354,7 @@ Renders:
 - **Touch/mobile (D-14):** Radix Tooltip default is hover-only. To enable tap-to-open on mobile, use `<Tooltip open={open} onOpenChange={setOpen}>` controlled state with `onClick` handler on trigger. Tap-outside to close handled by Radix `onPointerDownOutside`.
 - **Keyboard:** `tabIndex={0} role="button"` with `aria-describedby` linking to tooltip content. Enter/Space opens tooltip. Esc closes.
 - **Tooltip body font:** Geist Variable sans (`font-sans`), NOT Fraunces. Tooltip is chrome, not prose.
+- **Tooltip body weights:** label uses `font-semibold` (600), definition uses `font-normal` (400). No weight 500 anywhere.
 - **Max width:** `max-w-xs` (320px). Definitions are 1-2 sentences (D-13 contract).
 - **Animation:** Inherit shadcn Tooltip default (fade-in + slide-in 150ms — `data-[state=delayed-open]:animate-in fade-in-0 zoom-in-95`).
 
@@ -359,7 +377,7 @@ Renders:
 
 | State | Visual |
 |-------|--------|
-| Default | `border` (gray-200), `bg-background`, `tabular-nums`, formatted `Rp X.XXX.XXX` |
+| Default | `border` (gray-200), `bg-background`, `tabular-nums`, formatted `Rp X.XXX.XXX`, weight 400 |
 | Focus | `border-brand ring-2 ring-brand/20`, raw number (no separators) for editing |
 | Blur | Re-format to `id-ID` locale thousand-separator |
 | Invalid (out of bounds) | Auto-clamp silently to min/max — NO red border |
@@ -368,7 +386,7 @@ Renders:
 
 | State | Visual |
 |-------|--------|
-| Default | shadcn Button `variant="ghost"` for footer nav (text only); `variant="default"` (brand bg) for "Buka kalkulator" CTA |
+| Default | shadcn Button `variant="ghost"` for footer nav (text only, weight 600); `variant="default"` (brand bg, weight 600) for "Buka kalkulator" CTA |
 | Hover | Footer nav: `text-brand` (color shift), `underline-offset-4 underline`; CTA: `bg-brand-dark` (#4f46e5) |
 | Active/pressed | `scale-[0.98]` (subtle press) |
 | Focus | `ring-2 ring-brand ring-offset-2` |
@@ -395,7 +413,7 @@ Renders:
 
 | State | Visual |
 |-------|--------|
-| Default | `text-foreground font-medium` |
+| Default | `text-foreground font-semibold` (weight 600) |
 | Hover | `text-brand`, transform `translate-x-[-2px]` (prev) or `translate-x-[2px]` (next) — subtle slide hint, transition `duration-150 ease-out` |
 | Focus | `ring-2 ring-brand ring-offset-2 rounded-md` |
 
@@ -466,20 +484,20 @@ Tailwind defaults: `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`.
 |------------------|-----------------|
 | D-02 TSX prose hardcoded | Component Inventory: 6 modul TSX files |
 | D-04 Quick-check prose-only | Copywriting: "Cek pemahaman" intro + numbered list, no input field |
-| D-05 Footer prev/next + wrap-around | Layout: ModulFooterNav; Copywriting: footer copy templates |
-| D-06 Slider+number combo | Layout: Slider+number input row; Interaction: Slider/Number input states |
+| D-05 Footer prev/next + wrap-around | Layout: ModulFooterNav; Copywriting: footer copy templates; Typography: footer prev/next nav 14px / 600 |
+| D-06 Slider+number combo | Layout: Slider+number input row (label uses tracking-wide uppercase, value uses tabular-nums — both weight 400); Interaction: Slider/Number input states |
 | D-07 Real-time recalc | Empty/Loading: Kalkulator slider drag |
 | D-08 Recharts LineChart | Color: Recharts palette; Layout: Kalkulator chart card |
-| D-09 Tabel 5-tahunan fix | Layout: Kalkulator tabel card; Empty/Loading: Tabel row count edge |
+| D-09 Tabel 5-tahunan fix | Layout: Kalkulator tabel card; Empty/Loading: Tabel row count edge; Typography: table cell 14px / 400, table header 14px / 600 uppercase tracking-wide |
 | D-12 Manual GlossaryTooltip wrap | Component Inventory: GlossaryTooltip; Layout: GlossaryTooltip component |
 | D-13 glossary.ts dictionary | Component Inventory: `src/data/glossary.ts` |
 | D-14 Tap-to-open mobile | Interaction: GlossaryTooltip trigger states |
 | D-15 Dotted underline cursor-help | Layout: GlossaryTooltip JSX template |
 | D-16 @fontsource/fraunces lazy | Design System: Font (modul prose); Empty/Loading: Fraunces font load |
-| D-17 max-w-[65ch] centered | Spacing: max-w-[65ch] exception; Layout: Modul page layout |
-| D-18 Breadcrumb 2-level | Copywriting: Breadcrumb separator + link/current; Layout: Modul page breadcrumb |
+| D-17 max-w-[65ch] centered | Spacing: max-w-[65ch] exception; Layout: Modul page layout; Typography: Fraunces prose sizes 18/20/28/36 (4-size cap) |
+| D-18 Breadcrumb 2-level | Copywriting: Breadcrumb separator + link/current; Layout: Modul page breadcrumb; Typography: breadcrumb 14px / 400 |
 | D-19 Header static | Layout: "Modul header NOT sticky" callout |
-| D-20 Kalkulator typography Inter (→ Geist) | Typography: Chrome / Kalkulator UI table |
+| D-20 Kalkulator typography Geist (NOT Inter) | Typography: Chrome / Kalkulator UI table — sizes 14/18/28/36 (4-size cap), weights 400+600 only, distinction via tracking-wide/uppercase/tabular-nums |
 
 ---
 
