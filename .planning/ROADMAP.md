@@ -46,7 +46,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 - [x] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis (completed 2026-05-08)
 - [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
  (completed 2026-05-09)
-- [ ] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip
+- [x] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip (completed 2026-05-10)
 - [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
 
 ## Phase Details
@@ -116,7 +116,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   - [x] 15-01-PLAN.md — Foundation: typography token + glossary dictionary + modul content port + compound interest math util (STRAT-04, 05, 06)
   - [x] 15-02-PLAN.md — Modul system: GlossaryTooltip (Radix Popover) + KesehatanModulLayout + ModulRenderer (STRAT-04, 06)
   - [x] 15-03-PLAN.md — Kalkulator system: KalkulatorChart + KalkulatorPage (STRAT-05)
-  - [ ] 15-04-PLAN.md — Wave 3 wiring: routes.tsx lazy + KalkulatorBanner + Playwright UAT + human checkpoint (STRAT-04, 05, 06)
+  - [x] 15-04-PLAN.md — Wave 3 wiring: routes.tsx lazy + KalkulatorBanner + Playwright UAT + human checkpoint (STRAT-04, 05, 06)
 **UI hint**: yes
 
 ### Phase 16: v1.1 Closure & Ops Cleanup
@@ -151,5 +151,5 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 12. /kesehatan Foundation | v1.2 | 3/3 | Complete    | 2026-05-08 |
 | 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
 | 14. Protection & Tier 4 Checklists | v1.2 | 3/3 | Complete   | 2026-05-09 |
-| 15. Modul Edukasi & Kalkulator | v1.2 | 3/4 | In Progress|  |
+| 15. Modul Edukasi & Kalkulator | v1.2 | 4/4 | Complete   | 2026-05-10 |
 | 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
