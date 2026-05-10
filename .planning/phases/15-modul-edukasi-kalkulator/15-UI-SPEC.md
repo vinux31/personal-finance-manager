@@ -45,8 +45,8 @@ Declared values (Tailwind default scale, multiples of 4):
 | sm | 8px (`p-2`, `gap-2`) | Compact element spacing — chart axis label margin, breadcrumb separator |
 | md | 16px (`p-4`, `gap-4`) | Default container padding (`px-4` modul + kalkulator), card body padding, slider+input row gap |
 | lg | 24px (`p-6`, `gap-6`) | Section padding di kalkulator (input panel, output panel), modul section break (after H2) |
-| xl | 32px (`p-8`, `gap-8`) | Layout gap antara header breadcrumb dan prose body, kalkulator chart wrapper margin |
-| 2xl | 48px (`py-12`) | Major section breaks di modul (between theory → studi kasus → quick-check) |
+| xl | 32px (`p-8`, `gap-8`) | Layout gap antara header breadcrumb dan prose body, kalkulator chart wrapper margin; H3 sub-section margin-top (`mt-8`) — preserves hierarchy via spacing since H3 size = body size |
+| 2xl | 48px (`py-12`) | Major section breaks di modul (between theory → studi kasus → quick-check); optional H3 margin-top (`mt-10`) for stronger sub-section break |
 | 3xl | 64px (`py-16`) | Page-level top/bottom spacing di modul container, footer prev/next margin-top |
 
 **Exceptions:**
@@ -59,32 +59,44 @@ Declared values (Tailwind default scale, multiples of 4):
 
 ## Typography
 
-**Hard limits:** ≤4 distinct font sizes per typography context, exactly 2 weights total (400 regular + 600 semibold). Italic-400 acceptable as variant of 400.
+**Hard limits:** ≤4 distinct font sizes globally across all contexts, exactly 2 weights total (400 regular + 600 semibold). Italic-400 acceptable as variant of 400.
+
+**Unified declared scale (4 sizes total — applies to BOTH modul prose AND chrome/kalkulator):**
+
+| Size | Roles |
+|------|-------|
+| 14px | chrome (breadcrumb, footer nav, kalkulator labels, table cells, helper text, tooltip body) |
+| 18px | body prose, H3 sub-section (weight 600), kalkulator H2 panel, kalkulator number input value (tabular-nums), quick-check question |
+| 28px | H2 section (Fraunces in modul, Geist in kalkulator H1) |
+| 36px | H1 modul title (Fraunces), kalkulator big-number "Nilai Akhir" (Geist tabular-nums) |
 
 ### Modul Prose (Fraunces serif — `font-serif`)
 
-**Sizes used:** 18 / 20 / 28 / 36 (4 distinct sizes).
+**Sizes used:** 18 / 28 / 36 (3 distinct sizes — H3 collapses into 18px body size, distinguished via weight 600 + spacing).
 
 | Role | Size | Weight | Line Height | Tailwind |
 |------|------|--------|-------------|----------|
 | Body modul | 18px | 400 | 1.7 | `text-lg leading-relaxed font-serif` |
 | Blockquote / pull-quote (variant of body) | 18px | 400 italic | 1.7 | `text-lg italic font-serif border-l-4 border-muted pl-6 my-8` |
-| H3 sub-section | 20px | 600 | 1.3 | `text-xl font-semibold leading-snug font-serif mt-8 mb-3` |
+| H3 sub-section (weight distinction from body) | 18px | 600 | 1.4 | `text-lg font-semibold leading-snug font-serif mt-8 mb-3` |
 | H2 section | 28px | 600 | 1.25 | `text-3xl font-semibold leading-snug font-serif mt-12 mb-4` |
 | H1 modul title | 36px | 600 | 1.2 | `text-4xl font-semibold leading-tight font-serif` |
 | Code inline (override mono) | 18px (inherits body) | 400 | 1.5 | `font-mono text-[0.85em] bg-muted px-1.5 py-0.5 rounded` (relative size, no new declared size) |
 
-**Note on consolidation:** Blockquote uses the same 18px body size with italic variant — not a new size declaration. Inline code uses `text-[0.85em]` relative sizing inherited from parent body, so it does not introduce a 5th size.
+**Note on consolidation:**
+- Blockquote uses the same 18px body size with italic variant — not a new size declaration.
+- **H3 sub-section uses the same 18px body size with weight 600 + generous `mt-8` (or `mt-10` for major breaks) margin-top + tight `mb-3` margin-bottom.** Distinction from body 18/400 is achieved via weight + spacing, NOT size. Same tactic spec already uses for footer prev/next nav (14/600 chrome) — weight contrast as hierarchy without adding declared sizes.
+- Inline code uses `text-[0.85em]` relative sizing inherited from parent body, so it does not introduce a 5th size.
 
 ### Chrome / Kalkulator UI / Breadcrumb (Geist Variable sans — `font-sans` default)
 
-**Sizes used:** 14 / 18 / 28 / 36 (4 distinct sizes).
+**Sizes used:** 14 / 18 / 28 / 36 (4 distinct sizes — same unified cap).
 
 | Role | Size | Weight | Line Height | Tailwind |
 |------|------|--------|-------------|----------|
 | Breadcrumb | 14px | 400 | 1.5 | `text-sm font-normal text-muted-foreground` |
 | Kalkulator label (slider) | 14px | 400 | 1.5 | `text-sm font-normal tracking-wide uppercase text-muted-foreground` |
-| Kalkulator number input value | 14px | 400 | 1.5 | `text-sm font-normal tabular-nums` |
+| Kalkulator number input value | 18px | 400 | 1.4 | `text-lg font-normal tabular-nums` |
 | Kalkulator sub-info (Total Setoran, Total Bunga) | 14px | 400 | 1.5 | `text-sm font-normal tabular-nums` |
 | Footer prev/next nav label | 14px | 600 | 1.4 | `text-sm font-semibold` |
 | Tooltip definition body | 14px | 400 | 1.5 | `text-sm leading-relaxed` |
@@ -98,9 +110,10 @@ Declared values (Tailwind default scale, multiples of 4):
 
 **Weight policy:** Project uses exactly 2 weights — **400 regular** + **600 semibold**. Italic 400 acceptable for blockquote variant (single italic style of the same 400 weight). NO 300, 500, 700, 800 weights anywhere in modul/kalkulator UI.
 
-**Visual distinction strategy without weight 500:**
+**Visual distinction strategy without weight 500 and without exceeding 4-size cap:**
+- **H3 sub-section vs body prose:** weight 400 → 600 + `mt-8`/`mt-10` margin-top + tight `mb-3` margin-bottom. Spacing carries hierarchy when size is identical.
 - Slider labels: weight 400 + `tracking-wide uppercase` + `text-muted-foreground` for label/value separation
-- Number input value: weight 400 + `tabular-nums` (monospaced digits) for visual rhythm and alignment
+- Number input value: weight 400 + `tabular-nums` (monospaced digits) for visual rhythm and alignment at body size 18
 - Table headers: weight 600 + `uppercase tracking-wide` for header/cell separation
 - Footer nav prev/next labels: weight 600 (emphasis as interactive affordance, consistent with section headings)
 
@@ -239,7 +252,8 @@ Project tokens (existing OKLCH variables in `src/index.css`):
 │ │  │  H1 Fraunces 36px semibold (modul title)                       │    │ │
 │ │  │  pb-12                                                          │    │ │
 │ │  │  prose body Fraunces 18px regular leading-1.7                  │    │ │
-│ │  │  H2 sections, paragraph, blockquote, GlossaryTooltip inline    │    │ │
+│ │  │  H2 sections (28px), H3 sub-sections (18px/600 + mt-8/mt-10)   │    │ │
+│ │  │  paragraph, blockquote, GlossaryTooltip inline                 │    │ │
 │ │  │  pb-12 (between sections)                                       │    │ │
 │ │  │  Quick-check section (semibold heading + numbered list, prose) │    │ │
 │ │  └────────────────────────────────────────────────────────────────┘    │ │
@@ -259,6 +273,7 @@ Project tokens (existing OKLCH variables in `src/index.css`):
 - **Reading width:** `max-w-[65ch]` on prose container only. Breadcrumb + footer also constrained to same `max-w-[65ch]` for visual alignment.
 - **Mobile (`<sm`, < 640px):** `max-w-[65ch]` becomes effectively 100% of viewport (with `px-4` padding), no horizontal scroll. Breadcrumb wraps to 2 lines if needed.
 - **Desktop (`≥md`, ≥768px):** Centered prose column, generous left/right whitespace for focus.
+- **H3 hierarchy:** Since H3 size = body size (18px), hierarchy is preserved by weight 600 + mandatory `mt-8` (or `mt-10` for major breaks) margin-top + tight `mb-3` margin-bottom. Spacing carries the visual break.
 
 ### Kalkulator page layout (D-06, D-08, D-09)
 
@@ -306,12 +321,12 @@ Project tokens (existing OKLCH variables in `src/index.css`):
 Label "SALDO AWAL"                          Rp 10.000.000  ← number input
 ↑ uppercase tracking-wide muted             ↑ tabular-nums right-aligned
 Helper "Modal yang sudah kamu punya..."     w-32 (8rem)
-[━━━━━━━━━●─────────────────────────]       bg-muted text-sm tabular-nums
+[━━━━━━━━━●─────────────────────────]       bg-muted text-lg tabular-nums
 ↑ Slider full-width (flex-1)
 ```
 
 - Label visual treatment: `text-sm font-normal tracking-wide uppercase text-muted-foreground` (no weight 500; distinction via tracking + uppercase + muted color).
-- Number input visual treatment: `text-sm font-normal tabular-nums` (no weight 500; distinction via mono digits + right-alignment).
+- Number input visual treatment: `text-lg font-normal tabular-nums` (size 18 — body size; distinction via mono digits + right-alignment).
 - Desktop layout: label + helper on row 1 left, number input on row 1 right (flex justify-between). Slider on row 2 full-width.
 - Mobile layout: label + helper stack row 1, number input row 2 right-aligned, slider row 3 full-width. (D-06 hint: slider dominant + number input collapse — Claude's Discretion.)
 - Number input: `<input type="number" inputMode="numeric" pattern="[0-9.]*">` with `id-ID` thousand-separator formatting on blur, raw number on focus.
@@ -377,7 +392,7 @@ Renders:
 
 | State | Visual |
 |-------|--------|
-| Default | `border` (gray-200), `bg-background`, `tabular-nums`, formatted `Rp X.XXX.XXX`, weight 400 |
+| Default | `border` (gray-200), `bg-background`, `tabular-nums`, formatted `Rp X.XXX.XXX`, weight 400, size 18 |
 | Focus | `border-brand ring-2 ring-brand/20`, raw number (no separators) for editing |
 | Blur | Re-format to `id-ID` locale thousand-separator |
 | Invalid (out of bounds) | Auto-clamp silently to min/max — NO red border |
@@ -485,7 +500,7 @@ Tailwind defaults: `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`.
 | D-02 TSX prose hardcoded | Component Inventory: 6 modul TSX files |
 | D-04 Quick-check prose-only | Copywriting: "Cek pemahaman" intro + numbered list, no input field |
 | D-05 Footer prev/next + wrap-around | Layout: ModulFooterNav; Copywriting: footer copy templates; Typography: footer prev/next nav 14px / 600 |
-| D-06 Slider+number combo | Layout: Slider+number input row (label uses tracking-wide uppercase, value uses tabular-nums — both weight 400); Interaction: Slider/Number input states |
+| D-06 Slider+number combo | Layout: Slider+number input row (label uses tracking-wide uppercase weight 400, value uses tabular-nums size 18 weight 400); Interaction: Slider/Number input states |
 | D-07 Real-time recalc | Empty/Loading: Kalkulator slider drag |
 | D-08 Recharts LineChart | Color: Recharts palette; Layout: Kalkulator chart card |
 | D-09 Tabel 5-tahunan fix | Layout: Kalkulator tabel card; Empty/Loading: Tabel row count edge; Typography: table cell 14px / 400, table header 14px / 600 uppercase tracking-wide |
@@ -494,10 +509,10 @@ Tailwind defaults: `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`.
 | D-14 Tap-to-open mobile | Interaction: GlossaryTooltip trigger states |
 | D-15 Dotted underline cursor-help | Layout: GlossaryTooltip JSX template |
 | D-16 @fontsource/fraunces lazy | Design System: Font (modul prose); Empty/Loading: Fraunces font load |
-| D-17 max-w-[65ch] centered | Spacing: max-w-[65ch] exception; Layout: Modul page layout; Typography: Fraunces prose sizes 18/20/28/36 (4-size cap) |
+| D-17 max-w-[65ch] centered | Spacing: max-w-[65ch] exception; Layout: Modul page layout; Typography: Fraunces prose sizes 18/28/36 (3-size, weight 600 for H3 sub-headings) |
 | D-18 Breadcrumb 2-level | Copywriting: Breadcrumb separator + link/current; Layout: Modul page breadcrumb; Typography: breadcrumb 14px / 400 |
 | D-19 Header static | Layout: "Modul header NOT sticky" callout |
-| D-20 Kalkulator typography Geist (NOT Inter) | Typography: Chrome / Kalkulator UI table — sizes 14/18/28/36 (4-size cap), weights 400+600 only, distinction via tracking-wide/uppercase/tabular-nums |
+| D-20 Kalkulator typography Geist (NOT Inter) | Typography: Chrome / Kalkulator UI table — sizes 14/18/28/36 (4-size unified cap), weights 400+600 only, distinction via tracking-wide/uppercase/tabular-nums + spacing for H3 |
 
 ---
 
