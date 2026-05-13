@@ -9,7 +9,6 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
 import RencanaBar from '@/components/RencanaBar'
-import { useRencanaInit } from '@/lib/useRencanaInit'
 import UpcomingBillsPanel from '@/components/UpcomingBillsPanel'
 import { PayPeriodCard } from '@/components/PayPeriodCard'
 
@@ -26,7 +25,6 @@ export default function DashboardTab() {
   const { data: nwAccounts = [] } = useNetWorthAccounts()
   const { data: nwLiabilities = [] } = useNetWorthLiabilities()
   const { data: nwSnapshots = [] } = useNetWorthSnapshots()
-  useRencanaInit()
 
   const monthly = useMemo(() => {
     let income = 0; let expense = 0
