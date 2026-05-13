@@ -8,17 +8,10 @@ import { Label } from '@/components/ui/label'
 import { useThemeStore, type Theme } from '@/lib/theme'
 import { useAuthContext } from '@/auth/AuthProvider'
 import { useViewAs } from '@/auth/useViewAs'
-import { useGoals } from '@/queries/goals'
-import { useInvestments } from '@/queries/investments'
-import { deleteGoal } from '@/db/goals'
-import { deleteInvestment } from '@/db/investments'
 import { listAllowedEmails, addAllowedEmail, removeAllowedEmail } from '@/db/allowedEmails'
 import { listProfiles } from '@/db/profiles'
-import { RENCANA_GOAL_NAMES, RENCANA_INVESTMENT_NAMES } from '@/lib/rencanaNames'
-import { formatRupiah } from '@/lib/format'
 import { mapSupabaseError } from '@/lib/errors'
-import { supabase } from '@/lib/supabase'
-import { Eye, HelpCircle, LogOut, Palette, Target, User, Users } from 'lucide-react'
+import { Eye, HelpCircle, LogOut, Palette, User, Users } from 'lucide-react'
 import TentangDialog from '@/components/TentangDialog'
 import PanduanWelcomeCard from '@/components/PanduanWelcomeCard'
 
@@ -38,16 +31,11 @@ export default function SettingsTab() {
   const { user, signOut, isAdmin } = useAuthContext()
   const { setViewingAs } = useViewAs()
   const [tentangOpen, setTentangOpen] = useState(false)
-  const [resetting, setResetting] = useState(false)
   const [newEmail, setNewEmail] = useState('')
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
   const [removeEmailConfirmOpen, setRemoveEmailConfirmOpen] = useState(false)
   const [removeEmailTarget, setRemoveEmailTarget] = useState<{ id: number; email: string } | null>(null)
-  const [resetSeedConfirmOpen, setResetSeedConfirmOpen] = useState(false)
   const qc = useQueryClient()
-
-  const { data: goals = [] } = useGoals()
-  const { data: invRows = [] } = useInvestments()
 
   const { data: allowedEmails = [] } = useQuery({
     queryKey: ['allowed-emails'],
@@ -90,54 +78,6 @@ export default function SettingsTab() {
     addEmailMutation.mutate(trimmed)
   }
 
-  const activeGoals = goals.filter((g) => g.status === 'active')
-  const totalTarget = activeGoals.reduce((s, g) => s + g.target_amount, 0)
-  const deadlineStr = activeGoals
-    .filter((g) => g.target_date)
-    .reduce((latest, g) => (g.target_date! > latest ? g.target_date! : latest), '')
-  const deadlineLabel = deadlineStr
-    ? new Date(deadlineStr).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
-    : '—'
-
-  async function handleResetSeed() {
-    setResetSeedConfirmOpen(true)
-  }
-
-  async function doResetSeed() {
-    setResetting(true)
-    try {
-      const goalsToDelete = goals.filter((g) =>
-        (RENCANA_GOAL_NAMES as readonly string[]).includes(g.name)
-      )
-      const invsToDelete = invRows.filter((i) =>
-        (RENCANA_INVESTMENT_NAMES as readonly string[]).includes(i.asset_name)
-      )
-      await Promise.all([
-        ...goalsToDelete.map((g) => deleteGoal(g.id)),
-        ...invsToDelete.map((i) => deleteInvestment(i.id)),
-      ])
-
-      // D-07.3: atomic DB marker reset via RPC (strict self-only — no admin override)
-      const { error: rpcErr } = await supabase.rpc('reset_rencana_marker')
-      if (rpcErr) throw rpcErr
-
-      // D-07.4 (fix UX-01): per-user localStorage key
-      if (user?.id) {
-        localStorage.removeItem(`rencana_seeded_${user.id}`)
-      }
-      // D-07.5: cleanup legacy global key (one-shot inline migration)
-      localStorage.removeItem('rencana_seeded')
-
-      qc.invalidateQueries({ queryKey: ['goals'] })
-      qc.invalidateQueries({ queryKey: ['investments'] })
-      toast.success('Seed direset. Buka Dashboard untuk inisialisasi ulang.')
-    } catch (e) {
-      toast.error(mapSupabaseError(e))
-    } finally {
-      setResetting(false)
-    }
-  }
-
   return (
     <div className="max-w-2xl space-y-8">
       <PanduanWelcomeCard />
@@ -161,34 +101,6 @@ export default function SettingsTab() {
                 {t === 'light' ? '☀️ Terang' : t === 'dark' ? '🌙 Gelap' : '💻 Sistem'}
               </button>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Rencana */}
-      <section>
-        <SectionHeader icon={Target} label="Rencana" iconBg="bg-[#fef3c7]" />
-        <div className="rounded-xl border border-[#e0e7ff] bg-card p-4 space-y-3">
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-muted-foreground">Total Target</span>
-            <span className="font-medium">{totalTarget > 0 ? formatRupiah(totalTarget) : '—'}</span>
-            <span className="text-muted-foreground">Deadline</span>
-            <span className="font-medium">{deadlineLabel}</span>
-            <span className="text-muted-foreground">Goals Aktif</span>
-            <span className="font-medium">{activeGoals.length} goals</span>
-          </div>
-          <div className="pt-2 border-t">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResetSeed}
-              disabled={resetting}
-            >
-              {resetting ? 'Mereset...' : 'Reset Seed Rencana'}
-            </Button>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              ⚠ Menghapus goals &amp; investasi hasil seed. Buka Dashboard untuk inisialisasi ulang.
-            </p>
           </div>
         </div>
       </section>
@@ -331,14 +243,6 @@ export default function SettingsTab() {
         title={`Hapus ${removeEmailTarget?.email ?? ''}?`}
         description="Email ini tidak akan bisa login lagi."
         onConfirm={() => { if (removeEmailTarget) removeEmailMutation.mutate(removeEmailTarget.id) }}
-      />
-      <ConfirmDialog
-        open={resetSeedConfirmOpen}
-        onOpenChange={setResetSeedConfirmOpen}
-        title="Reset Seed Rencana?"
-        description="Goals dan investasi hasil seed akan dihapus permanen."
-        confirmLabel="Reset"
-        onConfirm={doResetSeed}
       />
     </div>
   )
