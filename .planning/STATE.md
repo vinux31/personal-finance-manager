@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
-status: executing
-stopped_at: Phase 16 context gathered
-last_updated: "2026-05-15T10:54:25.590Z"
-last_activity: 2026-05-15 -- Phase 16 planning complete
+status: complete
+stopped_at: Phase 16 complete — all UAT PASS, milestone v1.2 closed
+last_updated: "2026-05-15T12:00:00.000Z"
+last_activity: 2026-05-15 -- Phase 16 complete (B1-B5 PASS, 0028 hotfix applied)
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 14
-  completed_plans: 14
+  completed_phases: 5
+  total_plans: 16
+  completed_plans: 16
   percent: 100
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** Phase 15 — modul-edukasi-kalkulator
+**Current focus:** v1.2 COMPLETE — all phases 11-16 shipped
 
 ## Current Position
 
-Phase: 15 (modul-edukasi-kalkulator) — EXECUTING
-Plan: 1 of 4
-Status: Ready to execute
-Last activity: 2026-05-15 -- Phase 16 planning complete
+Phase: 16 (v1-1-closure-ops-cleanup) — COMPLETE
+Plan: 2 of 2
+Status: Milestone v1.2 closed
+Last activity: 2026-05-15 -- Phase 16 complete (B1-B5 UAT PASS, 0028 hotfix applied to production)
 
 ## v1.2 Phase Summary
 
@@ -38,8 +38,8 @@ Last activity: 2026-05-15 -- Phase 16 planning complete
 | 12 | /kesehatan Foundation | SCHEMA-01, STRAT-01, STRAT-02, DIAG-11 | **Complete** — 2026-05-08 |
 | 13 | Diagnostic Data Indicators | DIAG-01, 02, 03, 05, 06, 07, 08, 10, STRAT-03 | **Complete** — 2026-05-08 |
 | 14 | Protection & Tier 4 Checklists | DIAG-04, 09, 12 | **Complete (verified)** — 2026-05-09 |
-| 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | Not started |
-| 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | Not started |
+| 15 | Modul Edukasi & Kalkulator | STRAT-04, 05, 06 | **Complete** — 2026-05-10 |
+| 16 | v1.1 Closure & Ops Cleanup | VERIF-01..06, TECHDEBT-01 | **Complete (PASS)** — 2026-05-15 |
 
 ## Accumulated Context
 
@@ -122,13 +122,13 @@ None.
 |----------|------|--------|----------|-----------|
 | bug | net_worth_snapshots auto-insert 42501 saat View-As aktif | candidate | LOW | (carry to v1.3 — out of scope v1.2) |
 | test | SC #3 destructive variant (TRUNCATE allowed_emails + signup) — needs staging mirror | candidate | LOW | out of scope v1.2 (PROJECT.md confirmed) |
-| infra | Migration history reconciliation 0014..0028 Local-only | open | LOW | **Phase 16** (TECHDEBT-01) |
+| infra | Migration history reconciliation 0014..0028 Local-only | **closed** | LOW | Phase 16 TECHDEBT-01 — Path b: docs/migration-playbook.md |
 | cosmetic | D-14 raw NUMERIC formatting di withdraw_from_goal MESSAGE | candidate | LOW | (carry to v1.3 — defer micro polish) |
-| live UAT | B1 Gaji idempotency | deferred | MEDIUM | **Phase 16** (VERIF-02) |
-| live UAT | B2 mark-paid 5x rapid race | deferred | MEDIUM | **Phase 16** (VERIF-03) |
-| live UAT | B3 2-tab withdraw | deferred | MEDIUM | **Phase 16** (VERIF-04) |
-| live UAT | B4 completed→active flip | deferred | MEDIUM | **Phase 16** (VERIF-05) |
-| live UAT | B5 Refresh Harga WIB date | deferred | LOW | **Phase 16** (VERIF-06) |
+| live UAT | B1 Gaji idempotency | **closed** | MEDIUM | Phase 16 VERIF-02 — PASS 2026-05-15 |
+| live UAT | B2 mark-paid 5x rapid race | **closed** | MEDIUM | Phase 16 VERIF-03 — PASS 2026-05-15 |
+| live UAT | B3 2-tab withdraw | **closed** | MEDIUM | Phase 16 VERIF-04 — PASS 2026-05-15 |
+| live UAT | B4 completed→active flip | **closed** | MEDIUM | Phase 16 VERIF-05 — PASS 2026-05-15 (0028 hotfix applied) |
+| live UAT | B5 Refresh Harga WIB date | **closed** | LOW | Phase 16 VERIF-06 — PASS 2026-05-15 |
 | code | AuthProvider .catch() gap (corrupt-localStorage path raw TypeError) | candidate | LOW-MEDIUM | (carry to v1.3 — small frontend fix, no v1.2 home) |
 | docs | DEV-04 wording reconcile ("10k" vs "50k") | candidate | LOW | (carry to v1.3) |
 

@@ -47,7 +47,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 - [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
  (completed 2026-05-09)
 - [x] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip (completed 2026-05-10)
-- [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
+- [x] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only) (completed 2026-05-15)
 
 ## Phase Details
 
