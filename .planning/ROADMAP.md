@@ -46,7 +46,7 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 - [x] **Phase 13: Diagnostic Data Indicators** — 8 data-driven indikator (Tier 1-3) + tier panel expand + edge case data tipis (completed 2026-05-08)
 - [x] **Phase 14: Protection & Tier 4 Checklists** — Tier 1 inline form (Asuransi Kesehatan) + Tier 4 smart-gated checklist + View-As read-only mode
  (completed 2026-05-09)
-- [x] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip (completed 2026-05-10)
+- [x] **Phase 15: Modul Edukasi & Kalkulator** — 6 modul sub-route + kalkulator compound interest + glossary tooltip (completed 2026-05-10)
 - [ ] **Phase 16: v1.1 Closure & Ops Cleanup** — B1-B5 live UAT (Gaji idempotency, mark-paid race, 2-tab withdraw, completed flip, Refresh Harga WIB) + migration history reconciliation (0014..0028 Local-only)
 
 ## Phase Details
@@ -131,7 +131,9 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
   5. B4 (completed flip): Withdraw Rp 1 dari goal completed → badge berubah "Tercapai" → "Aktif" + SQL verify `goals.status='active'`
   6. B5 (Refresh Harga WIB date): Klik Refresh Harga di Investasi → network request payload field `date` adalah WIB (bukan UTC) — verified live (sudah un-blocked Phase 10 v1.1)
   7. Migration history: keputusan dipilih dan didokumentasikan di PROJECT.md Key Decisions — jalur (a) repair history sehingga `db push` jalan, atau jalur (b) document procedural alternative (Studio paste tetap default + dummy applied entry); `supabase migration list --linked` sesuai jalur; future-migration playbook tertulis (kapan Studio paste vs CLI push, handle signature changes)
-**Plans**: TBD
+**Plans**: 2 plans
+  - [ ] 16-01-PLAN.md — Pre-condition data setup (VERIF-01) + TECHDEBT-01 decision + docs/migration-playbook.md
+  - [ ] 16-02-PLAN.md — Live UAT B1-B5 execution (VERIF-02..06) + sign-off
 
 ## Progress
 
@@ -152,4 +154,4 @@ Audit verdict (tech_debt → resolved Phase 10): [milestones/v1.1-MILESTONE-AUDI
 | 13. Diagnostic Data Indicators | v1.2 | 4/4 | Complete    | 2026-05-08 |
 | 14. Protection & Tier 4 Checklists | v1.2 | 3/3 | Complete   | 2026-05-09 |
 | 15. Modul Edukasi & Kalkulator | v1.2 | 4/4 | Complete   | 2026-05-10 |
-| 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/? | Not started | — |
+| 16. v1.1 Closure & Ops Cleanup | v1.2 | 0/2 | Not started | — |
