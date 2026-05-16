@@ -1,5 +1,38 @@
 # Milestones
 
+## v1.2 Strategic Layer & Verification Closure (Shipped: 2026-05-15)
+
+**Phases completed:** 6 phases · 17 plans · all complete
+**Git range:** v1.1 → 83b8484 (191 commits, 303 files changed, +49k/-4.9k)
+**Timeline:** 2026-05-02 → 2026-05-15 (~13 days)
+
+**Goal:** Tambahkan halaman `/kesehatan` (piramida diagnostic 4-tier + 6 modul edukasi + kalkulator) sebagai strategic layer, sekaligus tutup sisa verification debt v1.1 (B1-B5 live UAT).
+
+**Delivered:** Halaman `/kesehatan` live dengan 8 data-driven financial indicators, 6 modul edukasi sub-route, kalkulator compound interest, dan Tier 1/4 protection checklists — plus B1-B5 live UAT semua PASS di production.
+
+**Key accomplishments:**
+
+- Phase 11 — Periode Gaji: `pay_periods` table + PayPeriodCard Dashboard + tab Laporan Periode Gaji + manual management di `/periode-gaji` (migration 0026).
+- Phase 12 — /kesehatan Foundation: sidebar grup Strategi + route `/kesehatan` + landing shell (piramida 4-tier trapezoid + banner kalkulator + grid 6 modul card) + `protection_checklist` table RLS (migration 0029) + DIAG-11 empty state dengan grayed piramida + 3 CTA.
+- Phase 13 — Diagnostic Data Indicators: 8 data-driven indikator finansial live (Dana Darurat, Savings Rate, DAR Konsumtif, Goals On-track, Pensiun, Rasio Investasi, Diversifikasi, Asuransi shell) dengan threshold warna hijau/kuning/merah + smart fallback CTA + edge case data tipis placeholder.
+- Phase 14 — Protection & Tier 4 Checklists: Tier 1 inline form Asuransi Kesehatan (3-state machine, optimistic mutation) + Tier 4 smart-gated checklist estate/asuransi jiwa + View-As 3-layer read-only guard (DIAG-04, DIAG-09, DIAG-12).
+- Phase 15 — Modul Edukasi & Kalkulator: 6 modul edukasi sub-route `/kesehatan/<slug>` + kalkulator compound interest (Recharts, 4 sliders, tabel 5-tahunan) + GlossaryTooltip Radix Popover (8 istilah) + Fraunces variable font + vitest infrastruktur pertama di project.
+- Phase 16 — v1.1 Closure & Ops Cleanup: B1-B5 live UAT semua PASS (process_due_recurring idempotency, mark-paid 5x race, 2-tab withdraw pessimistic lock, completed→active flip, todayISO WIB date) + migration playbook docs + 0028 hotfix applied to production cloud.
+
+**Audit verdict:** tech_debt — 26/26 requirements satisfied, 6/6 E2E flows verified, 21/21 requirements wired. Deferred: 37 human visual UAT items, DIAG-12 admin-role visual UAT blocked, 2 missing VERIFICATION.md (process gap). See `.planning/milestones/v1.2-MILESTONE-AUDIT.md`.
+
+**Production deploy:** https://kantongpintar.vercel.app/ — live UAT B1-B5 PASS 2026-05-15, production cloud.
+
+**Known deferred items at close:** 37 human visual UAT + DIAG-12 View-As visual (admin seed needed) + WR-02 isPending gate + circular import documented + Nyquist VALIDATION.md missing all phases (process gap).
+
+**Archive files:**
+
+- `.planning/milestones/v1.2-ROADMAP.md`
+- `.planning/milestones/v1.2-REQUIREMENTS.md`
+- `.planning/milestones/v1.2-MILESTONE-AUDIT.md`
+
+---
+
 ## Completed
 
 ### v1.1 Hardening & Consistency (Shipped: 2026-05-02)

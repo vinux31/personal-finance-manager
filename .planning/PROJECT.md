@@ -10,29 +10,12 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 
 ## Current State
 
-**Latest milestone:** v1.1 Hardening & Consistency — shipped 2026-05-02 (6 phases, 25 plans, ~6 days execution)
-**Active milestone:** v1.2 Strategic Layer & Verification Closure — Phase 13 complete 2026-05-08 (8 indikator data-driven live di /kesehatan)
-**Production:** https://kantongpintar.vercel.app/ — Phase 13 verified live via Playwright UAT 2026-05-08 (piramida + accordion + tier panels mobile/desktop)
-**Audit:** v1.1 closed clean — 16/16 requirements satisfied; tech_debt verdict (fetch-prices CORS) resolved by Phase 10
-**Tech stack stable:** React 19 + TS + Vite + Supabase (RLS + 25 migrations applied via Studio fallback) + TailwindCSS 4 + shadcn/ui
-**Codebase size:** ~32k LOC delta v1.0→v1.1 (231 files changed, +32k/-15k since v1.0)
-
-## Current Milestone: v1.2 Strategic Layer & Verification Closure
-
-**Goal:** Tambahkan halaman `/kesehatan` (piramida diagnostic + literasi finansial) sebagai layer strategis di atas tabs operasional, sekaligus tutup sisa verification debt dari v1.1.
-
-**Target features:**
-- **Halaman /kesehatan** — piramida 4-tier data-driven (8 indikator), 6 modul edukasi sub-route, kalkulator compound interest. Schema baru `protection_checklist`. Design spec di `docs/superpowers/specs/2026-05-08-framework-page-design.md` (commit b219fc3).
-- **Verification closure v1.1 (B1-B5 live UAT)** — setup data state (template Gaji, expense recurring, goal cash, goal completed) + jalankan UAT idempotency Gaji, race mark-paid, 2-tab withdraw, completed→active flip, Refresh Harga WIB date.
-- **Tech debt minor** — migration history reconciliation (0014..0025 local-only), Phase 8 deferred dev-hygiene residu.
-
-**Out of scope v1.2 (defer ke v1.3+):**
-- Modul "Warisan & Estate Planning" (Tier 4 cuma checklist v1.2)
-- Kalkulator suite tambahan (real return, expense drag, retirement gap) — cuma compound di v1.2
-- IPS Builder, risk tolerance quiz, behavior gap detector
-- Tier 4 jadi data-driven diagnostic (saat ini self-assessment)
-- Asset class normalization untuk `investments.asset_type`
-- SEC-01 SC#3 destructive variant (butuh staging mirror — infra besar)
+**Latest milestone:** v1.2 Strategic Layer & Verification Closure — shipped 2026-05-15 (6 phases, 17 plans, ~13 days execution)
+**Active milestone:** None — planning v1.3
+**Production:** https://kantongpintar.vercel.app/ — B1-B5 live UAT PASS 2026-05-15 (process_due_recurring idempotency, mark-paid race, 2-tab withdraw lock, completed→active flip, WIB date)
+**Audit:** v1.2 tech_debt — 26/26 requirements satisfied; deferred 37 human visual UAT items (non-blocking)
+**Tech stack stable:** React 19 + TS + Vite + Supabase (RLS + 30 migrations applied via Studio) + TailwindCSS 4 + shadcn/ui + Recharts + vitest
+**Codebase size:** 303 files changed +49k/-4.9k since v1.1 (191 commits); ~81k+ LOC total estimate
 
 **Started:** 2026-05-08
 
@@ -90,9 +73,33 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - ✓ Performance note recentTx documented in PROJECT.md Context — v1.1 Phase 8 (DEV-04)
 - ✓ 8 QA bugs fixed (2 Critical DB triggers/RPC + 4 Medium frontend + 2 Low a11y/i18n) — v1.1 Phase 9 (QA-CRITICAL-1, QA-CRITICAL-2, QA-MEDIUM-3..6, QA-LOW-7..8)
 
+<!-- v1.2 Strategic Layer & Verification Closure — shipped 2026-05-15 -->
+
+- ✓ `pay_periods` table + PayPeriodCard Dashboard + Laporan Periode Gaji + manual management `/periode-gaji` (migration 0026) — v1.2 Phase 11
+- ✓ Halaman `/kesehatan` accessible via sidebar grup "Strategi" (STRAT-01) — v1.2 Phase 12
+- ✓ Landing `/kesehatan` — piramida 4-tier CSS trapezoid + banner kalkulator + grid 6 card modul (STRAT-02) — v1.2 Phase 12
+- ✓ Tabel `protection_checklist` dengan RLS `auth.uid()=user_id OR is_admin()` + lazy-create upsert (SCHEMA-01) — v1.2 Phase 12 (migration 0029)
+- ✓ Empty state full (< 3 rows total) — piramida grayed-out + 3 quick-link CTA `/transaksi`/`/kekayaan`/`/goals` (DIAG-11) — v1.2 Phase 12
+- ✓ Indikator Dana Darurat data-driven (likuid ÷ avg expense 3bln, threshold ≥6/3-5/<3 bulan) + edge case data tipis placeholder (DIAG-01, DIAG-10) — v1.2 Phase 13
+- ✓ Indikator Savings Rate avg 3 bulan kalender (≥20/10-19/<10%) (DIAG-02) — v1.2 Phase 13
+- ✓ Indikator DAR Konsumtif (non-KPR ÷ aset finansial) + DAR Total info-only (DIAG-03) — v1.2 Phase 13
+- ✓ Indikator Goals On-track long-term + smart fallback CTA /goals (DIAG-05) — v1.2 Phase 13
+- ✓ Indikator Pensiun readiness + smart fallback CTA /pensiun + stale 6+ bulan notice (DIAG-06) — v1.2 Phase 13
+- ✓ Indikator Rasio Investasi (investments+deposito ÷ aset finansial, ≥40/20-39/<20%) (DIAG-07) — v1.2 Phase 13
+- ✓ Indikator Diversifikasi DISTINCT asset_type + deposito bonus (≥3/2/≤1) (DIAG-08) — v1.2 Phase 13
+- ✓ Tier expand panel inline menampilkan indikator + CTA + modul link (STRAT-03) — v1.2 Phase 13
+- ✓ Tier 1 inline form Asuransi Kesehatan (3-state machine, optimistic mutation, 5 opsi radio) (DIAG-04) — v1.2 Phase 14
+- ✓ Tier 4 smart-gated checklist estate/asuransi jiwa (gate-conditional, auto-save per radio) (DIAG-09) — v1.2 Phase 14
+- ✓ View-As 3-layer read-only guard (UI disable + mutation throw + RLS WITH CHECK) (DIAG-12) — v1.2 Phase 14
+- ✓ 6 modul edukasi sub-route `/kesehatan/<slug>` + Fraunces variable font + breadcrumb + prev/next (STRAT-04) — v1.2 Phase 15
+- ✓ Kalkulator compound interest full-page `/kesehatan/kalkulator` (4 sliders + Recharts + tabel 5-tahunan) (STRAT-05) — v1.2 Phase 15
+- ✓ GlossaryTooltip Radix Popover (8 istilah teknis inline di prose modul) (STRAT-06) — v1.2 Phase 15
+- ✓ B1-B5 live UAT PASS production — process_due_recurring idempotency, mark-paid 5x race, 2-tab withdraw pessimistic lock, completed→active flip, todayISO WIB date (VERIF-01..06) — v1.2 Phase 16
+- ✓ Migration history reconciliation Path (b) — docs/migration-playbook.md + procedural Studio-paste default documented (TECHDEBT-01) — v1.2 Phase 16
+
 ### Active
 
-(v1.2 requirements being defined — see REQUIREMENTS.md)
+(No active milestone — start v1.3 with `/gsd-new-milestone`)
 
 ### Out of Scope
 
@@ -110,7 +117,7 @@ Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat
 - **Deployment:** Vercel auto-deploy dari `master` (build time ~15-30s)
 - **Existing recurring data:** Tabel `recurring_templates` sudah ada — dipakai untuk Bills via `upcoming_bills_unpaid` view. **Audit table `bill_payments` sekarang mencatat BOTH expense AND income runs (D-04, sejak Phase 6)** — semantic note di migration 0019 menjelaskan nama tabel kept untuk back-compat dengan `mark_bill_paid` + view; rename ke `recurring_runs` adalah v1.2 backlog kalau dataset/ambiguity ganggu.
 - **Multi-user:** Admin bisa view-as user lain — fitur baru harus support ini juga
-- **Migrations:** 0001 → 0025 (25 migrations applied to cloud — v1.1 Phase 5 added 0017+0018, Phase 6 added 0019+0020+0021, Phase 7 added 0022+0023+0024, Phase 9 added 0025_fix_goal_bugs.sql; Phase 10 was infra-only no DB)
+- **Migrations:** 0001 → 0029 (29+ migrations applied to cloud via Studio SQL Editor — v1.2 Phase 11 added 0026, Phase 12 added 0029_protection_checklist.sql, Phase 16 applied 0028 hotfix; `db push` broken (history mismatch 0014+), Studio paste tetap default per migration-playbook.md)
 - **Edge Functions:** `fetch-prices` (JWT-enforced via verify_jwt=true; CORS allowlist 3 domains incl. kantongpintar.vercel.app since Phase 10)
 - **Performance:** Dashboard `recentTx` query pakai `useTransactions({ limit: 5 })` + index `transactions_date_idx` — sufficient untuk dataset < 50k rows; pertimbangkan migrasi ke materialized view jika dataset user aktif melewati threshold tersebut.
 
@@ -167,4 +174,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-08 — v1.2 Strategic Layer & Verification Closure milestone started*
+*Last updated: 2026-05-16 — after v1.2 milestone*

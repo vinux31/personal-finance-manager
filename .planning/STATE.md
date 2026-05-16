@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategic Layer & Verification Closure
-status: complete
-stopped_at: Phase 16 complete — all UAT PASS, milestone v1.2 closed
-last_updated: "2026-05-15T12:00:00.000Z"
-last_activity: 2026-05-15 -- Phase 16 complete (B1-B5 PASS, 0028 hotfix applied)
+status: archived
+stopped_at: v1.2 milestone archived 2026-05-16 — 6 phases, 17 plans, all PASS
+last_updated: "2026-05-16T00:00:00.000Z"
+last_activity: 2026-05-16 -- v1.2 milestone closed and archived, git tag pending
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 16
-  completed_plans: 16
+  total_phases: 6
+  completed_phases: 6
+  total_plans: 17
+  completed_plans: 17
   percent: 100
 ---
 
@@ -18,17 +18,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-08)
+See: .planning/PROJECT.md (updated 2026-05-16)
 
 **Core value:** Pengguna bisa melihat gambaran lengkap kondisi keuangan mereka dalam satu tempat, dengan kalkulasi yang relevan untuk konteks Indonesia.
-**Current focus:** v1.2 COMPLETE — all phases 11-16 shipped
+**Current focus:** v1.2 archived — planning v1.3 (`/gsd-new-milestone`)
 
 ## Current Position
 
 Phase: 16 (v1-1-closure-ops-cleanup) — COMPLETE
 Plan: 2 of 2
 Status: Milestone v1.2 closed
-Last activity: 2026-05-15 -- Phase 16 complete (B1-B5 UAT PASS, 0028 hotfix applied to production)
+Last activity: 2026-05-16
 
 ## v1.2 Phase Summary
 
@@ -134,13 +134,11 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-15T10:42:31.408Z
-Stopped at: Phase 16 context gathered
+Last session: 2026-05-16
+Stopped at: v1.2 milestone archived — git tag + RETROSPECTIVE.md pending
 Resume options:
 
-  - **Plan Phase 15: `/gsd-plan-phase 15`** — Modul Edukasi & Kalkulator (STRAT-04, 05, 06) ← recommended next
-  - Plan Phase 16: `/gsd-plan-phase 16` — v1.1 Closure & Ops Cleanup (VERIF + TECHDEBT)
-  - Follow-up UAT: View-As guard visual verification (DIAG-12) — needs admin role + target user_id seed; defense-in-depth code-path already verified (mutation guard + form disabled + RLS WITH CHECK)
+  - **Start v1.3: `/gsd-new-milestone`** — questioning → research → requirements → roadmap
 
 ### Decisions (Phase 14 execute-time, 2026-05-09)
 
